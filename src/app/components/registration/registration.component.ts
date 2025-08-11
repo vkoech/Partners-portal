@@ -29,49 +29,16 @@ export interface BankAccount {
 export class RegistrationComponent implements OnInit {
   currentStep = 1;
   totalSteps = 3;
-  
+
   personalInfoForm!: FormGroup;
   bankDetailsForm!: FormGroup;
-  
+
   uploadedDocuments: UploadedDocument[] = [
-    {
-      id: '1',
-      name: 'Tax Certificate',
-      type: 'PDF',
-      size: 1024000,
-      uploadDate: '2025-01-15'
-    },
-    {
-      id: '2',
-      name: 'Certified bank account details',
-      type: 'PDF',
-      size: 2048000,
-      uploadDate: '2025-01-15'
-    },
-    {
-      id: '3',
-      name: 'Registration Certificate',
-      type: 'PDF',
-      size: 1536000,
-      uploadDate: '2025-01-15'
-    }
+
   ];
-  
+
   bankAccounts: BankAccount[] = [
-    {
-      id: '1',
-      bankName: 'Equity Bank',
-      branchName: 'Kencom',
-      accountNo: '7098567231680',
-      amount: 'Brianna Kirui'
-    },
-    {
-      id: '2',
-      bankName: 'Equity Bank',
-      branchName: 'Kencom',
-      accountNo: '7098567231680',
-      amount: 'Brianna Kirui'
-    }
+
   ];
 
   constructor(
@@ -88,14 +55,14 @@ export class RegistrationComponent implements OnInit {
 
   private initializeForms() {
     this.personalInfoForm = this.fb.group({
-      registrationNo: ['347089'],
-      organizationName: ['SYRE'],
-      physicalAddress: ['NAIROBI'],
-      phoneNumber: ['0759663648'],
-      pinNo: ['30457143'],
+      registrationNo: [''],
+      organizationName: [''],
+      physicalAddress: [''],
+      phoneNumber: [''],
+      pinNo: [''],
       uniqueEntityId: [''],
       ngoType: [''],
-      emailAddress: ['technical@sysre.co.ke'],
+      emailAddress: [''],
       password: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['', Validators.required]
     });
@@ -147,7 +114,7 @@ export class RegistrationComponent implements OnInit {
       size: file.size,
       uploadDate: new Date().toISOString().split('T')[0]
     };
-    
+
     this.uploadedDocuments.push(newDocument);
   }
 
@@ -181,10 +148,10 @@ export class RegistrationComponent implements OnInit {
       console.log('Personal Info:', this.personalInfoForm.value);
       console.log('Bank Accounts:', this.bankAccounts);
       console.log('Documents:', this.uploadedDocuments);
-      
+
       // Show success message and navigate to login after delay
       alert('Registration successful! You will be redirected to login.');
-      
+
       // Add a delay before navigation to let user see the success message
       setTimeout(() => {
         this.router.navigate(['/login']);
