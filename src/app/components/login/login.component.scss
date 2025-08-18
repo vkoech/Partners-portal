@@ -14,7 +14,7 @@ $border-gray: #e0e0e0;
 
 .logo-section {
   flex: 1;
-  background: $primary-blue;
+  background: $dark-blue;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -23,7 +23,6 @@ $border-gray: #e0e0e0;
 
 .logo-container {
   background: $white;
-  padding: 3rem;
   border-radius: 20px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   display: flex;
@@ -45,7 +44,6 @@ $border-gray: #e0e0e0;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2rem;
   border-top-left-radius: 40px;
   border-bottom-left-radius: 40px;
   position: relative;
