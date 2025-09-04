@@ -44,9 +44,8 @@
 }
 
 .logo-icon {
-  width: 65px;
-  height: 65px;
-  border-radius: 50%;
+  max-width: 90%;
+  max-height: 90%;
   object-fit: contain;
   background: $white;
   box-shadow: none;

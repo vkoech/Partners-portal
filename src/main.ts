@@ -1,6 +1,38 @@
+import { Component } from '@angular/core';
 import { bootstrapApplication } from '@angular/platform-browser';
-import { appConfig } from './app/app.config';
-import { App } from './app/app';
+import { provideRouter } from '@angular/router';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { RouterOutlet } from '@angular/router';
+import { routes } from './app/app.routes';
+import { LoadingComponent } from './app/components/shared/loading/loading.component';
+import { NotificationComponent } from './app/components/shared/notification/notification.component';
+import { provideAnimations } from '@angular/platform-browser/animations';
+import { AuthInterceptor } from './app/interceptors/auth.interceptor';
 
-bootstrapApplication(App, appConfig)
-  .catch((err) => console.error(err));
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  imports: [RouterOutlet, LoadingComponent, NotificationComponent],
+  template: `
+    <router-outlet></router-outlet>
+    <app-loading></app-loading>
+    <app-notification></app-notification>
+  `,
+})
+export class App {}
+
+bootstrapApplication(App, {
+  providers: [
+    provideRouter(routes),
+    provideHttpClient(withInterceptorsFromDi()),
+    provideAnimations(),
+     {
+    provide: [
+    provideHttpClient(),
+    provideAnimations()
+       ],
+      useClass: AuthInterceptor,
+      multi: true
+    }
+  ]
+});
