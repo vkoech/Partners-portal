@@ -9,12 +9,16 @@ import { ReimbursementsComponent } from './components/reimbursements/reimburseme
 import { NewReimbursementComponent } from './components/reimbursements/new-reimbursement/new-reimbursement.component';
 import { RegistrationComponent } from './components/registration/registration.component';
 import { Signup } from './components/signup/signup';
+import { ForgotPassword } from './components/forgot-password/forgot-password';
+import { ResetPassword } from './components/reset-password/reset-password';
 
 export const routes: Routes = [
   { path: '', component: LoginComponent },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegistrationComponent },
   { path: 'signup', component: Signup },
+  { path: 'forgot-password', component: ForgotPassword },
+  { path: 'reset-password', component: ResetPassword },
   { path: 'approved-funding', component: ApprovedFundingComponent },
   { path: 'payment-request', component: PaymentRequestComponent },
   { path: 'new-payment-request', component: NewPaymentRequestComponent },
