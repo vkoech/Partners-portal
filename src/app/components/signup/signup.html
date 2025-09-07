@@ -15,17 +15,17 @@
       <form [formGroup]="SignUpForm" (submit)="onSignup()" class="login-form">
         <div class="form-group">
           <label for="email" class="form-label">Email Address</label>
-          <input type="email" formControlName="email"  placeholder="Organization Email Address" class="form-input" required>
+          <input type="email" formControlName="emailAddress"  placeholder="Organization Email Address" class="form-input" required>
         </div>
 
         <div class="form-group">
           <label class="form-label">Tax Registration Number</label>
-           <input type="text" class="form-input" formControlName="registrationNumber" placeholder="Tax Rgistration Number">
+           <input type="text" class="form-input" formControlName="taxRegistrationNumber" placeholder="Tax Rgistration Number">
         </div>
 
         <div class="form-group">
           <label  class="form-label">Organization Name</label>
-           <input type="text" class="form-input" formControlName="organizationName" placeholder="Organization Name">
+           <input type="text" class="form-input" formControlName="legalNameOfOrganization" placeholder="Organization Name">
         </div>
 
         <button type="submit" class="login-button">LOG IN</button>

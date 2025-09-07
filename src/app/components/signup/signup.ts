@@ -1,6 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AuthService } from '../../services/auth.service';
+import { NotificationService } from '../../services/notification.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-signup',
@@ -11,12 +14,15 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 export class Signup {
 
   SignUpForm: FormGroup;
+  loading =false
 
-  constructor(private fb: FormBuilder){
+  constructor(private fb: FormBuilder,  private authService: AuthService,
+    private router: Router,
+     private notificationService: NotificationService){
      this.SignUpForm = this.fb.group({
-        email: ['', Validators.required],
-        registrationNumber: ['', Validators.required],
-        organizationName: ['', Validators.required]
+        emailAddress: ['', Validators.required],
+        taxRegistrationNumber: ['', Validators.required],
+        legalNameOfOrganization: ['', Validators.required]
       })
      }
 
@@ -25,6 +31,21 @@ export class Signup {
 
   }
 
-  onSignup(){}
+  onSignup(){
+    this.loading=true;
+    let formValues = this.SignUpForm.value;
+    this.authService.registerPartner(formValues).subscribe({
+    next: (res) => {
+    this.loading = false;
+    this.notificationService.success('', res.responseDescription);
+  },
+  error: (err) => {
+    this.loading = false;
+    const message = err.error?.responseDescription;
+    this.notificationService.warning('', message);
+   }
+   });
+
+  }
 
 }

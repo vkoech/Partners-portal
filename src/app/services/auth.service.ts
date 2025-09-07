@@ -49,15 +49,20 @@ export class AuthService {
 constructor(private router: Router,private http: HttpClient) {}
 
  login(body: any): Observable<any>{
-    return this.http.post<any>(this.baseUrl+'Login', body);
+    return this.http.post<any>(this.baseUrl+'PartnerAccount/Login', body);
   }
 
   resetPasswordLink(username: string, passwordResetToken: any) {
-    return this.http.post<any>(`${this.baseUrl}Login/SendPasswordActivationLink`, { username , passwordResetToken});
+    return this.http.post<any>(`${this.baseUrl}PartnerAccount/SendPasswordActivationLink`, { username , passwordResetToken});
+  }
+
+
+  registerPartner(body: any): Observable<any>{
+    return this.http.post<any>(this.baseUrl+'PartnerAccount/Register', body);
   }
 
   resetPassword(body: any): Observable<any>{
-    return this.http.post<any>(this.baseUrl+'Login/ResetPassword', body);
+    return this.http.post<any>(this.baseUrl+'PartnerAccount/ResetPassword', body);
   }
 
   getToken(): string | null {

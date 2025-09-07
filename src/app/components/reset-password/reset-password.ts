@@ -24,7 +24,7 @@ export class ResetPassword {
   }
 
     ngOnInit(): void {
-    this.email = this.activatedRoutes.snapshot.queryParams['username'];
+    this.email = this.activatedRoutes.snapshot.queryParams['email'];
     this.passwordResetToken = this.activatedRoutes.snapshot.queryParams['passwordResetToken'];
 
      this.ResetPasswordForm=this.fb.group({
@@ -45,9 +45,10 @@ export class ResetPassword {
     return password === confirm ? null : { passwordMismatch: true };
   }
 
-  onReset(){this.loading=true;
+  onReset(){
+    this.loading=true;
     let formValues = this.ResetPasswordForm.value;
-    formValues.username=this.email;
+    formValues.email=this.email;
     this.authService.resetPassword(formValues).subscribe({
     next: (res) => {
     this.loading = false;
@@ -59,7 +60,8 @@ export class ResetPassword {
     const message = err.error?.responseDescription;
     this.notificationService.warning('', message);
    }
-   });}
+   });
+  }
 
   goToReset(){}
 

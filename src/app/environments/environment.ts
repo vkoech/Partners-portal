@@ -1,7 +1,6 @@
 export const environment = {
   production: false,
-  apiUrl: 'http://staffportalapi.naturalstate.org/api/',
-  //apiUrl: 'http://microservices.sysre.co.ke/api/',
+  apiUrl: 'http://microservices.sysre.co.ke:8089/api/',
   appName: 'Natural State HR System',
   version: '1.0.0',
   features: {

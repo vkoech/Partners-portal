@@ -23,7 +23,7 @@ export class LoginComponent {
      private notificationService: NotificationService, private authService: AuthService) {
 
       this.LoginForm = this.fb.group({
-        username: ['', Validators.required],
+        emailAddress: ['', Validators.required],
         password: ['', Validators.required],
         rememberMe: Boolean
       })
