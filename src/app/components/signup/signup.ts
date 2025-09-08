@@ -27,8 +27,8 @@ export class Signup {
      }
 
 
-  goToLogin(event?: Event){
-
+  goToLogin(){
+    this.router.navigate(['/login']);
   }
 
   onSignup(){
