@@ -54,9 +54,6 @@ goToReset(event?: Event) {
   }
 
  goToRegister(event?: Event) {
-    if (event) {
-      event.preventDefault();
-    }
     this.router.navigate(['/signup']);
   }
 }
