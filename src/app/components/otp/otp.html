@@ -1,0 +1,21 @@
+<div class="login-container">
+  <div class="form-section">
+    <div class="form-container">
+      <h1 class="welcome-title">OTP Verification</h1>
+      <form [formGroup]="OTPForm" (submit)="onVerifyOTP()" class="login-form">
+        <div class="form-group">
+          <label class="form-label">Enter OTP sent to {{ maskedEmail }}</label>
+          <input type="password" formControlName="OTP"  placeholder="Enter OTP" class="form-input" required>
+        </div>
+        <button type="submit" class="login-button">NEXT</button>
+        <div class="forgot-password">
+          <a (click)="goToLogin()" class="register-link">Back to Login</a>
+        </div>
+        <div>
+        <span class="separator">Did you receive OTP?|</span>
+        <a (click)="goToLogin()" class="register-link">Resend in</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

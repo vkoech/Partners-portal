@@ -11,6 +11,7 @@ import { RegistrationComponent } from './components/registration/registration.co
 import { Signup } from './components/signup/signup';
 import { ForgotPassword } from './components/forgot-password/forgot-password';
 import { ResetPassword } from './components/reset-password/reset-password';
+import { Otp } from './components/otp/otp';
 
 export const routes: Routes = [
   { path: '', component: LoginComponent },
@@ -18,6 +19,7 @@ export const routes: Routes = [
   { path: 'register', component: RegistrationComponent },
   { path: 'signup', component: Signup },
   { path: 'forgot-password', component: ForgotPassword },
+  { path: 'otp-verification', component: Otp },
   { path: 'reset-password', component: ResetPassword },
   { path: 'approved-funding', component: ApprovedFundingComponent },
   { path: 'payment-request', component: PaymentRequestComponent },
