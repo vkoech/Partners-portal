@@ -29,7 +29,7 @@ export class ForgotPassword implements AfterViewInit {
 
    ngOnInit(): void {
     this.ResetForm = this.fb.group({
-      username: ['', Validators.required],
+      emailAddress: ['', Validators.required],
       captchaAnswer: ['', Validators.required],
       passwordResetToken:['']
     });
@@ -145,7 +145,7 @@ export class ForgotPassword implements AfterViewInit {
         return;
       }
       else{
-      this.authService.resetPasswordLink(this.ResetForm.value.username, this.ResetForm.value.passwordResetToken) .subscribe({
+      this.authService.resetPasswordLink(this.ResetForm.value.emailAddress, this.ResetForm.value.passwordResetToken) .subscribe({
           next: (res) => {
             this.loading = false;
             this.notificationService.success('', res.responseDescription);

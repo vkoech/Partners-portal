@@ -38,7 +38,7 @@ export class LoginComponent {
     localStorage.setItem('refreshToken', res.refreshToken || '');
     localStorage.setItem('userName', this.LoginForm.value.username);
     this.notificationService.success('', res.responseDescription);
-    this.router.navigate(['/dashboard']);
+    this.router.navigate(['/register']);
   },
   error: (err) => {
     this.loading = false;
