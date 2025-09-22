@@ -16,7 +16,7 @@ export class ResetPassword {
 
   ResetPasswordForm: FormGroup;
   loading =false
-  email: string
+  emailAddress: string
   passwordResetToken: any
 
   constructor(private router: Router,private fb: FormBuilder,private activatedRoutes: ActivatedRoute,
@@ -24,13 +24,13 @@ export class ResetPassword {
   }
 
     ngOnInit(): void {
-    this.email = this.activatedRoutes.snapshot.queryParams['email'];
+    this.emailAddress = this.activatedRoutes.snapshot.queryParams['emailAddress'];
     this.passwordResetToken = this.activatedRoutes.snapshot.queryParams['passwordResetToken'];
 
      this.ResetPasswordForm=this.fb.group({
       password: ['', [Validators.required, Validators.pattern('(?=.*[$@$!%*?&#<>{}()])(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,}')]],
       confirmPassword: ['', Validators.required],
-      email:[''],
+      emailAddress:[''],
       // passwordResetToken:['']
     },
       {
@@ -48,7 +48,7 @@ export class ResetPassword {
   onReset(){
     this.loading=true;
     let formValues = this.ResetPasswordForm.value;
-    formValues.email=this.email;
+    formValues.emailAddress=this.emailAddress;
     this.authService.resetPassword(formValues).subscribe({
     next: (res) => {
     this.loading = false;

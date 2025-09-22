@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
 export interface UploadedDocument {
@@ -28,11 +28,30 @@ export interface BankAccount {
 })
 export class RegistrationComponent implements OnInit {
   currentStep = 1;
-  totalSteps = 3;
+  totalSteps = 6;
 
-  personalInfoForm!: FormGroup;
-  bankDetailsForm!: FormGroup;
+  personalInfoForm: FormGroup;
+  areaOfFocusForm: FormGroup;
+  contactPersonForm: FormGroup;
+  docuumentForm: FormGroup;
+  SummaryForm: FormGroup;
+  experienceForm: FormGroup;
 
+    projects = [
+    { code: 'P001', name: 'Health Project' },
+    { code: 'P002', name: 'Education Project' },
+    { code: 'P003', name: 'Agriculture Project' }
+  ];
+   area = [
+    { code: 'P001', name: 'Kenya ' },
+    { code: 'P002', name: 'Uganda' },
+    { code: 'P003', name: 'Tanzania' }
+  ];
+
+
+
+
+   areaOfFocus: any[]=[]
   uploadedDocuments: UploadedDocument[] = [
 
   ];
@@ -59,20 +78,47 @@ export class RegistrationComponent implements OnInit {
       organizationName: [''],
       physicalAddress: [''],
       phoneNumber: [''],
-      pinNo: [''],
-      uniqueEntityId: [''],
+      tradingName: [''],
+      registrationDate:[''],
+      governingBody:[''],
+      acronym: [''],
       ngoType: [''],
       emailAddress: [''],
-      password: ['', [Validators.required, Validators.minLength(6)]],
-      confirmPassword: ['', Validators.required]
+      postalAddress: [''],
+      website: [''],
+      countryOfRegistration:[''],
+      registrationCertificateNo:['']
     });
 
-    this.bankDetailsForm = this.fb.group({
-      bankCode: ['', Validators.required],
-      bankBranch: ['', Validators.required],
-      accountNo: ['', Validators.required],
-      accountName: ['', Validators.required]
+    this.areaOfFocusForm = this.fb.group({
+      areaOfFocus:[[]],
+      geographicCoverage:[[]]
     });
+
+    this.experienceForm =this.fb.group({
+      majorDonor:[''],
+      startDate:[''],
+      endDate:[''],
+      projectValue:[''],
+      experienceDescription:['']
+    })
+
+    this.contactPersonForm= this.fb.group({
+      contactType:[''],
+      emailAddress:[''],
+      phoneNumber:['']
+    })
+  }
+
+  onSelectChange(event: any) {
+      const selectedProjects = this.areaOfFocusForm.get('selectedProjects') as FormArray;
+
+    if (event.target.checked) {
+      selectedProjects.push(this.fb.control(event.target.value));
+    } else {
+      const index = selectedProjects.controls.findIndex(x => x.value === event.target.value);
+      selectedProjects.removeAt(index);
+    }
   }
 
   nextStep() {
@@ -126,20 +172,19 @@ export class RegistrationComponent implements OnInit {
     this.uploadedDocuments = this.uploadedDocuments.filter(doc => doc.id !== documentId);
   }
 
-  deleteBankAccount(accountId: string) {
-    this.bankAccounts = this.bankAccounts.filter(account => account.id !== accountId);
+  deleteAreaOfFocus() {
   }
 
-  addBankAccount() {
-    if (this.bankDetailsForm.valid) {
-      const newAccount: BankAccount = {
-        id: Date.now().toString(),
-        ...this.bankDetailsForm.value
-      };
-      this.bankAccounts.push(newAccount);
-      this.bankDetailsForm.reset();
-    }
-  }
+  // addBankAccount() {
+  //   if (this.bankDetailsForm.valid) {
+  //     const newAccount: BankAccount = {
+  //       id: Date.now().toString(),
+  //       ...this.bankDetailsForm.value
+  //     };
+  //     this.bankAccounts.push(newAccount);
+  //     this.bankDetailsForm.reset();
+  //   }
+  // }
 
   onSubmit() {
     // Only navigate when user explicitly submits the form

@@ -8,14 +8,26 @@
     <div class="step-navigation">
       <div class="step" [class.active]="currentStep === 1" [class.completed]="currentStep > 1" (click)="goToStep(1)">
         <div class="step-number">01</div>
-        <div class="step-label">PERSONAL INFORMATION</div>
+        <div class="step-label">ORGANIZATION INFORMATION</div>
       </div>
       <div class="step" [class.active]="currentStep === 2" [class.completed]="currentStep > 2" (click)="goToStep(2)">
         <div class="step-number">02</div>
-        <div class="step-label">BANK DETAILS</div>
+        <div class="step-label"> AREA OF FOCUS</div>
       </div>
       <div class="step" [class.active]="currentStep === 3" [class.completed]="currentStep > 3" (click)="goToStep(3)">
         <div class="step-number">03</div>
+        <div class="step-label">PROCRAM EXPERIENCE</div>
+      </div>
+      <div class="step" [class.active]="currentStep === 4" [class.completed]="currentStep > 4" (click)="goToStep(4)">
+        <div class="step-number">04</div>
+        <div class="step-label">CONTACT PERSON</div>
+      </div>
+       <div class="step" [class.active]="currentStep === 5" [class.completed]="currentStep > 5" (click)="goToStep(5)">
+        <div class="step-number">05</div>
+        <div class="step-label">DOCUMENTS</div>
+      </div>
+      <div class="step" [class.active]="currentStep === 6" [class.completed]="currentStep > 6" (click)="goToStep(6)">
+        <div class="step-number">06</div>
         <div class="step-label">SUMMARY</div>
       </div>
     </div>
@@ -28,12 +40,12 @@
 
           <div class="form-row">
             <div class="form-group">
-              <label>Registration No: <span class="required">*</span></label>
-              <input type="text" formControlName="registrationNo">
-            </div>
-            <div class="form-group">
               <label>Organization Name:</label>
               <input type="text" formControlName="organizationName">
+            </div>
+              <div class="form-group">
+              <label>Tax Registration No: <span class="required">*</span></label>
+              <input type="text" formControlName="registrationNo">
             </div>
           </div>
 
@@ -50,20 +62,20 @@
 
           <div class="form-row">
             <div class="form-group">
-              <label>Pin No: <span class="required">*</span></label>
-              <input type="text" formControlName="pinNo">
+              <label>Trading/Operaing Name: <span class="required">*</span></label>
+              <input type="text" formControlName="tradingName">
             </div>
             <div class="form-group">
-              <label>Unique Entity Identifier No: <span class="required">*</span></label>
-              <input type="text" formControlName="uniqueEntityId">
+              <label>Date of Registration:<span class="required">*</span></label>
+              <input type="date" formControlName="registrationDate">
             </div>
           </div>
 
           <div class="form-row">
             <div class="form-group">
-              <label>NGO Type: <span class="required">*</span></label>
-              <select formControlName="ngoType">
-                <option value="">NGO Type</option>
+              <label>Type Of Governing Body: <span class="required">*</span></label>
+              <select formControlName="governingBody">
+                <option value="">...</option>
                 <option value="local">Local NGO</option>
                 <option value="international">International NGO</option>
                 <option value="cbo">Community Based Organization</option>
@@ -74,20 +86,274 @@
               <input type="email" formControlName="emailAddress">
             </div>
           </div>
+           <div class="form-row">
+            <div class="form-group">
+              <label>Acronym(If Any): <span class="required">*</span></label>
+              <input type="text" formControlName="acronym">
+            </div>
+            <div class="form-group">
+              <label>Postal Address: <span class="required">*</span></label>
+              <input type="text" formControlName="postalAddress">
+            </div>
+          </div>
 
           <div class="form-row">
             <div class="form-group">
-              <label>Password: <span class="required">*</span></label>
-              <input type="password" formControlName="password">
+              <label>Website: <span class="required">*</span></label>
+              <input type="text" formControlName="website">
             </div>
             <div class="form-group">
-              <label>Password (Confirm): <span class="required">*</span></label>
-              <input type="password" formControlName="confirmPassword">
+               <label>Country Of Registration: <span class="required">*</span></label>
+                <select formControlName="countryOfRegistration">
+                  <option value="">...</option>
+                  <option value="Kenya">Kenya</option>
+                  <option value="Uganda">Uganda</option>
+                  <option value="Tanzania">Tanzania</option>
+                </select>
+            </div>
+          </div>
+             <div class="form-row">
+            <div class="form-group">
+              <label>Registration Certificate No: <span class="required">*</span></label>
+              <input type="text" formControlName="registrationCertificateNo">
+            </div>
+          </div>
+        </div>
+      </form>
+
+      <div class="step-actions">
+        <button type="button" class="back-to-top-btn" (click)="backToTop()">
+          <img src="assets/arrow-up.svg" alt="Back to top" width="16" height="16" />
+          Back to top
+        </button>
+        <button type="button" class="btn btn-primary" (click)="nextStep()">Next</button>
+      </div>
+    </div>
+
+    <!-- Step 2: Area of Focus Details -->
+    <div class="step-content" *ngIf="currentStep === 2">
+      <form [formGroup]="areaOfFocusForm">
+        <div class="form-section">
+          <h2>Add Area Of Focus Details</h2>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Area Of Focus: <span class="required">*</span></label>
+                <select id="projects" multiple (change)="onSelectChange($event)">
+                  <option *ngFor="let p of projects" [value]="p.code">{{ p.name }}</option>
+                </select>
+            </div>
+            <div class="form-group">
+              <label>Geographic Area Coverage:</label>
+              <select id="projects" multiple (change)="onSelectChange($event)">
+                  <option *ngFor="let p of area" [value]="p.code">{{ p.name }}</option>
+                </select>
             </div>
           </div>
         </div>
 
-        <!-- Attachments Section -->
+        <!-- Program Experience Table -->
+        <div class="form-section" *ngIf="bankAccounts.length > 0">
+          <h3>Program Experience</h3>
+          <div class="bank-accounts-table-container">
+            <table class="bank-accounts-table">
+              <thead>
+                <tr>
+                  <th>Bank Name</th>
+                  <th>Bank Branch Name</th>
+                  <th>Bank Account No</th>
+                  <th>Amount</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let account of bankAccounts; let i = index" [class.striped]="i % 2 === 1">
+                  <td>{{ account.bankName }}</td>
+                  <td>{{ account.branchName }}</td>
+                  <td>{{ account.accountNo }}</td>
+                  <td>{{ account.amount }}</td>
+                  <td>
+                    <button type="button" class="action-btn delete-btn" (click)="deleteAreaOfFocus()">
+                      <img src="assets/delete.svg" alt="Delete" width="16" height="16" />
+                      DELETE
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </form>
+
+      <div class="step-actions">
+        <button type="button" class="back-to-top-btn" (click)="backToTop()">
+          <img src="assets/arrow-up.svg" alt="Back to top" width="16" height="16" />
+          Back to top
+        </button>
+        <div class="action-buttons">
+          <button type="button" class="btn btn-secondary" (click)="previousStep()">Previous</button>
+          <button type="button" class="btn btn-primary" (click)="nextStep()">Next</button>
+        </div>
+      </div>
+    </div>
+
+      <!-- Step 3: Experience -->
+    <div class="step-content" *ngIf="currentStep === 3">
+      <form [formGroup]="experienceForm">
+        <div class="form-section">
+          <h2>Add Program Experience Details</h2>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Major Donor/Partner: <span class="required">*</span></label>
+              <input type="text" formControlName="majorDonor">
+            </div>
+            <div class="form-group">
+              <label>Project Value: <span class="required">*</span></label>
+              <input type="text" formControlName="projetVale">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Start Date: <span class="required">*</span></label>
+              <input type="date" formControlName="startDate">
+            </div>
+            <div class="form-group">
+              <label>End Date:</label>
+              <input type="date" formControlName="endDate">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Project Value: <span class="required">*</span></label>
+              <input type="text" formControlName="projectValue">
+            </div>
+            <div class="form-group">
+              <label>Project Implementation Experience: <span class="required">*</span></label>
+                <textarea formControlName="experienceDescription" rows="4" cols="40"
+                placeholder="Enter your description here..."></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Program Experience Table -->
+        <div class="form-section" *ngIf="bankAccounts.length > 0">
+          <h3>Program Experience</h3>
+          <div class="bank-accounts-table-container">
+            <table class="bank-accounts-table">
+              <thead>
+                <tr>
+                  <th>Bank Name</th>
+                  <th>Bank Branch Name</th>
+                  <th>Bank Account No</th>
+                  <th>Amount</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let account of bankAccounts; let i = index" [class.striped]="i % 2 === 1">
+                  <td>{{ account.bankName }}</td>
+                  <td>{{ account.branchName }}</td>
+                  <td>{{ account.accountNo }}</td>
+                  <td>{{ account.amount }}</td>
+                  <td>
+                    <button type="button" class="action-btn delete-btn" (click)="deleteAreaOfFocus()">
+                      <img src="assets/delete.svg" alt="Delete" width="16" height="16" />
+                      DELETE
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </form>
+
+      <div class="step-actions">
+        <button type="button" class="back-to-top-btn" (click)="backToTop()">
+          <img src="assets/arrow-up.svg" alt="Back to top" width="16" height="16" />
+          Back to top
+        </button>
+        <div class="action-buttons">
+          <button type="button" class="btn btn-secondary" (click)="previousStep()">Previous</button>
+          <button type="button" class="btn btn-primary" (click)="nextStep()">Next</button>
+        </div>
+      </div>
+    </div>
+          <!-- Step 4: Contact Person -->
+    <div class="step-content" *ngIf="currentStep === 4">
+      <form [formGroup]="contactPersonForm">
+        <div class="form-section">
+          <h2>Add Contact Person Details</h2>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Contact Type: <span class="required">*</span></label>
+               <select formControlName="contactType">
+                <option value="">...</option>
+                <option value="Phone Number">Email</option>
+                <option value="Phone Number">Phone Number</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Email: <span class="required">*</span></label>
+              <input type="email" formControlName="emailAddress">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Phone Number: <span class="required">*</span></label>
+              <input type="text" formControlName="phoneNumber">
+            </div>
+          </div>
+        </div>
+
+        <!-- Program Experience Table -->
+        <div class="form-section" *ngIf="bankAccounts.length > 0">
+          <h3>Program Experience</h3>
+          <div class="bank-accounts-table-container">
+            <table class="bank-accounts-table">
+              <thead>
+                <tr>
+                  <th>Bank Name</th>
+                  <th>Bank Branch Name</th>
+                  <th>Bank Account No</th>
+                  <th>Amount</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let account of bankAccounts; let i = index" [class.striped]="i % 2 === 1">
+                  <td>{{ account.bankName }}</td>
+                  <td>{{ account.branchName }}</td>
+                  <td>{{ account.accountNo }}</td>
+                  <td>{{ account.amount }}</td>
+                  <td>
+                    <button type="button" class="action-btn delete-btn" (click)="deleteAreaOfFocus()">
+                      <img src="assets/delete.svg" alt="Delete" width="16" height="16" />
+                      DELETE
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </form>
+
+      <div class="step-actions">
+        <button type="button" class="back-to-top-btn" (click)="backToTop()">
+          <img src="assets/arrow-up.svg" alt="Back to top" width="16" height="16" />
+          Back to top
+        </button>
+        <div class="action-buttons">
+          <button type="button" class="btn btn-secondary" (click)="previousStep()">Previous</button>
+          <button type="button" class="btn btn-primary" (click)="nextStep()">Next</button>
+        </div>
+      </div>
+    </div>
+      <!-- Step 5: Documents -->
+    <div class="step-content" *ngIf="currentStep === 5">
+      <form [formGroup]="contactPersonForm">
         <div class="form-section">
           <h3>Attachments</h3>
           <div class="upload-section">
@@ -111,7 +377,6 @@
             <button type="button" class="upload-btn">UPLOAD</button>
           </div>
 
-          <!-- Uploaded Documents -->
           <div class="uploaded-documents" *ngIf="uploadedDocuments.length > 0">
             <h4>Uploaded Documents</h4>
             <div class="documents-table-container">
@@ -142,105 +407,32 @@
               </table>
             </div>
           </div>
+            <div class="step-actions">
+              <button type="button" class="back-to-top-btn" (click)="backToTop()">
+                <img src="assets/arrow-up.svg" alt="Back to top" width="16" height="16" />
+                Back to top
+              </button>
+              <div class="action-buttons">
+                <button type="button" class="btn btn-secondary" (click)="previousStep()">Previous</button>
+                <button type="button" class="btn btn-primary" (click)="nextStep()">Next</button>
+              </div>
+            </div>
         </div>
       </form>
-
-      <div class="step-actions">
-        <button type="button" class="back-to-top-btn" (click)="backToTop()">
-          <img src="assets/arrow-up.svg" alt="Back to top" width="16" height="16" />
-          Back to top
-        </button>
-        <button type="button" class="btn btn-primary" (click)="nextStep()">Next</button>
-      </div>
     </div>
-
-    <!-- Step 2: Bank Details -->
-    <div class="step-content" *ngIf="currentStep === 2">
-      <form [formGroup]="bankDetailsForm">
-        <div class="form-section">
-          <h2>Add Bank Details</h2>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label>Bank Code: <span class="required">*</span></label>
-              <input type="text" formControlName="bankCode">
-            </div>
-            <div class="form-group">
-              <label>Bank Branch:</label>
-              <input type="text" formControlName="bankBranch">
-            </div>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label>Account No: <span class="required">*</span></label>
-              <input type="text" formControlName="accountNo">
-            </div>
-            <div class="form-group">
-              <label>Account Name: <span class="required">*</span></label>
-              <input type="text" formControlName="accountName">
-            </div>
-          </div>
-        </div>
-
-        <!-- Bank Accounts Table -->
-        <div class="form-section" *ngIf="bankAccounts.length > 0">
-          <h3>Bank Accounts</h3>
-          <div class="bank-accounts-table-container">
-            <table class="bank-accounts-table">
-              <thead>
-                <tr>
-                  <th>Bank Name</th>
-                  <th>Bank Branch Name</th>
-                  <th>Bank Account No</th>
-                  <th>Amount</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let account of bankAccounts; let i = index" [class.striped]="i % 2 === 1">
-                  <td>{{ account.bankName }}</td>
-                  <td>{{ account.branchName }}</td>
-                  <td>{{ account.accountNo }}</td>
-                  <td>{{ account.amount }}</td>
-                  <td>
-                    <button type="button" class="action-btn delete-btn" (click)="deleteBankAccount(account.id)">
-                      <img src="assets/delete.svg" alt="Delete" width="16" height="16" />
-                      DELETE
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </form>
-
-      <div class="step-actions">
-        <button type="button" class="back-to-top-btn" (click)="backToTop()">
-          <img src="assets/arrow-up.svg" alt="Back to top" width="16" height="16" />
-          Back to top
-        </button>
-        <div class="action-buttons">
-          <button type="button" class="btn btn-secondary" (click)="previousStep()">Previous</button>
-          <button type="button" class="btn btn-primary" (click)="nextStep()">Next</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Step 3: Summary -->
-    <div class="step-content" *ngIf="currentStep === 3">
+    <!-- Step 6: Summary -->
+    <div class="step-content" *ngIf="currentStep === 6">
       <div class="form-section">
         <h2>Personal Information</h2>
 
         <div class="summary-grid">
           <div class="summary-item">
-            <label>Registration No</label>
-            <span>{{ personalInfoForm.get('registrationNo')?.value }}</span>
-          </div>
-          <div class="summary-item">
             <label>Organization Name</label>
             <span>{{ personalInfoForm.get('organizationName')?.value }}</span>
+          </div>
+          <div class="summary-item">
+            <label>Tax Registration No</label>
+            <span>{{ personalInfoForm.get('registrationNo')?.value }}</span>
           </div>
           <div class="summary-item">
             <label>Physical Address</label>
@@ -251,20 +443,40 @@
             <span>{{ personalInfoForm.get('phoneNumber')?.value }}</span>
           </div>
           <div class="summary-item">
-            <label>Pin No</label>
-            <span>{{ personalInfoForm.get('pinNo')?.value }}</span>
+            <label>Trading/Operaing Name</label>
+            <span>{{ personalInfoForm.get('tradingName')?.value }}</span>
           </div>
           <div class="summary-item">
-            <label>Unique Entity Identifier No</label>
-            <span>{{ personalInfoForm.get('uniqueEntityId')?.value }}</span>
+            <label>Date of Registration</label>
+            <span>{{ personalInfoForm.get('registrationDate')?.value }}</span>
           </div>
           <div class="summary-item">
-            <label>NGO Type</label>
-            <span>{{ personalInfoForm.get('ngoType')?.value }}</span>
+            <label>Type Of Governing Body</label>
+            <span>{{ personalInfoForm.get('governingBody')?.value }}</span>
           </div>
           <div class="summary-item">
             <label>Email Address</label>
             <span>{{ personalInfoForm.get('emailAddress')?.value }}</span>
+          </div>
+          <div class="summary-item">
+            <label>Acronym(If Any)</label>
+            <span>{{ personalInfoForm.get('acronym')?.value }}</span>
+          </div>
+          <div class="summary-item">
+            <label>Postal Address</label>
+            <span>{{ personalInfoForm.get('postalAddress')?.value }}</span>
+          </div>
+          <div class="summary-item">
+            <label>Website</label>
+            <span>{{ personalInfoForm.get('website')?.value }}</span>
+          </div>
+          <div class="summary-item">
+            <label>Country Of Registration</label>
+            <span>{{ personalInfoForm.get('countryOfRegistration')?.value }}</span>
+          </div>
+          <div class="summary-item">
+            <label>Registration Certificate No</label>
+            <span>{{ personalInfoForm.get('registrationCertificateNo')?.value }}</span>
           </div>
         </div>
       </div>
@@ -301,28 +513,24 @@
         </div>
       </div>
 
-      <!-- Bank Accounts -->
+      <!-- Area Of Focus -->
       <div class="form-section" *ngIf="bankAccounts.length > 0">
         <h3>Bank Accounts</h3>
         <div class="bank-accounts-table-container">
           <table class="bank-accounts-table">
             <thead>
               <tr>
-                <th>Bank Name</th>
-                <th>Bank Branch Name</th>
-                <th>Bank Account No</th>
-                <th>Amount</th>
+                <th>Area Of Focus</th>
+                <th>Geographic Area Coverage</th>
                 <th>Action</th>
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let account of bankAccounts; let i = index" [class.striped]="i % 2 === 1">
-                <td>{{ account.bankName }}</td>
-                <td>{{ account.branchName }}</td>
-                <td>{{ account.accountNo }}</td>
-                <td>{{ account.amount }}</td>
+              <tr *ngFor="let area of areaOfFocus; let i = index" [class.striped]="i % 2 === 1">
+                <td>{{ area.areaOfFocus }}</td>
+                <td>{{ area.geographicCoverage }}</td>
                 <td>
-                  <button type="button" class="action-btn delete-btn" (click)="deleteBankAccount(account.id)">
+                  <button type="button" class="action-btn delete-btn" (click)="deleteAreaOfFocus()">
                     <img src="assets/delete.svg" alt="Delete" width="16" height="16" />
                     DELETE
                   </button>
