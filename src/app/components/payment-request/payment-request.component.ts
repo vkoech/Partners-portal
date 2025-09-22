@@ -28,12 +28,12 @@ export interface PaymentRequest {
 })
 export class PaymentRequestComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
-  
+
   sidebarOpen = false;
   searchTerm = '';
   currentPage = 1;
   itemsPerPage = 5;
-  
+
   paymentRequestList: PaymentRequest[] = [
     {
       id: '1',
@@ -46,56 +46,12 @@ export class PaymentRequestComponent implements OnInit, OnDestroy {
       description: 'For wards',
       status: 'Open'
     },
-    {
-      id: '2',
-      funding: 'Grants',
-      programme: 'Med supply',
-      purpose: 'Pharmaceutical',
-      budgetAmount: 160000,
-      obligatedAmount: 100000,
-      date: '20/5/2025',
-      description: 'For wards',
-      status: 'Open'
-    },
-    {
-      id: '3',
-      funding: 'Grants',
-      programme: 'Med supply',
-      purpose: 'Pharmaceutical',
-      budgetAmount: 160000,
-      obligatedAmount: 100000,
-      date: '20/5/2025',
-      description: 'For wards',
-      status: 'Open'
-    },
-    {
-      id: '4',
-      funding: 'Grants',
-      programme: 'Med supply',
-      purpose: 'Pharmaceutical',
-      budgetAmount: 160000,
-      obligatedAmount: 100000,
-      date: '20/5/2025',
-      description: 'For wards',
-      status: 'Open'
-    },
-    {
-      id: '5',
-      funding: 'Grants',
-      programme: 'Med supply',
-      purpose: 'Pharmaceutical',
-      budgetAmount: 160000,
-      obligatedAmount: 100000,
-      date: '20/5/2025',
-      description: 'For wards',
-      status: 'Open'
-    }
   ];
-  
+
   get totalPages(): number {
     return Math.ceil(this.paymentRequestList.length / this.itemsPerPage);
   }
-  
+
   get paginatedData(): PaymentRequest[] {
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
     const endIndex = startIndex + this.itemsPerPage;
@@ -142,11 +98,11 @@ export class PaymentRequestComponent implements OnInit, OnDestroy {
       this.currentPage = page;
     }
   }
-  
+
   getVisiblePages(): number[] {
     const pages: number[] = [];
     const maxVisible = 5;
-    
+
     if (this.totalPages <= maxVisible) {
       for (let i = 1; i <= this.totalPages; i++) {
         pages.push(i);
@@ -154,12 +110,12 @@ export class PaymentRequestComponent implements OnInit, OnDestroy {
     } else {
       const start = Math.max(1, this.currentPage - 2);
       const end = Math.min(this.totalPages, start + maxVisible - 1);
-      
+
       for (let i = start; i <= end; i++) {
         pages.push(i);
       }
     }
-    
+
     return pages;
   }
 

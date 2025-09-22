@@ -11,7 +11,7 @@
 
 .main-content {
   flex: 1;
-  margin-left: 280px;
+  margin-left: 240px;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
@@ -276,40 +276,40 @@
   .main-content {
     margin-left: 0 !important;
   }
-  
+
   .approved-funding-content {
     padding: 20px 15px;
     margin-top: -40px;
   }
-  
+
   .card-header,
   .card-body {
     padding: 15px 20px;
   }
-  
+
   .card-header h2 {
     font-size: 16px;
   }
-  
+
   .mobile-cards {
     display: block;
   }
-  
+
   .hide-mobile {
     display: none;
   }
-  
+
   .show-mobile {
     display: block;
   }
-  
+
   .card-body {
     flex-direction: column;
     align-items: stretch;
     gap: 15px;
     height: auto;
   }
-  
+
   .search-box {
     max-width: none;
   }
@@ -320,16 +320,16 @@
     padding: 15px 10px;
     margin-top: -25px;
   }
-  
+
   .card-header,
   .card-body {
     padding: 12px 15px;
   }
-  
+
   .card-header h2 {
     font-size: 14px;
   }
-  
+
   .pagination {
     padding: 15px 20px;
     flex-wrap: wrap;
@@ -342,11 +342,11 @@
   .hide-desktop {
     display: none !important;
   }
-  
+
   .show-desktop {
     display: block !important;
   }
-  
+
   .mobile-cards {
     display: none !important;
   }
