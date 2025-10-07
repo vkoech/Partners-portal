@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { RegistrationService } from '../../services/registration-service';
+import { AuthService, AuthUser } from '../../services/auth.service';
 
 export interface UploadedDocument {
   id: string;
@@ -29,29 +31,25 @@ export interface BankAccount {
 export class RegistrationComponent implements OnInit {
   currentStep = 1;
   totalSteps = 6;
-
+  contact_type_list: any
   personalInfoForm: FormGroup;
   areaOfFocusForm: FormGroup;
   contactPersonForm: FormGroup;
   docuumentForm: FormGroup;
   SummaryForm: FormGroup;
   experienceForm: FormGroup;
-
-    projects = [
-    { code: 'P001', name: 'Health Project' },
-    { code: 'P002', name: 'Education Project' },
-    { code: 'P003', name: 'Agriculture Project' }
-  ];
-   area = [
-    { code: 'P001', name: 'Kenya ' },
-    { code: 'P002', name: 'Uganda' },
-    { code: 'P003', name: 'Tanzania' }
-  ];
-
-
-
-
-   areaOfFocus: any[]=[]
+  geographicCoverageForm: FormGroup;
+  user: AuthUser | null = null;
+  documentNo: any;
+  stepCompleted: boolean[] = Array(this.totalSteps + 1).fill(false);
+  area_of_focus_items: any
+  contact_type: any
+  contact_person_details_list: any
+  contact_person_details_list_line:any
+  areaOfFocusList: any
+  areaOfFocusListLine:any
+  geoCoverageList:any
+  experience:any
   uploadedDocuments: UploadedDocument[] = [
 
   ];
@@ -62,18 +60,28 @@ export class RegistrationComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private registrationService: RegistrationService,
+    private authService: AuthService
   ) {
     this.initializeForms();
   }
 
   ngOnInit(): void {
-    // Component initialization - no navigation here
-    console.log('Registration component initialized');
+    this.user = this.authService.getLoggedInUser();
+    this.documentNo = this.user?.partnerAccountNo;
+    
+    this.getAreaOfFocus()
+    this.getContactType()
+    this.getContactsPersonByDocumentNo()
+    this.getAreasOfFocusByDocumentNo()
+    this.getGeoCoverageByDocumentNo()
+    this.getPatnerExperience()
   }
 
   private initializeForms() {
     this.personalInfoForm = this.fb.group({
+      documentNo:[''],
       registrationNo: [''],
       organizationName: [''],
       physicalAddress: [''],
@@ -91,23 +99,51 @@ export class RegistrationComponent implements OnInit {
     });
 
     this.areaOfFocusForm = this.fb.group({
+      documentNo:[''],
       areaOfFocus:[[]],
       geographicCoverage:[[]]
     });
 
+   this.geographicCoverageForm = this.fb.group({
+      documentNo:[''],
+      geographicCoverage:[[]]
+    });
+
     this.experienceForm =this.fb.group({
-      majorDonor:[''],
+      lineNo:[''],
+      documentNo:[''],
+      majorDonorOrPartner:[''],
       startDate:[''],
       endDate:[''],
       projectValue:[''],
-      experienceDescription:['']
+      description:[''],
+      action:['']
     })
 
     this.contactPersonForm= this.fb.group({
+      lineNo:[''],
+      documentNo:[''],
       contactType:[''],
       emailAddress:[''],
-      phoneNumber:['']
+      phoneNo:[''],
+      names:[''],
+      action:['']
     })
+  }
+
+
+  submitStep(step: number) {
+     if (step === 1 && this.experienceForm.valid) {
+       this.registrationService.createPartnerInfo(this.experienceForm.value).subscribe({
+        next: () => {
+         console.log(this.experienceForm.value)
+        }
+      });
+    }
+  }
+
+  onSubmit(){
+
   }
 
   onSelectChange(event: any) {
@@ -175,38 +211,59 @@ export class RegistrationComponent implements OnInit {
   deleteAreaOfFocus() {
   }
 
-  // addBankAccount() {
-  //   if (this.bankDetailsForm.valid) {
-  //     const newAccount: BankAccount = {
-  //       id: Date.now().toString(),
-  //       ...this.bankDetailsForm.value
-  //     };
-  //     this.bankAccounts.push(newAccount);
-  //     this.bankDetailsForm.reset();
-  //   }
-  // }
-
-  onSubmit() {
-    // Only navigate when user explicitly submits the form
-    if (this.personalInfoForm.valid) {
-      console.log('Registration submitted');
-      console.log('Personal Info:', this.personalInfoForm.value);
-      console.log('Bank Accounts:', this.bankAccounts);
-      console.log('Documents:', this.uploadedDocuments);
-
-      // Show success message and navigate to login after delay
-      alert('Registration successful! You will be redirected to login.');
-
-      // Add a delay before navigation to let user see the success message
-      setTimeout(() => {
-        this.router.navigate(['/login']);
-      }, 2000);
-    } else {
-      console.log('Form is invalid');
-    }
-  }
 
   backToTop() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
+
+  getAreaOfFocus(){
+   this.registrationService.getAreaOfFocus().subscribe(data => {
+      this.area_of_focus_items = data;
+    });
+  }
+
+   getContactType(){
+   this.registrationService.getContactType().subscribe(data => {
+      this.contact_type = data;
+    });
+    }
+    getContactsPersonByDocumentNo(){
+        this.registrationService.getContactsPersonByDocumentNo(this.documentNo).subscribe(data=>{
+        this.contact_person_details_list=data
+        })
+      }
+
+    getContactPersonLine(row: any){
+        this.registrationService.getContactPersonLine(this.documentNo, row.lineNo ).subscribe(data=>{
+        this.contact_person_details_list_line=data
+        })
+      }
+   getAreasOfFocusByDocumentNo(){
+    this.registrationService.getAreasOfFocusByDocumentNo(this.documentNo).subscribe(data=>{
+      this.areaOfFocusList=data
+    })
+   }
+
+   getAreasOfFocusLine(row:any){
+    this.registrationService.getAreasOfFocusLine(this.documentNo,row.lineNo).subscribe(data=>{
+      this.areaOfFocusListLine=data
+    })
+   }
+   getGeoCoverageByDocumentNo(){
+    this.registrationService.getGeoCoverageByDocumentNo(this.documentNo).subscribe(data=>{
+     this.geoCoverageList=data
+    })
+   }
+   getGeoCoverageLine(row:any){
+    this.registrationService.getGeoCoverageLine(this.documentNo, row.lineNo).subscribe(data=>{
+     this.geoCoverageList=data
+    })
+   }
+
+  getPatnerExperience(){
+    this.registrationService.getPatnerExperience(this.documentNo).subscribe(data=>{
+      this.experience=data
+    })
+   }
+
 }

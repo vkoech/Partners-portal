@@ -28,6 +28,7 @@ export interface AuthUser {
   dateOfBirth: string;
   bankName: string;
   companyName: string;
+  partnerAccountNo: string
 }
 
 export interface AuthResponse {
