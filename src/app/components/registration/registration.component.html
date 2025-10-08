@@ -169,7 +169,7 @@
           </div>
         </div>
         <!-- Area of focus Table -->
-        @if(areaOfFocusListLine.length>0){
+        @if(areaOfFocusList.length>0){
           <div class="form-section">
           <h3>Program Experience</h3>
           <div class="bank-accounts-table-container">
@@ -181,7 +181,7 @@
                 </tr>
               </thead>
               <tbody>
-                @for(focus of areaOfFocusListLine; track focus.lineNo){
+                @for(focus of areaOfFocusList; track focus.lineNo){
                   <tr>
                   <td>{{ focus.description }}</td>
                   <td>
@@ -225,7 +225,7 @@
           </div>
         </div>
         <!-- Geo Coverage Table -->
-        @if(geoCoverageListLine.length>0){
+        @if(geoCoverageList.length>0){
           <div class="form-section">
           <h3>Geo Coverage</h3>
           <div class="bank-accounts-table-container">
@@ -237,7 +237,7 @@
                 </tr>
               </thead>
               <tbody>
-                @for(geo of geoCoverageListLine; track geo.lineNo){
+                @for(geo of geoCoverageList; track geo.lineNo){
                 <tr>
                   <td>{{ geo.country }}</td>
                   <td>
@@ -303,7 +303,7 @@
         </div>
 
         <!-- Program Experience Table -->
-        @if(experience.lenght>0)
+        @if(experience.length>0)
         {
           <div class="form-section">
           <h3>Program Experience</h3>
@@ -383,7 +383,7 @@
         </div>
 
         <!-- Contact Person Table -->
-        @if(contact_person_details_list_line.lenght>0){
+        @if(contact_person_details_list.length>0){
           <div class="form-section">
           <h3>Contact Person</h3>
           <div class="bank-accounts-table-container">
@@ -398,7 +398,7 @@
                 </tr>
               </thead>
               <tbody>
-              @for (contact of contact_person_details_list_line; track contact.lineNo){
+              @for (contact of contact_person_details_list; track contact.lineNo){
                   <tr>
                   <td>{{ contact.names }}</td>
                   <td>{{ contact.emailAddress }}</td>

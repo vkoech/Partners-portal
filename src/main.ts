@@ -27,10 +27,7 @@ bootstrapApplication(App, {
     provideHttpClient(withInterceptorsFromDi()),
     provideAnimations(),
      {
-    provide: [
-    provideHttpClient(),
-    provideAnimations()
-       ],
+      provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
       multi: true
     }

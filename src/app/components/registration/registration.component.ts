@@ -35,13 +35,13 @@ export class RegistrationComponent implements OnInit {
   stepCompleted: boolean[] = Array(this.totalSteps + 1).fill(false);
   area_of_focus_items: any
   contact_type: any
-  contact_person_details_list: any
+  contact_person_details_list:any[] = []
   contact_person_details_list_line:any
-  areaOfFocusList: any
+  areaOfFocusList: any[] = []
   areaOfFocusListLine:any
-  geoCoverageList:any
+  geoCoverageList:any[] = []
   geoCoverageListLine:any
-  experience:any
+  experience:any[] = []
   uploadedDocuments: UploadedDocument[] = [];
   constructor(
     private router: Router,
@@ -215,6 +215,7 @@ export class RegistrationComponent implements OnInit {
     getContactsPersonByDocumentNo(){
         this.registrationService.getContactsPersonByDocumentNo(this.documentNo).subscribe(data=>{
         this.contact_person_details_list=data
+        console.log(data)
         })
       }
 
