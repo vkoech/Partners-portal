@@ -169,7 +169,7 @@
           </div>
         </div>
         <!-- Area of focus Table -->
-        @if(areaOfFocusList.length>0){
+        @if(areaOfFocusListLine.length>0){
           <div class="form-section">
           <h3>Program Experience</h3>
           <div class="bank-accounts-table-container">
@@ -181,7 +181,7 @@
                 </tr>
               </thead>
               <tbody>
-                @for(focus of areaOfFocusList; track focus.lineNo){
+                @for(focus of areaOfFocusListLine; track focus.lineNo){
                   <tr>
                   <td>{{ focus.description }}</td>
                   <td>
@@ -225,8 +225,9 @@
           </div>
         </div>
         <!-- Geo Coverage Table -->
-        <div class="form-section" *ngIf="bankAccounts.length > 0">
-          <h3>Program Experience</h3>
+        @if(geoCoverageListLine.length>0){
+          <div class="form-section">
+          <h3>Geo Coverage</h3>
           <div class="bank-accounts-table-container">
             <table class="bank-accounts-table">
               <thead>
@@ -236,9 +237,9 @@
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let account of bankAccounts; let i = index" [class.striped]="i % 2 === 1">
-                  <td>{{ account.bankName }}</td>
-                  <td>{{ account.amount }}</td>
+                @for(geo of geoCoverageListLine; track geo.lineNo){
+                <tr>
+                  <td>{{ geo.country }}</td>
                   <td>
                     <button type="button" class="action-btn delete-btn" (click)="deleteAreaOfFocus()">
                       <img src="assets/delete.svg" alt="Delete" width="16" height="16" />
@@ -246,10 +247,12 @@
                     </button>
                   </td>
                 </tr>
+                }
               </tbody>
             </table>
           </div>
         </div>
+      }
       </form>
 
       <div class="step-actions">
@@ -300,7 +303,9 @@
         </div>
 
         <!-- Program Experience Table -->
-        <div class="form-section" *ngIf="bankAccounts.length > 0">
+        @if(experience.lenght>0)
+        {
+          <div class="form-section">
           <h3>Program Experience</h3>
           <div class="bank-accounts-table-container">
             <table class="bank-accounts-table">
@@ -334,6 +339,7 @@
             </table>
           </div>
         </div>
+      }
       </form>
 
       <div class="step-actions">
@@ -376,9 +382,10 @@
           </div>
         </div>
 
-        <!-- Program Experience Table -->
-        <div class="form-section" *ngIf="bankAccounts.length > 0">
-          <h3>Program Experience</h3>
+        <!-- Contact Person Table -->
+        @if(contact_person_details_list_line.lenght>0){
+          <div class="form-section">
+          <h3>Contact Person</h3>
           <div class="bank-accounts-table-container">
             <table class="bank-accounts-table">
               <thead>
@@ -391,7 +398,7 @@
                 </tr>
               </thead>
               <tbody>
-              @for (contact of contact_person_details_list; track contact.lineNo){
+              @for (contact of contact_person_details_list_line; track contact.lineNo){
                   <tr>
                   <td>{{ contact.names }}</td>
                   <td>{{ contact.emailAddress }}</td>
@@ -409,6 +416,7 @@
             </table>
           </div>
         </div>
+      }
       </form>
 
       <div class="step-actions">

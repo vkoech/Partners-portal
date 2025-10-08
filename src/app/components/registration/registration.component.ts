@@ -12,15 +12,6 @@ export interface UploadedDocument {
   size: number;
   uploadDate: string;
 }
-
-export interface BankAccount {
-  id: string;
-  bankName: string;
-  branchName: string;
-  accountNo: string;
-  amount: string;
-}
-
 @Component({
   selector: 'app-registration',
   standalone: true,
@@ -49,15 +40,9 @@ export class RegistrationComponent implements OnInit {
   areaOfFocusList: any
   areaOfFocusListLine:any
   geoCoverageList:any
+  geoCoverageListLine:any
   experience:any
-  uploadedDocuments: UploadedDocument[] = [
-
-  ];
-
-  bankAccounts: BankAccount[] = [
-
-  ];
-
+  uploadedDocuments: UploadedDocument[] = [];
   constructor(
     private router: Router,
     private fb: FormBuilder,
@@ -256,7 +241,7 @@ export class RegistrationComponent implements OnInit {
    }
    getGeoCoverageLine(row:any){
     this.registrationService.getGeoCoverageLine(this.documentNo, row.lineNo).subscribe(data=>{
-     this.geoCoverageList=data
+     this.geoCoverageListLine=data
     })
    }
 
