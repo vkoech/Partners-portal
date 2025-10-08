@@ -1,7 +1,7 @@
 <div class="registration-container">
   <div class="registration-content">
     <div class="registration-header">
-      <h1>REGISTER</h1>
+      <h6>REGISTER</h6>
     </div>
 
     <!-- Step Navigation -->
@@ -58,9 +58,9 @@
 
     <!-- Step 1: Partner Information -->
     <div class="step-content" *ngIf="currentStep === 1">
-      <form [formGroup]="personalInfoForm" (ngSubmit)="submitStep(1)">
+      <form [formGroup]="personalInfoForm" (ngSubmit)="onSubmitPersonalInfo()">
         <div class="form-section">
-          <h2>Organization Information</h2>
+          <h4>Organization Information</h4>
 
           <div class="form-row">
             <div class="form-group">
@@ -136,12 +136,13 @@
                 </select>
             </div>
           </div>
-             <div class="form-row">
+          <div class="form-row">
             <div class="form-group">
               <label>Registration Certificate No: <span class="required">*</span></label>
               <input type="text" formControlName="registrationCertificateNo">
             </div>
           </div>
+           <button type="submit" class="upload-btn">Submit</button>
         </div>
       </form>
 
@@ -150,30 +151,36 @@
           <img src="assets/arrow-up.svg" alt="Back to top" width="16" height="16" />
           Back to top
         </button>
-        <button type="button" class="btn btn-primary" (click)="nextStep()">Save & Continue</button>
+        <button type="button" class="btn btn-primary" (click)="nextStep()">Next</button>
       </div>
     </div>
 
     <!-- Step 2: Area of Focus Details -->
     <div class="step-content" *ngIf="currentStep === 2">
-      <form [formGroup]="areaOfFocusForm">
+      <form [formGroup]="areaOfFocusForm" (ngSubmit)="onSubmitAreaOfFocusInfo()">
         <div class="form-section">
-          <h2>Add Area Of Focus Details</h2>
+          <h4>Add Area Of Focus Details</h4>
           <div class="form-row">
             <div class="form-group">
               <label>Area Of Focus: <span class="required">*</span></label>
-                <select id="projects" multiple (change)="onSelectChange($event)">
-                  <option *ngFor="let p of area_of_focus_items" [value]="p.code">{{ p.name }}</option>
+                <select formControlName="description">
+                  <option value="" [selected]=true disabled>Select Geo Coverage</option>
+                  @for (area of area_of_focus_items; track area.code) {
+                  <option [value]="area.code">
+                    {{ area.description }}
+                  </option>}
                 </select>
             </div>
           </div>
         </div>
+       <button type="button" class="upload-btn">Submit</button>
+       </form>
         <!-- Area of focus Table -->
         @if(areaOfFocusList.length>0){
           <div class="form-section">
           <h3>Program Experience</h3>
-          <div class="bank-accounts-table-container">
-            <table class="bank-accounts-table">
+          <div class="table-container">
+            <table class="table">
               <thead>
                 <tr>
                   <th>Area Of Focus</th>
@@ -196,8 +203,6 @@
             </table>
           </div>
         </div>}
-      </form>
-
       <div class="step-actions">
         <button type="button" class="back-to-top-btn" (click)="backToTop()">
           <img src="assets/arrow-up.svg" alt="Back to top" width="16" height="16" />
@@ -205,31 +210,37 @@
         </button>
         <div class="action-buttons">
           <button type="button" class="btn btn-secondary" (click)="previousStep()">Previous</button>
-          <button type="button" class="btn btn-primary" (click)="nextStep()">Save & Continue</button>
+          <button type="button" class="btn btn-primary" (click)="nextStep()">Next</button>
         </div>
       </div>
     </div>
 
     <!-- Geo Coverage-->
       <div class="step-content" *ngIf="currentStep === 3">
-      <form [formGroup]="geographicCoverageForm">
+      <form [formGroup]="geographicCoverageForm" (ngSubmit)="onSubmitGeographicCoverageInfo()">
         <div class="form-section">
-          <h2>Geographical Coverage Details</h2>
+          <h4>Geographical Coverage Details</h4>
           <div class="form-row">
             <div class="form-group">
-              <label>Country: <span class="required">*</span></label>
-                <select id="projects" multiple (change)="onSelectChange($event)">
-                  <option *ngFor="let p of area_of_focus_items" [value]="p.code">{{ p.name }}</option>
+              <label>Geo Coverage Area: <span class="required">*</span></label>
+                <select formControlName="description">
+                  <option value="" [selected]=true disabled>Select Geo Coverage</option>
+                  @for (geo of area_of_focus_items; track geo.code) {
+                  <option [value]="geo.code">
+                    {{ geo.description }}
+                  </option>}
                 </select>
             </div>
           </div>
         </div>
+         <button type="submit" class="upload-btn">Submit</button>
+        </form>
         <!-- Geo Coverage Table -->
         @if(geoCoverageList.length>0){
           <div class="form-section">
           <h3>Geo Coverage</h3>
-          <div class="bank-accounts-table-container">
-            <table class="bank-accounts-table">
+          <div class="table-container">
+            <table class="table">
               <thead>
                 <tr>
                   <th>Country</th>
@@ -253,8 +264,6 @@
           </div>
         </div>
       }
-      </form>
-
       <div class="step-actions">
         <button type="button" class="back-to-top-btn" (click)="backToTop()">
           <img src="assets/arrow-up.svg" alt="Back to top" width="16" height="16" />
@@ -262,7 +271,7 @@
         </button>
         <div class="action-buttons">
           <button type="button" class="btn btn-secondary" (click)="previousStep()">Previous</button>
-          <button type="button" class="btn btn-primary" (click)="nextStep()">Save & Continue</button>
+          <button type="button" class="btn btn-primary" (click)="nextStep()">Next</button>
         </div>
       </div>
     </div>
@@ -270,9 +279,9 @@
 
       <!-- Step 3: Experience -->
     <div class="step-content" *ngIf="currentStep === 4">
-      <form [formGroup]="experienceForm">
+      <form [formGroup]="experienceForm" (ngSubmit)="onSubmitExperienceInfo()">
         <div class="form-section">
-          <h2>Add Program Experience Details</h2>
+          <h4>Add Program Experience Details</h4>
           <div class="form-row">
             <div class="form-group">
               <label>Major Donor/Partner: <span class="required">*</span></label>
@@ -301,14 +310,16 @@
             </div>
           </div>
         </div>
+      <button type="submit" class="upload-btn">Submit</button>
+      </form>
 
         <!-- Program Experience Table -->
         @if(experience.length>0)
         {
           <div class="form-section">
           <h3>Program Experience</h3>
-          <div class="bank-accounts-table-container">
-            <table class="bank-accounts-table">
+          <div class="table-container">
+            <table class="table">
               <thead>
                 <tr>
                   <th>Major Donor</th>
@@ -340,8 +351,6 @@
           </div>
         </div>
       }
-      </form>
-
       <div class="step-actions">
         <button type="button" class="back-to-top-btn" (click)="backToTop()">
           <img src="assets/arrow-up.svg" alt="Back to top" width="16" height="16" />
@@ -349,25 +358,25 @@
         </button>
         <div class="action-buttons">
           <button type="button" class="btn btn-secondary" (click)="previousStep()">Previous</button>
-          <button type="button" class="btn btn-primary" (click)="nextStep()">Save & Continue</button>
+          <button type="button" class="btn btn-primary" (click)="nextStep()">Next</button>
         </div>
       </div>
     </div>
           <!-- Step 4: Contact Person -->
     <div class="step-content" *ngIf="currentStep === 5">
-      <form [formGroup]="contactPersonForm">
+      <form [formGroup]="contactPersonForm" (ngSubmit)="contactPersonInfo()">
         <div class="form-section">
-          <h2>Add Contact Person Details</h2>
+          <h4>Add Contact Person Details</h4>
           <div class="form-row">
             <div class="form-group">
               <label>Contact Type: <span class="required">*</span></label>
                 <select formControlName="contactType">
-                  <option value="" [selected]=true disabled>Select Project Code</option>
-                  @for (project_code of contact_type_list; track project_code.code) {
-                  <option [value]="project_code.code">
-                    {{ project_code.name }}
+                  <option value="" [selected]=true disabled>Contact Type</option>
+                  @for (contact_type of contact_type_list; track contact_type.code) {
+                  <option [value]="contact_type.code">
+                    {{ contact_type.description}}
                   </option>}
-                </select>  
+                </select>
             </div>
             <div class="form-group">
               <label>Email: <span class="required">*</span></label>
@@ -377,17 +386,18 @@
           <div class="form-row">
             <div class="form-group">
               <label>Phone Number: <span class="required">*</span></label>
-              <input type="text" formControlName="phoneNumber">
+              <input type="text" formControlName="phoneNo">
             </div>
           </div>
+          <button type="submit" class="upload-btn">Submit</button>
         </div>
-
+       </form>
         <!-- Contact Person Table -->
         @if(contact_person_details_list.length>0){
           <div class="form-section">
           <h3>Contact Person</h3>
-          <div class="bank-accounts-table-container">
-            <table class="bank-accounts-table">
+          <div class="table-container">
+            <table class="table">
               <thead>
                 <tr>
                   <th>Full Name</th>
@@ -417,7 +427,6 @@
           </div>
         </div>
       }
-      </form>
 
       <div class="step-actions">
         <button type="button" class="back-to-top-btn" (click)="backToTop()">
@@ -426,7 +435,7 @@
         </button>
         <div class="action-buttons">
           <button type="button" class="btn btn-secondary" (click)="previousStep()">Previous</button>
-          <button type="button" class="btn btn-primary" (click)="nextStep()">Save & Continue</button>
+          <button type="button" class="btn btn-primary" (click)="nextStep()">Next</button>
         </div>
       </div>
     </div>
@@ -453,7 +462,7 @@
                 </div>
               </div>
             </div>
-            <button type="button" class="upload-btn">UPLOAD</button>
+            <button type="submit" class="upload-btn">UPLOAD</button>
           </div>
 
           <div class="uploaded-documents" *ngIf="uploadedDocuments.length > 0">
@@ -502,7 +511,7 @@
     <!-- Step 6: Summary -->
     <div class="step-content" *ngIf="currentStep === 7">
       <div class="form-section">
-        <h2>Personal Information</h2>
+        <h4>Personal Information</h4>
 
         <div class="summary-grid">
           <div class="summary-item">
@@ -596,8 +605,8 @@
       @if(areaOfFocusListLine.length>0){
         <div class="form-section">
         <h3>Bank Accounts</h3>
-        <div class="bank-accounts-table-container">
-          <table class="bank-accounts-table">
+        <div class="table-container">
+          <table class="table">
             <thead>
               <tr>
                 <th>Area Of Focus</th>

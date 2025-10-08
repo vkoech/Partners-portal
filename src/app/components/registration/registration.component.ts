@@ -4,6 +4,7 @@ import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Va
 import { Router } from '@angular/router';
 import { RegistrationService } from '../../services/registration-service';
 import { AuthService, AuthUser } from '../../services/auth.service';
+import { NotificationService } from '../../services/notification.service';
 
 export interface UploadedDocument {
   id: string;
@@ -43,11 +44,13 @@ export class RegistrationComponent implements OnInit {
   geoCoverageListLine:any
   experience:any[] = []
   uploadedDocuments: UploadedDocument[] = [];
+  loading=false
   constructor(
     private router: Router,
     private fb: FormBuilder,
     private registrationService: RegistrationService,
-    private authService: AuthService
+    private authService: AuthService,
+    private notificationService: NotificationService,
   ) {
     this.initializeForms();
   }
@@ -55,7 +58,7 @@ export class RegistrationComponent implements OnInit {
   ngOnInit(): void {
     this.user = this.authService.getLoggedInUser();
     this.documentNo = this.user?.partnerAccountNo;
-    
+
     this.getAreaOfFocus()
     this.getContactType()
     this.getContactsPersonByDocumentNo()
@@ -95,7 +98,7 @@ export class RegistrationComponent implements OnInit {
     });
 
     this.experienceForm =this.fb.group({
-      lineNo:[''],
+      lineNo:0,
       documentNo:[''],
       majorDonorOrPartner:[''],
       startDate:[''],
@@ -106,7 +109,7 @@ export class RegistrationComponent implements OnInit {
     })
 
     this.contactPersonForm= this.fb.group({
-      lineNo:[''],
+      lineNo:0,
       documentNo:[''],
       contactType:[''],
       emailAddress:[''],
@@ -116,15 +119,122 @@ export class RegistrationComponent implements OnInit {
     })
   }
 
+  onSubmitPersonalInfo(){
+     this.loading=true
+        if( this.personalInfoForm.valid){
+        let formValues = this.personalInfoForm.value;
+        formValues.documentNo = this.documentNo;
+        this.registrationService.createContactPersonInfo(formValues).subscribe({next:(res) => {
+        this.notificationService.success('', res['responseDescription']);
+        // this.router.navigate(['purchase-requisition']);
+        this.getPatnerExperience();
+        },
+          error: (err) => {
+              this.loading = false;
+              const message = err.error?.responseDescription || 'Failed to update request.';
+              this.notificationService.error('', message);
+            }
+        });
+      }
+      else {
+        this.notificationService.warning('', 'Please fill all required fields correctly.');
+        this.loading = false;
+        this.personalInfoForm.markAllAsTouched();
+      }
 
-  submitStep(step: number) {
-     if (step === 1 && this.experienceForm.valid) {
-       this.registrationService.createPartnerInfo(this.experienceForm.value).subscribe({
-        next: () => {
-         console.log(this.experienceForm.value)
-        }
-      });
-    }
+  }
+
+  onSubmitAreaOfFocusInfo(){
+      this.loading=true
+        if( this.areaOfFocusForm.valid){
+        let formValues = this.areaOfFocusForm.value;
+        formValues.documentNo = this.documentNo;
+        this.registrationService.createAreaOfFocusInfo(formValues).subscribe({next:(res) => {
+        this.notificationService.success('', res['responseDescription']);
+        // this.router.navigate(['purchase-requisition']);
+        },
+          error: (err) => {
+              this.loading = false;
+              const message = err.error?.responseDescription || 'Failed to update request.';
+              this.notificationService.error('', message);
+            }
+        });
+      }
+      else {
+        this.notificationService.warning('', 'Please fill all required fields correctly.');
+        this.loading = false;
+        this.areaOfFocusForm.markAllAsTouched();
+      }
+  }
+
+  onSubmitGeographicCoverageInfo(){
+     this.loading=true
+        if( this.geographicCoverageForm.valid){
+        let formValues = this.geographicCoverageForm.value;
+        formValues.documentNo = this.documentNo;
+        this.registrationService.createGeoLocationInfo(formValues).subscribe({next:(res) => {
+        this.notificationService.success('', res['responseDescription']);
+        // this.router.navigate(['purchase-requisition']);
+        },
+          error: (err) => {
+              this.loading = false;
+              const message = err.error?.responseDescription || 'Failed to update request.';
+              this.notificationService.error('', message);
+            }
+        });
+      }
+      else {
+        this.notificationService.warning('', 'Please fill all required fields correctly.');
+        this.loading = false;
+        this.geographicCoverageForm.markAllAsTouched();
+      }
+  }
+
+  contactPersonInfo(){
+      this.loading=true
+        if( this.contactPersonForm.valid){
+        let formValues = this.contactPersonForm.value;
+        formValues.documentNo = this.documentNo;
+        this.registrationService.createContactPersonInfo(formValues).subscribe({next:(res) => {
+        this.notificationService.success('', res['responseDescription']);
+        // this.router.navigate(['purchase-requisition']);
+        },
+          error: (err) => {
+              this.loading = false;
+              const message = err.error?.responseDescription || 'Failed to update request.';
+              this.notificationService.error('', message);
+            }
+        });
+      }
+      else {
+        this.notificationService.warning('', 'Please fill all required fields correctly.');
+        this.loading = false;
+        this.contactPersonForm.markAllAsTouched();
+      }
+  }
+
+  onSubmitExperienceInfo(){
+     this.loading=true
+        if( this.experienceForm.valid){
+        let formValues = this.experienceForm.value;
+        formValues.documentNo = this.documentNo;
+        formValues.action = 'Create';
+        this.registrationService.createExperience(formValues).subscribe({next:(res) => {
+        this.notificationService.success('', res['responseDescription']);
+        // this.router.navigate(['purchase-requisition']);
+        },
+          error: (err) => {
+              this.loading = false;
+              const message = err.error?.responseDescription || 'Failed to update request.';
+              this.notificationService.error('', message);
+            }
+        });
+      }
+      else {
+        this.notificationService.warning('', 'Please fill all required fields correctly.');
+        this.loading = false;
+        this.experienceForm.markAllAsTouched();
+      }
   }
 
   onSubmit(){
@@ -209,13 +319,12 @@ export class RegistrationComponent implements OnInit {
 
    getContactType(){
    this.registrationService.getContactType().subscribe(data => {
-      this.contact_type = data;
+      this.contact_type_list = data;
     });
     }
     getContactsPersonByDocumentNo(){
         this.registrationService.getContactsPersonByDocumentNo(this.documentNo).subscribe(data=>{
         this.contact_person_details_list=data
-        console.log(data)
         })
       }
 
@@ -249,6 +358,7 @@ export class RegistrationComponent implements OnInit {
   getPatnerExperience(){
     this.registrationService.getPatnerExperience(this.documentNo).subscribe(data=>{
       this.experience=data
+      console.log(data)
     })
    }
 
