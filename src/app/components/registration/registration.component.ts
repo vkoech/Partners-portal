@@ -22,7 +22,7 @@ export interface UploadedDocument {
 })
 export class RegistrationComponent implements OnInit {
   currentStep = 1;
-  totalSteps = 6;
+  totalSteps = 7;
   contact_type_list: any
   personalInfoForm: FormGroup;
   areaOfFocusForm: FormGroup;
@@ -45,6 +45,7 @@ export class RegistrationComponent implements OnInit {
   experience:any[] = []
   uploadedDocuments: UploadedDocument[] = [];
   loading=false
+  isConfirmed = false;
   constructor(
     private router: Router,
     private fb: FormBuilder,
@@ -58,7 +59,6 @@ export class RegistrationComponent implements OnInit {
   ngOnInit(): void {
     this.user = this.authService.getLoggedInUser();
     this.documentNo = this.user?.partnerAccountNo;
-
     this.getAreaOfFocus()
     this.getContactType()
     this.getContactsPersonByDocumentNo()
@@ -87,14 +87,18 @@ export class RegistrationComponent implements OnInit {
     });
 
     this.areaOfFocusForm = this.fb.group({
+      lineNo:0,
       documentNo:[''],
-      areaOfFocus:[[]],
-      geographicCoverage:[[]]
+      description:[''],
+      code:[''],
+      action:['']
     });
 
    this.geographicCoverageForm = this.fb.group({
+      lineNo:0,
       documentNo:[''],
-      geographicCoverage:[[]]
+      country:[''],
+      action:['']
     });
 
     this.experienceForm =this.fb.group({

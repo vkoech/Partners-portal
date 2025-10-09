@@ -142,7 +142,7 @@
               <input type="text" formControlName="registrationCertificateNo">
             </div>
           </div>
-           <button type="submit" class="upload-btn">Submit</button>
+           <button type="submit" class="submit">Submit</button>
         </div>
       </form>
 
@@ -151,7 +151,7 @@
           <img src="assets/arrow-up.svg" alt="Back to top" width="16" height="16" />
           Back to top
         </button>
-        <button type="button" class="btn btn-primary" (click)="nextStep()">Next</button>
+        <button type="button" class="next" (click)="nextStep()">Next</button>
       </div>
     </div>
 
@@ -173,7 +173,7 @@
             </div>
           </div>
         </div>
-       <button type="button" class="upload-btn">Submit</button>
+       <button type="button" class="submit">Submit</button>
        </form>
         <!-- Area of focus Table -->
         @if(areaOfFocusList.length>0){
@@ -192,9 +192,9 @@
                   <tr>
                   <td>{{ focus.description }}</td>
                   <td>
-                    <button type="button" class="action-btn delete-btn" (click)="deleteAreaOfFocus()">
+                    <button type="button" class="delete-btn" (click)="deleteAreaOfFocus()">
                       <img src="assets/delete.svg" alt="Delete" width="16" height="16" />
-                      DELETE
+                      Delete
                     </button>
                   </td>
                 </tr>
@@ -209,8 +209,9 @@
           Back to top
         </button>
         <div class="action-buttons">
-          <button type="button" class="btn btn-secondary" (click)="previousStep()">Previous</button>
-          <button type="button" class="btn btn-primary" (click)="nextStep()">Next</button>
+          <button type="button" class="back" (click)="previousStep()">Previous</button>
+          <button type="button" class="next" (click)="nextStep()"
+          [disabled]="areaOfFocusList.length===0">Next</button>
         </div>
       </div>
     </div>
@@ -223,7 +224,7 @@
           <div class="form-row">
             <div class="form-group">
               <label>Geo Coverage Area: <span class="required">*</span></label>
-                <select formControlName="description">
+                <select formControlName="country">
                   <option value="" [selected]=true disabled>Select Geo Coverage</option>
                   @for (geo of area_of_focus_items; track geo.code) {
                   <option [value]="geo.code">
@@ -233,7 +234,7 @@
             </div>
           </div>
         </div>
-         <button type="submit" class="upload-btn">Submit</button>
+         <button type="submit" class="submit">Submit</button>
         </form>
         <!-- Geo Coverage Table -->
         @if(geoCoverageList.length>0){
@@ -252,9 +253,9 @@
                 <tr>
                   <td>{{ geo.country }}</td>
                   <td>
-                    <button type="button" class="action-btn delete-btn" (click)="deleteAreaOfFocus()">
+                    <button type="button" class="delete-btn" (click)="deleteAreaOfFocus()">
                       <img src="assets/delete.svg" alt="Delete" width="16" height="16" />
-                      DELETE
+                      Delete
                     </button>
                   </td>
                 </tr>
@@ -270,8 +271,9 @@
           Back to top
         </button>
         <div class="action-buttons">
-          <button type="button" class="btn btn-secondary" (click)="previousStep()">Previous</button>
-          <button type="button" class="btn btn-primary" (click)="nextStep()">Next</button>
+          <button type="button" class="back" (click)="previousStep()">Previous</button>
+          <button type="button" class="next" (click)="nextStep()"
+          [disabled]="geoCoverageList.length===0">Next</button>
         </div>
       </div>
     </div>
@@ -310,7 +312,7 @@
             </div>
           </div>
         </div>
-      <button type="submit" class="upload-btn">Submit</button>
+      <button type="submit" class="submit">Submit</button>
       </form>
 
         <!-- Program Experience Table -->
@@ -339,9 +341,9 @@
                   <td>{{ experience.projectValue }}</td>
                   <td>{{ experience.description}}</td>
                   <td>
-                    <button type="button" class="action-btn delete-btn" (click)="deleteAreaOfFocus()">
+                    <button type="button" class="delete-btn" (click)="deleteAreaOfFocus()">
                       <img src="assets/delete.svg" alt="Delete" width="16" height="16" />
-                      DELETE
+                      Delete
                     </button>
                   </td>
                 </tr>
@@ -357,8 +359,9 @@
           Back to top
         </button>
         <div class="action-buttons">
-          <button type="button" class="btn btn-secondary" (click)="previousStep()">Previous</button>
-          <button type="button" class="btn btn-primary" (click)="nextStep()">Next</button>
+          <button type="button" class="back" (click)="previousStep()">Previous</button>
+          <button type="button" class="next" (click)="nextStep()"
+          [disabled]="experience.length === 0">Next</button>
         </div>
       </div>
     </div>
@@ -389,7 +392,7 @@
               <input type="text" formControlName="phoneNo">
             </div>
           </div>
-          <button type="submit" class="upload-btn">Submit</button>
+          <button type="submit" class="submit">Submit</button>
         </div>
        </form>
         <!-- Contact Person Table -->
@@ -415,9 +418,9 @@
                   <td>{{ contact.phoneNo }}</td>
                   <td>{{ contact.contactType }}</td>
                   <td>
-                    <button type="button" class="action-btn delete-btn" (click)="deleteAreaOfFocus()">
+                    <button type="button" class="delete-btn" (click)="deleteAreaOfFocus()">
                       <img src="assets/delete.svg" alt="Delete" width="16" height="16" />
-                      DELETE
+                      Delete
                     </button>
                   </td>
                 </tr>
@@ -434,8 +437,9 @@
           Back to top
         </button>
         <div class="action-buttons">
-          <button type="button" class="btn btn-secondary" (click)="previousStep()">Previous</button>
-          <button type="button" class="btn btn-primary" (click)="nextStep()">Next</button>
+          <button type="button" class="back" (click)="previousStep()">Previous</button>
+          <button type="button" class="next" (click)="nextStep()"
+          [disabled]="contact_person_details_list.length === 0">Next</button>
         </div>
       </div>
     </div>
@@ -484,9 +488,9 @@
                           <img src="assets/view.svg" alt="View" width="16" height="16" />
                           VIEW
                         </button>
-                        <button type="button" class="action-btn delete-btn" (click)="deleteDocument(document.id)">
+                        <button type="button" class="delete-btn" (click)="deleteDocument(document.id)">
                           <img src="assets/delete.svg" alt="Delete" width="16" height="16" />
-                          DELETE
+                          Delete
                         </button>
                       </div>
                     </td>
@@ -501,8 +505,8 @@
                 Back to top
               </button>
               <div class="action-buttons">
-                <button type="button" class="btn btn-secondary" (click)="previousStep()">Previous</button>
-                <button type="button" class="btn btn-primary" (click)="nextStep()">Save & Continue</button>
+                <button type="button" class="back" (click)="previousStep()">Previous</button>
+                <button type="button" class="next" (click)="nextStep()">next</button>
               </div>
             </div>
         </div>
@@ -589,9 +593,9 @@
                       <img src="assets/view.svg" alt="View" width="16" height="16" />
                       VIEW
                     </button>
-                    <button type="button" class="action-btn delete-btn" (click)="deleteDocument(document.id)">
+                    <button type="button" class="delete-btn" (click)="deleteDocument(document.id)">
                       <img src="assets/delete.svg" alt="Delete" width="16" height="16" />
-                      DELETE
+                      Delete
                     </button>
                   </div>
                 </td>
@@ -620,9 +624,9 @@
                 <td>{{ area.areaOfFocus }}</td>
                 <td>{{ area.geographicCoverage }}</td>
                 <td>
-                  <button type="button" class="action-btn delete-btn" (click)="deleteAreaOfFocus()">
+                  <button type="button" class="delete-btn" (click)="deleteAreaOfFocus()">
                     <img src="assets/delete.svg" alt="Delete" width="16" height="16" />
-                    DELETE
+                    Delete
                   </button>
                 </td>
               </tr>}
@@ -631,14 +635,17 @@
         </div>
       </div>
     }
-
-      <div class="confirmation-text">
-        <p>Confirm the provided details and click submit button</p>
+        <div class="confirmation-text">
+        <label class="confirmation-label">
+          <input type="checkbox" [(ngModel)]="isConfirmed" name="confirmCheck"/>
+          <span>I confirm the provided details</span>
+        </label>
+        <button type="submit" class="submit" [disabled]="!isConfirmed">
+          Submit
+        </button>
       </div>
-
-      <div class="final-actions">
-        <button type="button" class="btn btn-secondary" (click)="previousStep()">Previous</button>
-        <button type="button" class="btn btn-primary" (click)="onSubmit()">SUBMIT</button>
+      <div class="action-buttons">
+       <button type="button" class="back" (click)="previousStep()">Previous</button>
       </div>
     </div>
 
