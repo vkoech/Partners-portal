@@ -27,7 +27,7 @@ export class Signup {
         emailAddress: ['', Validators.required],
         taxRegistrationNumber: ['', Validators.required],
         legalNameOfOrganization: ['', Validators.required],
-        company:['']
+        country:['']
       })
      }
 

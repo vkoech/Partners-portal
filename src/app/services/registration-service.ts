@@ -13,7 +13,7 @@ export class RegistrationService {
   constructor(private httpClient: HttpClient) { }
 
   createPartnerInfo(applicationBody: any): Observable<any> {
-    return this.httpClient.post<any>(this.baseUrl + 'PartnerProfile/contact-details', applicationBody);
+    return this.httpClient.post<any>(this.baseUrl + 'PartnerProfile/update-profile', applicationBody);
   }
 
   createContactPersonInfo(applicationBody: any): Observable<any> {
@@ -30,6 +30,12 @@ export class RegistrationService {
 
   createGeoLocationInfo(applicationBody: any): Observable<any> {
     return this.httpClient.post<any>(this.baseUrl + 'PartnerProfile/geo-coverage', applicationBody);
+  }
+
+  
+  getPartnersProfile(email: string): Observable<Array<any>>{
+
+    return this.httpClient.get<Array<any>>(this.baseUrl+'PartnerProfile/profile?email='+email);
   }
 
   getAreaOfFocus(): Observable<Array<any>>{

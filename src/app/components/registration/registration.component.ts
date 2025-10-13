@@ -47,6 +47,7 @@ export class RegistrationComponent implements OnInit {
   uploadedDocuments: UploadedDocument[] = [];
   loading=false
   isConfirmed = false;
+  email: any;
   constructor(
     private router: Router,
     private fb: FormBuilder,
@@ -60,6 +61,7 @@ export class RegistrationComponent implements OnInit {
   ngOnInit(): void {
     this.user = this.authService.getLoggedInUser();
     this.documentNo = this.user?.partnerAccountNo;
+    this.email=this.user?.emailAddress;
     this.getAreaOfFocus()
     this.getContactType()
     this.getContactsPersonByDocumentNo()
@@ -67,24 +69,25 @@ export class RegistrationComponent implements OnInit {
     this.getGeoCoverageByDocumentNo()
     this.getPatnerExperience()
     this.getGeoLocation()
+    this.getPartnersProfile()
   }
 
   private initializeForms() {
     this.personalInfoForm = this.fb.group({
       documentNo:[''],
-      registrationNo: [''],
-      organizationName: [''],
+      taxRegistrationNumber: [''],
+      legalNameOfOrganization: [''],
       physicalAddress: [''],
-      phoneNumber: [''],
+      phoneNo: [''],
       tradingName: [''],
-      registrationDate:[''],
+      dateRegistered:[''],
       governingBody:[''],
       acronym: [''],
       ngoType: [''],
       emailAddress: [''],
       postalAddress: [''],
       website: [''],
-      countryOfRegistration:[''],
+      country:[''],
       registrationCertificateNo:['']
     });
 
@@ -315,6 +318,12 @@ export class RegistrationComponent implements OnInit {
 
   backToTop() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  getPartnersProfile(){
+   this.registrationService.getPartnersProfile(this.email).subscribe(data => {
+      this.personalInfoForm.patchValue(data)
+    });
   }
 
   getAreaOfFocus(){
