@@ -226,7 +226,7 @@
               <label>Geo Coverage Area: <span class="required">*</span></label>
                 <select formControlName="country">
                   <option value="" [selected]=true disabled>Select Geo Coverage</option>
-                  @for (geo of area_of_focus_items; track geo.code) {
+                  @for (geo of geolocatio_Items; track geo.code) {
                   <option [value]="geo.code">
                     {{ geo.description }}
                   </option>}

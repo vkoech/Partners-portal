@@ -448,7 +448,7 @@
 
 
 /* Responsive Design */
-@media (max-width: 900px) {
+@media (max-width: 768px) {
   .registration-content {
     margin: 10px;
   }
@@ -491,20 +491,20 @@
   }
 }
 
-@media (max-width: 600px) {
-  .registration-header h6 {
-    font-size: 1rem;
-  }
+// @media (max-width: 480px) {
+//   .registration-header h6 {
+//     font-size: 1rem;
+//   }
 
-  .step {
-    padding: 15px 20px;
-  }
+//   .step {
+//     padding: 15px 20px;
+//   }
 
-  .step-content {
-    padding: 5px;
-  }
+//   .step-content {
+//     padding: 5px;
+//   }
 
-  .file-upload-row {
-    flex-direction: column;
-  }
-}
+//   .file-upload-row {
+//     flex-direction: column;
+//   }
+// }

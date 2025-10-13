@@ -34,19 +34,23 @@ export class RegistrationService {
 
   getAreaOfFocus(): Observable<Array<any>>{
     return this.httpClient.get<Array<any>>(this.baseUrl+'OData/areas-of-focus');
-  } 
+  }
+
+ getGeoLocation(): Observable<Array<any>>{
+    return this.httpClient.get<Array<any>>(this.baseUrl+'OData/countries');
+  }
   getContactType(): Observable<Array<any>>{
     return this.httpClient.get<Array<any>>(this.baseUrl+'OData/partner-contact-types');
   }
-  
+
   getContactsPersonByDocumentNo(documentNo: string): Observable<Array<any>>{
     return this.httpClient.get<Array<any>>(this.baseUrl+'OData/partners/'+ documentNo +'/contacts');
-  } 
+  }
 
   getContactPersonLine(documentNo: string, lineNo: string): Observable<Array<any>>{
     return this.httpClient.get<Array<any>>(this.baseUrl+'OData/partners/'+ documentNo +'/contacts/'+lineNo);
   }
-  
+
   getAreasOfFocusByDocumentNo(documentNo: string): Observable<Array<any>>{
     return this.httpClient.get<Array<any>>(this.baseUrl+'OData/partners/'+ documentNo +'/focus-areas');
   }
@@ -57,7 +61,7 @@ export class RegistrationService {
 
   getGeoCoverageByDocumentNo(documentNo: string): Observable<Array<any>>{
     return this.httpClient.get<Array<any>>(this.baseUrl+'OData/partners/'+ documentNo +'/geo-coverage');
-  } 
+  }
 
   getGeoCoverageLine(documentNo: string, lineNo: string): Observable<Array<any>>{
     return this.httpClient.get<Array<any>>(this.baseUrl+'OData/partners/'+ documentNo +'/coverage-areas/'+lineNo);
@@ -65,7 +69,7 @@ export class RegistrationService {
 
   getPatnerExperience(documentNo: string): Observable<Array<any>>{
     return this.httpClient.get<Array<any>>(this.baseUrl+'OData/partners/'+ documentNo +'/experience');
-  } 
+  }
 
 
 

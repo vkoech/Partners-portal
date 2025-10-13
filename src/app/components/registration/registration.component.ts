@@ -35,6 +35,7 @@ export class RegistrationComponent implements OnInit {
   documentNo: any;
   stepCompleted: boolean[] = Array(this.totalSteps + 1).fill(false);
   area_of_focus_items: any
+  geolocatio_Items:any
   contact_type: any
   contact_person_details_list:any[] = []
   contact_person_details_list_line:any
@@ -65,6 +66,7 @@ export class RegistrationComponent implements OnInit {
     this.getAreasOfFocusByDocumentNo()
     this.getGeoCoverageByDocumentNo()
     this.getPatnerExperience()
+    this.getGeoLocation()
   }
 
   private initializeForms() {
@@ -321,6 +323,12 @@ export class RegistrationComponent implements OnInit {
     });
   }
 
+  getGeoLocation(){
+   this.registrationService.getGeoLocation().subscribe(data => {
+      this.geolocatio_Items = data;
+    });
+  }
+
    getContactType(){
    this.registrationService.getContactType().subscribe(data => {
       this.contact_type_list = data;
@@ -362,7 +370,6 @@ export class RegistrationComponent implements OnInit {
   getPatnerExperience(){
     this.registrationService.getPatnerExperience(this.documentNo).subscribe(data=>{
       this.experience=data
-      console.log(data)
     })
    }
 
