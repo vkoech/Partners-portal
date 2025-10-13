@@ -27,7 +27,7 @@
         <div class="form-group">
             <label class="form-label">Company: <span class="required">*</span></label>
               <select formControlName="company" class="form-input">
-                  <option value="" [selected]=true disabled>Select Geo Coverage</option>
+                  <option value="" [selected]=true disabled>Select Company</option>
                   @for (company of company_Items; track company.code) {
                   <option [value]="company.code">
                     {{ company.description }}
