@@ -15,14 +15,19 @@ export class Signup {
 
   SignUpForm: FormGroup;
   loading =false
+  company_Items:any
 
   constructor(private fb: FormBuilder,  private authService: AuthService,
     private router: Router,
      private notificationService: NotificationService){
+     
+      this.getGeoLocation()
+
      this.SignUpForm = this.fb.group({
         emailAddress: ['', Validators.required],
         taxRegistrationNumber: ['', Validators.required],
-        legalNameOfOrganization: ['', Validators.required]
+        legalNameOfOrganization: ['', Validators.required],
+        company:['']
       })
      }
 
@@ -46,6 +51,12 @@ export class Signup {
    }
    });
 
+  }
+
+  getGeoLocation(){
+   this.authService.getCompany().subscribe(data => {
+      this.company_Items = data;
+    });
   }
 
 }

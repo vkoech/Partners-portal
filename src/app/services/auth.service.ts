@@ -66,6 +66,10 @@ constructor(private router: Router,private http: HttpClient) {}
     return this.http.post<any>(this.baseUrl+'PartnerAccount/ResetPassword', body);
   }
 
+  getCompany(): Observable<Array<any>>{
+    return this.http.get<Array<any>>(this.baseUrl+'OData/countries');
+  }
+
   getToken(): string | null {
     return localStorage.getItem('auth_token');
   }
