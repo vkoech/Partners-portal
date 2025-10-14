@@ -21,7 +21,7 @@ export class Signup {
     private router: Router,
      private notificationService: NotificationService){
      
-      // this.getGeoLocation()
+    this.getCompany()
 
      this.SignUpForm = this.fb.group({
         emailAddress: ['', Validators.required],
@@ -53,7 +53,7 @@ export class Signup {
 
   }
 
-  getGeoLocation(){
+  getCompany(){
    this.authService.getCompany().subscribe(data => {
       this.company_Items = data;
     });

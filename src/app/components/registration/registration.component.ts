@@ -76,11 +76,11 @@ export class RegistrationComponent implements OnInit {
     this.personalInfoForm = this.fb.group({
       documentNo:[''],
       taxRegistrationNumber: [''],
-      legalNameOfOrganization: [''],
+      legalNameOfOrganization: ['', Validators.required],
       physicalAddress: [''],
-      phoneNo: [''],
+      phoneNo: ['', Validators.required],
       tradingName: [''],
-      dateRegistered:[''],
+      dateRegistered:['',Validators.required],
       governingBody:[''],
       acronym: [''],
       ngoType: [''],
@@ -88,7 +88,7 @@ export class RegistrationComponent implements OnInit {
       postalAddress: [''],
       website: [''],
       country:[''],
-      registrationCertificateNo:['']
+      registrationCertificateNo:['', Validators.required]
     });
 
     this.areaOfFocusForm = this.fb.group({
@@ -133,10 +133,9 @@ export class RegistrationComponent implements OnInit {
         if( this.personalInfoForm.valid){
         let formValues = this.personalInfoForm.value;
         formValues.documentNo = this.documentNo;
-        this.registrationService.createContactPersonInfo(formValues).subscribe({next:(res) => {
+        this.registrationService.createPartnerInfo(formValues).subscribe({next:(res) => {
         this.notificationService.success('', res['responseDescription']);
-        // this.router.navigate(['purchase-requisition']);
-        this.getPatnerExperience();
+        this.getPartnersProfile();
         },
           error: (err) => {
               this.loading = false;
@@ -158,6 +157,7 @@ export class RegistrationComponent implements OnInit {
         if( this.areaOfFocusForm.valid){
         let formValues = this.areaOfFocusForm.value;
         formValues.documentNo = this.documentNo;
+        formValues.action = "create";
         this.registrationService.createAreaOfFocusInfo(formValues).subscribe({next:(res) => {
         this.notificationService.success('', res['responseDescription']);
         // this.router.navigate(['purchase-requisition']);
@@ -322,6 +322,7 @@ export class RegistrationComponent implements OnInit {
 
   getPartnersProfile(){
    this.registrationService.getPartnersProfile(this.email).subscribe(data => {
+      console.log(data)
       this.personalInfoForm.patchValue(data)
     });
   }

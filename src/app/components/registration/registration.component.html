@@ -97,7 +97,7 @@
 
           <div class="form-row">
             <div class="form-group">
-              <label>Type Of Governing Body: <span class="required">*</span></label>
+              <label>Governing Body: <span class="required">*</span></label>
               <select formControlName="governingBody">
                 <option value="">...</option>
                 <option value="local">Local NGO</option>
@@ -112,7 +112,7 @@
           </div>
            <div class="form-row">
             <div class="form-group">
-              <label>Acronym(If Any): <span class="required">*</span></label>
+              <label>Acronym(If Any):</label>
               <input type="text" formControlName="acronym">
             </div>
             <div class="form-group">
@@ -178,6 +178,7 @@
             <table class="table">
               <thead>
                 <tr>
+                  <th>Code</th>
                   <th>Area Of Focus</th>
                   <th>Action</th>
                 </tr>
@@ -185,6 +186,7 @@
               <tbody>
                 @for(focus of areaOfFocusList; track focus.lineNo){
                   <tr>
+                  <td>{{focus.code}}</td>
                   <td>{{ focus.description }}</td>
                   <td>
                     <button type="button" class="delete-btn" (click)="deleteAreaOfFocus()">
