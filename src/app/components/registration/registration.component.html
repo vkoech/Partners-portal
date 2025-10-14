@@ -31,7 +31,7 @@
        (click)="goToStep(4)"
        [class.disabled]="!stepCompleted[3]">
         <div class="step-number">04</div>
-        <div class="step-label">PROCRAM EXPERIENCE</div>
+        <div class="step-label">PROGRAM EXPERIENCE</div>
       </div>
       <div class="step" [class.active]="currentStep === 5"
         [class.completed]="stepCompleted[5]"
@@ -168,7 +168,7 @@
             </div>
           </div>
         </div>
-       <button type="button" class="submit">Submit</button>
+       <button type="submit" class="submit">Submit</button>
        </form>
         <!-- Area of focus Table -->
         @if(areaOfFocusList.length>0){
@@ -178,8 +178,8 @@
             <table class="table">
               <thead>
                 <tr>
-                  <th>Code</th>
                   <th>Area Of Focus</th>
+                  <th>Description</th>
                   <th>Action</th>
                 </tr>
               </thead>
@@ -207,8 +207,7 @@
         </button>
         <div class="action-buttons">
           <button type="button" class="back" (click)="previousStep()">Previous</button>
-          <button type="button" class="next" (click)="nextStep()"
-          [disabled]="areaOfFocusList.length===0">Next</button>
+          <button type="button" class="next" (click)="nextStep()">Next</button>
         </div>
       </div>
     </div>
@@ -221,13 +220,24 @@
           <div class="form-row">
             <div class="form-group">
               <label>Geo Coverage Area: <span class="required">*</span></label>
-                <select formControlName="country">
+                <!-- <select formControlName="country">
                   <option value="" [selected]=true disabled>Select Geo Coverage</option>
                   @for (geo of geolocatio_Items; track geo.code) {
                   <option [value]="geo.code">
                     {{ geo.description }}
                   </option>}
-                </select>
+                </select> -->
+                <ng-multiselect-dropdown
+                    [placeholder]="'Select Geo-Location'"
+                    [settings]="dropdownSettings"
+                    [data]="geolocatio_Items"
+                    formControlName="code"
+                    (onSelect)="onItemSelect($event)"
+                    (onDeSelect)="onItemDeSelect($event)"
+                    (onSelectAll)="onSelectAll($event)"
+                    (onDeSelectAll)="onDeSelectAll($event)"
+                    >
+                </ng-multiselect-dropdown>
             </div>
           </div>
         </div>
@@ -269,8 +279,7 @@
         </button>
         <div class="action-buttons">
           <button type="button" class="back" (click)="previousStep()">Previous</button>
-          <button type="button" class="next" (click)="nextStep()"
-          [disabled]="geoCoverageList.length===0">Next</button>
+          <button type="button" class="next" (click)="nextStep()">Next</button>
         </div>
       </div>
     </div>
@@ -357,8 +366,7 @@
         </button>
         <div class="action-buttons">
           <button type="button" class="back" (click)="previousStep()">Previous</button>
-          <button type="button" class="next" (click)="nextStep()"
-          [disabled]="experience.length === 0">Next</button>
+          <button type="button" class="next" (click)="nextStep()">Next</button>
         </div>
       </div>
     </div>
@@ -435,8 +443,7 @@
         </button>
         <div class="action-buttons">
           <button type="button" class="back" (click)="previousStep()">Previous</button>
-          <button type="button" class="next" (click)="nextStep()"
-          [disabled]="contact_person_details_list.length === 0">Next</button>
+          <button type="button" class="next" (click)="nextStep()">Next</button>
         </div>
       </div>
     </div>

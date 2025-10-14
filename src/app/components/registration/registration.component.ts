@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { RegistrationService } from '../../services/registration-service';
 import { AuthService, AuthUser } from '../../services/auth.service';
 import { NotificationService } from '../../services/notification.service';
+import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 
 export interface UploadedDocument {
   id: string;
@@ -16,7 +17,7 @@ export interface UploadedDocument {
 @Component({
   selector: 'app-registration',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, NgMultiSelectDropDownModule],
   templateUrl: './registration.component.html',
   styleUrls: ['./registration.component.scss']
 })
@@ -48,6 +49,9 @@ export class RegistrationComponent implements OnInit {
   loading=false
   isConfirmed = false;
   email: any;
+  // dropdownList: any[] = [];
+  dropdownSettings = {};
+  selectedValues: any[] = [];
   constructor(
     private router: Router,
     private fb: FormBuilder,
@@ -56,6 +60,16 @@ export class RegistrationComponent implements OnInit {
     private notificationService: NotificationService,
   ) {
     this.initializeForms();
+
+    this.dropdownSettings = {
+      singleSelection: false,
+      idField: 'code',
+      textField: 'description',
+      selectAllText: 'Select All',
+      unSelectAllText: 'Unselect All',
+      itemsShowLimit: 3,
+      allowSearchFilter: true,
+    };
   }
 
   ngOnInit(): void {
@@ -75,27 +89,26 @@ export class RegistrationComponent implements OnInit {
   private initializeForms() {
     this.personalInfoForm = this.fb.group({
       documentNo:[''],
-      taxRegistrationNumber: [''],
-      legalNameOfOrganization: ['', Validators.required],
-      physicalAddress: [''],
-      phoneNo: ['', Validators.required],
-      tradingName: [''],
+      taxRegistrationNumber: ['',Validators.required],
+      legalNameOfOrganization: ['',Validators.required],
+      physicalAddress: ['',Validators.required],
+      phoneNo: ['',Validators.required],
+      tradingName: ['',Validators.required],
       dateRegistered:['',Validators.required],
-      governingBody:[''],
+      governingBody:['',Validators.required],
       acronym: [''],
-      ngoType: [''],
-      emailAddress: [''],
-      postalAddress: [''],
-      website: [''],
-      country:[''],
-      registrationCertificateNo:['', Validators.required]
+      emailAddress: ['',Validators.required],
+      postalAddress: ['',Validators.required],
+      website: ['',Validators.required],
+      country:['',Validators.required],
+      registrationCertificateNo:['',Validators.required]
     });
 
     this.areaOfFocusForm = this.fb.group({
       lineNo:0,
       documentNo:[''],
       description:[''],
-      code:[''],
+      code:[[]],
       action:['']
     });
 
@@ -103,6 +116,7 @@ export class RegistrationComponent implements OnInit {
       lineNo:0,
       documentNo:[''],
       country:[''],
+      code:[[]],
       action:['']
     });
 
@@ -127,6 +141,7 @@ export class RegistrationComponent implements OnInit {
       action:['']
     })
   }
+  
 
   onSubmitPersonalInfo(){
      this.loading=true
@@ -160,6 +175,7 @@ export class RegistrationComponent implements OnInit {
         formValues.action = "create";
         this.registrationService.createAreaOfFocusInfo(formValues).subscribe({next:(res) => {
         this.notificationService.success('', res['responseDescription']);
+        this.getAreasOfFocusByDocumentNo()
         // this.router.navigate(['purchase-requisition']);
         },
           error: (err) => {
@@ -176,28 +192,28 @@ export class RegistrationComponent implements OnInit {
       }
   }
 
-  onSubmitGeographicCoverageInfo(){
-     this.loading=true
-        if( this.geographicCoverageForm.valid){
-        let formValues = this.geographicCoverageForm.value;
-        formValues.documentNo = this.documentNo;
-        this.registrationService.createGeoLocationInfo(formValues).subscribe({next:(res) => {
-        this.notificationService.success('', res['responseDescription']);
-        // this.router.navigate(['purchase-requisition']);
-        },
-          error: (err) => {
-              this.loading = false;
-              const message = err.error?.responseDescription || 'Failed to update request.';
-              this.notificationService.error('', message);
-            }
-        });
-      }
-      else {
-        this.notificationService.warning('', 'Please fill all required fields correctly.');
-        this.loading = false;
-        this.geographicCoverageForm.markAllAsTouched();
-      }
-  }
+  // onSubmitGeographicCoverageInfo(){
+  //    this.loading=true
+  //       if( this.geographicCoverageForm.valid){
+  //       let formValues = this.geographicCoverageForm.value;
+  //       formValues.documentNo = this.documentNo;
+  //       this.registrationService.createGeoLocationInfo(formValues).subscribe({next:(res) => {
+  //       this.notificationService.success('', res['responseDescription']);
+  //       this.getGeoCoverageByDocumentNo()
+  //       },
+  //         error: (err) => {
+  //             this.loading = false;
+  //             const message = err.error?.responseDescription || 'Failed to update request.';
+  //             this.notificationService.error('', message);
+  //           }
+  //       });
+  //     }
+  //     else {
+  //       this.notificationService.warning('', 'Please fill all required fields correctly.');
+  //       this.loading = false;
+  //       this.geographicCoverageForm.markAllAsTouched();
+  //     }
+  // }
 
   contactPersonInfo(){
       this.loading=true
@@ -206,6 +222,7 @@ export class RegistrationComponent implements OnInit {
         formValues.documentNo = this.documentNo;
         this.registrationService.createContactPersonInfo(formValues).subscribe({next:(res) => {
         this.notificationService.success('', res['responseDescription']);
+        this.getContactsPersonByDocumentNo()
         // this.router.navigate(['purchase-requisition']);
         },
           error: (err) => {
@@ -250,8 +267,10 @@ export class RegistrationComponent implements OnInit {
 
   }
 
+  
+
   onSelectChange(event: any) {
-      const selectedProjects = this.areaOfFocusForm.get('selectedProjects') as FormArray;
+      const selectedProjects = this.areaOfFocusForm.get('code') as FormArray;
 
     if (event.target.checked) {
       selectedProjects.push(this.fb.control(event.target.value));
@@ -261,11 +280,86 @@ export class RegistrationComponent implements OnInit {
     }
   }
 
-  nextStep() {
+nextStep() {
+  if (this.currentStep === 1) {
+    this.personalInfoForm.markAllAsTouched();
+
+    if (this.personalInfoForm.invalid) {
+      this.showRequiredAlert();
+      return;
+    }
+
+    }
+
+  if (this.currentStep === 2) {
+    if (!this.areaOfFocusList || this.areaOfFocusList.length === 0) {
+      this.showRequiredAlert();
+      return;
+    }
+   }
+   if (this.currentStep === 3) {
+    if (!this.geoCoverageList || this.geoCoverageList.length === 0) {
+      this.showRequiredAlert();
+      return;
+    }
+   }
+
+    if (this.currentStep === 4) {
+      if (!this.experience || this.experience.length === 0) {
+        this.showRequiredAlert();
+        return;
+      }
+    }
+
+    if (this.currentStep === 5) {
+      if (!this.contact_person_details_list || this.contact_person_details_list.length === 0) {
+        this.showRequiredAlert();
+        return;
+      }
+    }
+
     if (this.currentStep < this.totalSteps) {
       this.currentStep++;
     }
+}
+
+showRequiredAlert() {
+    this.notificationService.error('Error','Please fill all required fields marked with *',);
+}
+
+
+onItemSelect(item: any){
+  console.log('Selected Item:', item);
+  console.log('All Selected Items:', this.geographicCoverageForm.value.code);
+   this.selectedValues = this.geographicCoverageForm.value.code;
   }
+
+ onItemDeSelect(item: any){
+   console.log('Deselected Item:', item);
+    console.log('Remaining Selected Items:', this.geographicCoverageForm.value.code);
+    this.selectedValues = this.geographicCoverageForm.value.code;
+ }
+
+ onSelectAll(items: any) {
+    console.log('All Items Selected:', items);
+    this.selectedValues = items;
+   }
+
+ onDeSelectAll(items: any) {
+   console.log('All Items Deselected:', items);
+   this.selectedValues = [];
+   } 
+
+ onSubmitGeographicCoverageInfo() {
+    const formValues = this.geographicCoverageForm.value;
+    formValues.documentNo = this.documentNo;
+    const payload = {
+            ...formValues,
+            code: formValues.code.map((c: any) => c.code)
+          };
+    console.log('Payload to submit:', payload);
+    
+  }   
 
   previousStep() {
     if (this.currentStep > 1) {
@@ -322,7 +416,6 @@ export class RegistrationComponent implements OnInit {
 
   getPartnersProfile(){
    this.registrationService.getPartnersProfile(this.email).subscribe(data => {
-      console.log(data)
       this.personalInfoForm.patchValue(data)
     });
   }

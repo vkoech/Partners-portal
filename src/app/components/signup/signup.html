@@ -25,14 +25,12 @@
            <input type="text" class="form-input" formControlName="taxRegistrationNumber" placeholder="Tax Rgistration Number">
         </div>
         <div class="form-group">
-            <label class="form-label">Company: <span class="required">*</span></label>
-              <select formControlName="country" class="form-input">
-                  <option value="" [selected]=true disabled>Select Company</option>
-                  @for (company of company_Items; track company.code) {
-                  <option [value]="company.code">
-                    {{ company.description }}
-                  </option>}
-                </select>
+          <label class="form-label">Company: <span class="required">*</span></label>
+            <select formControlName="country" class="form-input">
+              <option value="">...</option>
+              <option value="Tanzania">Tanzania Company</option>
+              <option value="Kenya">Kenya Company</option>
+            </select>
         </div>
         <button type="submit" class="login-button">CREATE ACCOUNT</button>
         <div class="forgot-password">
