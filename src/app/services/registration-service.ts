@@ -32,7 +32,7 @@ export class RegistrationService {
     return this.httpClient.post<any>(this.baseUrl + 'PartnerProfile/geo-coverage', applicationBody);
   }
 
-  
+
   getPartnersProfile(email: string): Observable<Array<any>>{
 
     return this.httpClient.get<Array<any>>(this.baseUrl+'PartnerProfile/profile?email='+email);
@@ -74,7 +74,7 @@ export class RegistrationService {
   }
 
   getPatnerExperience(documentNo: string): Observable<Array<any>>{
-    return this.httpClient.get<Array<any>>(this.baseUrl+'OData/partners/'+ documentNo +'/experience');
+    return this.httpClient.get<Array<any>>(this.baseUrl+'OData/partners/'+ documentNo +'/prog-exp');
   }
 
 
