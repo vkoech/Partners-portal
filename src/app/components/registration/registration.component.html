@@ -98,12 +98,7 @@
           <div class="form-row">
             <div class="form-group">
               <label>Governing Body: <span class="required">*</span></label>
-              <select formControlName="governingBody">
-                <option value="">...</option>
-                <option value="local">Local NGO</option>
-                <option value="international">International NGO</option>
-                <option value="cbo">Community Based Organization</option>
-              </select>
+              <input type="text" formControlName="governingBody">
             </div>
             <div class="form-group">
               <label>Email Address: <span class="required">*</span></label>
@@ -152,34 +147,38 @@
 
     <!-- Step 2: Area of Focus Details -->
     <div class="step-content" *ngIf="currentStep === 2">
-      <form [formGroup]="areaOfFocusForm" (ngSubmit)="onSubmitAreaOfFocusInfo()">
+      <form [formGroup]="areaOfFocusForm" (ngSubmit)="onSubmitAreaOfFocusInfo('create')">
         <div class="form-section">
           <h4>Add Area Of Focus Details</h4>
           <div class="form-row">
             <div class="form-group">
               <label>Area Of Focus: <span class="required">*</span></label>
-                <select formControlName="description">
-                  <option value="" [selected]=true disabled>Select Geo Coverage</option>
-                  @for (area of area_of_focus_items; track area.code) {
-                  <option [value]="area.code">
-                    {{ area.description }}
-                  </option>}
-                </select>
+                 <ng-multiselect-dropdown
+                    [placeholder]="'Select area of focus'"
+                    [settings]="dropdownSettings"
+                    [data]="area_of_focus_items"
+                    formControlName="code"
+                    (onSelect)="onAreaSelect($event)"
+                    (onDeSelect)="onAreaDeSelect($event)"
+                    (onSelectAll)="onAreaSelectAll($event)"
+                    (onDeSelectAll)="onAreaDeSelectAll($event)"
+                    >
+                </ng-multiselect-dropdown>
             </div>
           </div>
         </div>
-       <button type="submit" class="submit">Submit</button>
+       <button type="submit" class="submit">Save</button>
        </form>
         <!-- Area of focus Table -->
         @if(areaOfFocusList.length>0){
           <div class="form-section">
-          <h3>Program Experience</h3>
+          <h3>Area Of Focus</h3>
           <div class="table-container">
             <table class="table">
               <thead>
                 <tr>
                   <th>Area Of Focus</th>
-                  <th>Description</th>
+                  <!-- <th>Description</th> -->
                   <th>Action</th>
                 </tr>
               </thead>
@@ -187,9 +186,13 @@
                 @for(focus of areaOfFocusList; track focus.lineNo){
                   <tr>
                   <td>{{focus.code}}</td>
-                  <td>{{ focus.description }}</td>
+                  <!-- <td>{{ focus.description }}</td> -->
                   <td>
-                    <button type="button" class="delete-btn" (click)="deleteAreaOfFocus()">
+                    <!-- <button type="button" class="edit-btn"(click)="onSubmitAreaOfFocusInfo('update') ">
+                      <img src="assets/edit.svg" alt="Delete" width="16" height="16" />
+                      Edit
+                    </button> -->
+                      <button type="button" class="delete-btn" (click)="deleteAreaOfFocus(focus.lineNo,'delete')">
                       <img src="assets/delete.svg" alt="Delete" width="16" height="16" />
                       Delete
                     </button>
@@ -220,22 +223,15 @@
           <div class="form-row">
             <div class="form-group">
               <label>Geo Coverage Area: <span class="required">*</span></label>
-                <!-- <select formControlName="country">
-                  <option value="" [selected]=true disabled>Select Geo Coverage</option>
-                  @for (geo of geolocatio_Items; track geo.code) {
-                  <option [value]="geo.code">
-                    {{ geo.description }}
-                  </option>}
-                </select> -->
                 <ng-multiselect-dropdown
                     [placeholder]="'Select Geo-Location'"
                     [settings]="dropdownSettings"
                     [data]="geolocatio_Items"
-                    formControlName="code"
-                    (onSelect)="onItemSelect($event)"
-                    (onDeSelect)="onItemDeSelect($event)"
-                    (onSelectAll)="onSelectAll($event)"
-                    (onDeSelectAll)="onDeSelectAll($event)"
+                    formControlName="country"
+                    (onSelect)="onGeoSelect($event)"
+                    (onDeSelect)="onGeoDeSelect($event)"
+                    (onSelectAll)="onGeoSelectAll($event)"
+                    (onDeSelectAll)="onGeoDeSelectAll($event)"
                     >
                 </ng-multiselect-dropdown>
             </div>
@@ -260,7 +256,7 @@
                 <tr>
                   <td>{{ geo.country }}</td>
                   <td>
-                    <button type="button" class="delete-btn" (click)="deleteAreaOfFocus()">
+                    <button type="button" class="delete-btn" (click)="deleteGeoCoverarge(geo.lineNo,'delete')">
                       <img src="assets/delete.svg" alt="Delete" width="16" height="16" />
                       Delete
                     </button>
@@ -309,6 +305,9 @@
               <label>End Date:</label>
               <input type="date" formControlName="endDate">
             </div>
+            <div *ngIf="experienceForm.hasError('dateRangeInvalid')" style="color:red;">
+              End date cannot be earlier than start date.
+            </div>
           </div>
           <div class="form-row">
             <div class="form-group">
@@ -318,7 +317,7 @@
             </div>
           </div>
         </div>
-      <button type="submit" class="submit">Submit</button>
+         <button type="submit" class="submit" [disabled]="experienceForm.invalid">Submit</button>
       </form>
 
         <!-- Program Experience Table -->
@@ -347,7 +346,7 @@
                   <td>{{ experience.projectValue }}</td>
                   <td>{{ experience.description}}</td>
                   <td>
-                    <button type="button" class="delete-btn" (click)="deleteAreaOfFocus()">
+                    <button type="button" class="delete-btn" (click)="deleteExperience(experience,'delete')">
                       <img src="assets/delete.svg" alt="Delete" width="16" height="16" />
                       Delete
                     </button>
@@ -423,7 +422,7 @@
                   <td>{{ contact.phoneNo }}</td>
                   <td>{{ contact.contactType }}</td>
                   <td>
-                    <button type="button" class="delete-btn" (click)="deleteAreaOfFocus()">
+                    <button type="button" class="delete-btn" (click)="deleteConatacPerson(contact,'delete')">
                       <img src="assets/delete.svg" alt="Delete" width="16" height="16" />
                       Delete
                     </button>
@@ -540,11 +539,11 @@
           </div>
           <div class="summary-item">
             <label>Trading/Operaing Name</label>
-            <span>{{ personalInfoForm.get('dateRegistered')?.value }}</span>
+            <span>{{ personalInfoForm.get('tradingName')?.value }}</span>
           </div>
           <div class="summary-item">
             <label>Date of Registration</label>
-            <span>{{ personalInfoForm.get('registrationDate')?.value }}</span>
+            <span>{{ personalInfoForm.get('dateRegistered')?.value }}</span>
           </div>
           <div class="summary-item">
             <label>Type Of Governing Body</label>
@@ -576,69 +575,111 @@
           </div>
         </div>
       </div>
-
-      <!-- Uploaded Documents -->
-      <div class="form-section" *ngIf="uploadedDocuments.length > 0">
-        <h3>Uploaded Documents</h3>
-        <div class="documents-table-container">
-          <table class="documents-table">
-            <thead>
-              <tr>
-                <th>Document Name</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let document of uploadedDocuments; let i = index" [class.striped]="i % 2 === 1">
-                <td>{{ document.name }}</td>
-                <td>
-                  <div class="document-actions">
-                    <button type="button" class="action-btn view-btn" (click)="viewDocument(document)">
-                      <img src="assets/view.svg" alt="View" width="16" height="16" />
-                      VIEW
-                    </button>
-                    <button type="button" class="delete-btn" (click)="deleteDocument(document.id)">
-                      <img src="assets/delete.svg" alt="Delete" width="16" height="16" />
-                      Delete
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+         <!-- Area Of Focus -->
+      @if(areaOfFocusList.length>0){
+          <div class="form-section">
+          <h3>Area Of Focus</h3>
+          <div class="table-container">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Area Of Focus</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for(focus of areaOfFocusList; track focus.lineNo){
+                  <tr>
+                  <td>{{focus.code}}</td>
+                  <td>{{ focus.description }}</td>
+                </tr>
+                 }
+              </tbody>
+            </table>
+          </div>
+        </div>}
+        <!-- Geo Coverage Table -->
+        @if(geoCoverageList.length>0){
+          <div class="form-section">
+          <h3>Geo Coverage</h3>
+          <div class="table-container">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Country</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for(geo of geoCoverageList; track geo.lineNo){
+                <tr>
+                  <td>{{ geo.country }}</td>
+                </tr>
+                }
+              </tbody>
+            </table>
+          </div>
         </div>
-      </div>
+      }
 
-      <!-- Area Of Focus -->
-      @if(areaOfFocusListLine.length>0){
-        <div class="form-section">
-        <h3>Bank Accounts</h3>
-        <div class="table-container">
-          <table class="table">
-            <thead>
-              <tr>
-                <th>Area Of Focus</th>
-                <th>Geographic Area Coverage</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              @for(area of areaOfFocusListLine; track area)
-              {<tr>
-                <td>{{ area.areaOfFocus }}</td>
-                <td>{{ area.geographicCoverage }}</td>
-                <td>
-                  <button type="button" class="delete-btn" (click)="deleteAreaOfFocus()">
-                    <img src="assets/delete.svg" alt="Delete" width="16" height="16" />
-                    Delete
-                  </button>
-                </td>
-              </tr>}
-            </tbody>
-          </table>
+        @if(experience.length>0)
+        {
+          <div class="form-section">
+          <h3>Program Experience</h3>
+          <div class="table-container">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Major Donor</th>
+                  <th>Project Value</th>
+                  <th>Start Date</th>
+                  <th>End Date</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for(experience of experience; track experience.lineNo){
+                  <tr>
+                  <td>{{ experience.majorDonorOrPartner }}</td>
+                  <td>{{ experience.projectValue }}</td>
+                  <td>{{ experience.startDate }}</td>
+                  <td>{{ experience.endDate }}</td>
+                  <td>{{ experience.description}}</td>
+                  <td>
+                  </td>
+                </tr>
+              }
+              </tbody>
+            </table>
+          </div>
         </div>
-      </div>
-    }
+      }
+           @if(contact_person_details_list.length>0){
+          <div class="form-section">
+          <h3>Contact Person</h3>
+          <div class="table-container">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Full Name</th>
+                  <th>Email Address</th>
+                  <th>Mobile No.</th>
+                  <th>Contact Type</th>
+                </tr>
+              </thead>
+              <tbody>
+              @for (contact of contact_person_details_list; track contact.lineNo){
+                  <tr>
+                  <td>{{ contact.names }}</td>
+                  <td>{{ contact.emailAddress }}</td>
+                  <td>{{ contact.phoneNo }}</td>
+                  <td>{{ contact.contactType }}</td>
+                </tr>
+               }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      }
         <div class="confirmation-text">
         <label class="confirmation-label">
           <input type="checkbox" [(ngModel)]="isConfirmed" name="confirmCheck"/>

@@ -49,9 +49,11 @@ export class RegistrationComponent implements OnInit {
   loading=false
   isConfirmed = false;
   email: any;
-  // dropdownList: any[] = [];
+  isEditMode = false;
   dropdownSettings = {};
-  selectedValues: any[] = [];
+  selectedAreaOfFocusValues: any[] = [];
+  selectedGeoValues: any[] = [];
+
   constructor(
     private router: Router,
     private fb: FormBuilder,
@@ -70,6 +72,7 @@ export class RegistrationComponent implements OnInit {
       itemsShowLimit: 3,
       allowSearchFilter: true,
     };
+
   }
 
   ngOnInit(): void {
@@ -107,16 +110,15 @@ export class RegistrationComponent implements OnInit {
     this.areaOfFocusForm = this.fb.group({
       lineNo:0,
       documentNo:[''],
-      description:[''],
       code:[[]],
+      description:[''],
       action:['']
     });
 
    this.geographicCoverageForm = this.fb.group({
       lineNo:0,
       documentNo:[''],
-      country:[''],
-      code:[[]],
+      country:[[]],
       action:['']
     });
 
@@ -129,7 +131,10 @@ export class RegistrationComponent implements OnInit {
       projectValue:[''],
       description:[''],
       action:['']
-    })
+    },
+    {
+    validators: this.dateRangeValidator
+  })
 
     this.contactPersonForm= this.fb.group({
       lineNo:0,
@@ -141,7 +146,19 @@ export class RegistrationComponent implements OnInit {
       action:['']
     })
   }
-  
+
+
+  dateRangeValidator(form: FormGroup) {
+  const start = form.get('startDate')?.value;
+  const end = form.get('endDate')?.value;
+  if (!start || !end) return null;
+  const startDate = new Date(start);
+  const endDate = new Date(end);
+
+  return endDate < startDate ? { dateRangeInvalid: true } : null;
+}
+
+
 
   onSubmitPersonalInfo(){
      this.loading=true
@@ -151,6 +168,7 @@ export class RegistrationComponent implements OnInit {
         this.registrationService.createPartnerInfo(formValues).subscribe({next:(res) => {
         this.notificationService.success('', res['responseDescription']);
         this.getPartnersProfile();
+        this.isEditMode = true;
         },
           error: (err) => {
               this.loading = false;
@@ -167,16 +185,19 @@ export class RegistrationComponent implements OnInit {
 
   }
 
-  onSubmitAreaOfFocusInfo(){
+  onSubmitAreaOfFocusInfo(actionType: string){
       this.loading=true
         if( this.areaOfFocusForm.valid){
         let formValues = this.areaOfFocusForm.value;
-        formValues.documentNo = this.documentNo;
-        formValues.action = "create";
+        const actionType = this.isEditMode ? 'update' : 'create';
+        formValues.documentNo=this.documentNo,
+        formValues.code=this.selectedAreaOfFocusValues,
+        formValues.action=actionType
         this.registrationService.createAreaOfFocusInfo(formValues).subscribe({next:(res) => {
         this.notificationService.success('', res['responseDescription']);
         this.getAreasOfFocusByDocumentNo()
-        // this.router.navigate(['purchase-requisition']);
+        this.isEditMode = true;
+        this.areaOfFocusForm.reset()
         },
           error: (err) => {
               this.loading = false;
@@ -192,28 +213,30 @@ export class RegistrationComponent implements OnInit {
       }
   }
 
-  // onSubmitGeographicCoverageInfo(){
-  //    this.loading=true
-  //       if( this.geographicCoverageForm.valid){
-  //       let formValues = this.geographicCoverageForm.value;
-  //       formValues.documentNo = this.documentNo;
-  //       this.registrationService.createGeoLocationInfo(formValues).subscribe({next:(res) => {
-  //       this.notificationService.success('', res['responseDescription']);
-  //       this.getGeoCoverageByDocumentNo()
-  //       },
-  //         error: (err) => {
-  //             this.loading = false;
-  //             const message = err.error?.responseDescription || 'Failed to update request.';
-  //             this.notificationService.error('', message);
-  //           }
-  //       });
-  //     }
-  //     else {
-  //       this.notificationService.warning('', 'Please fill all required fields correctly.');
-  //       this.loading = false;
-  //       this.geographicCoverageForm.markAllAsTouched();
-  //     }
-  // }
+  onSubmitGeographicCoverageInfo(){
+     this.loading=true
+        if( this.geographicCoverageForm.valid){
+        let formValues = this.geographicCoverageForm.value;
+        formValues.documentNo = this.documentNo;
+        formValues.country=this.selectedGeoValues;
+        this.registrationService.createGeoLocationInfo(formValues).subscribe({next:(res) => {
+        this.notificationService.success('', res['responseDescription']);
+        this.getGeoCoverageByDocumentNo()
+        this.geographicCoverageForm.reset()
+        },
+          error: (err) => {
+              this.loading = false;
+              const message = err.error?.responseDescription || 'Failed to update request.';
+              this.notificationService.error('', message);
+            }
+        });
+      }
+      else {
+        this.notificationService.warning('', 'Please fill all required fields correctly.');
+        this.loading = false;
+        this.geographicCoverageForm.markAllAsTouched();
+      }
+  }
 
   contactPersonInfo(){
       this.loading=true
@@ -223,7 +246,6 @@ export class RegistrationComponent implements OnInit {
         this.registrationService.createContactPersonInfo(formValues).subscribe({next:(res) => {
         this.notificationService.success('', res['responseDescription']);
         this.getContactsPersonByDocumentNo()
-        // this.router.navigate(['purchase-requisition']);
         },
           error: (err) => {
               this.loading = false;
@@ -238,6 +260,29 @@ export class RegistrationComponent implements OnInit {
         this.contactPersonForm.markAllAsTouched();
       }
   }
+  
+ deleteConatacPerson(row: any, actionType:string){
+  let formValues = this.areaOfFocusForm.value;
+    formValues.action=actionType,
+    formValues.lineNo=row.lineNo,
+    formValues.contactType=row.contactType,
+    formValues.emailAddress=row.emailAddress,
+    formValues.phoneNo=row.phoneNo,
+    formValues.names=row.names,
+    formValues.majorDonorOrPartner=row.majorDonorOrPartner,
+    formValues.documentNo=this.documentNo,
+      this.registrationService.createContactPersonInfo(formValues).subscribe({next:(res) => {
+        this.notificationService.success('', res['responseDescription']);
+        this.getContactsPersonByDocumentNo()
+        },
+          error: (err) => {
+              this.loading = false;
+              const message = err.error?.responseDescription || 'Failed to delete the request.';
+              this.notificationService.error('', message);
+            }
+        })
+
+ }
 
   onSubmitExperienceInfo(){
      this.loading=true
@@ -263,11 +308,38 @@ export class RegistrationComponent implements OnInit {
       }
   }
 
+ deleteExperience(row: any,actionType: string){
+    let formValues = this.areaOfFocusForm.value;
+    formValues.action=actionType,
+    formValues.lineNo=row.lineNo,
+    formValues.startDate=row.startDate,
+    formValues.endDate=row.endDate,
+    formValues.projectValue=row.projectValue,
+    formValues.description=row.description,
+    formValues.majorDonorOrPartner=row.majorDonorOrPartner,
+
+    formValues.documentNo=this.documentNo,
+      this.registrationService.createExperience(formValues).subscribe({next:(res) => {
+        this.notificationService.success('', res['responseDescription']);
+        this.getPatnerExperience()
+        },
+          error: (err) => {
+              this.loading = false;
+              const message = err.error?.responseDescription || 'Failed to delete the request.';
+              this.notificationService.error('', message);
+            }
+        })
+ }
+
   onSubmit(){
 
   }
 
-  
+  editAreaOfFocus(actionType: string){
+
+  }
+
+
 
   onSelectChange(event: any) {
       const selectedProjects = this.areaOfFocusForm.get('code') as FormArray;
@@ -328,38 +400,40 @@ showRequiredAlert() {
 }
 
 
-onItemSelect(item: any){
-  console.log('Selected Item:', item);
-  console.log('All Selected Items:', this.geographicCoverageForm.value.code);
-   this.selectedValues = this.geographicCoverageForm.value.code;
+onGeoSelect(item: any){
+  this.selectedGeoValues.push(item.country || item.code);
   }
 
- onItemDeSelect(item: any){
-   console.log('Deselected Item:', item);
-    console.log('Remaining Selected Items:', this.geographicCoverageForm.value.code);
-    this.selectedValues = this.geographicCoverageForm.value.code;
- }
+ onGeoDeSelect(item: any){
+      this.selectedGeoValues = this.selectedGeoValues.filter(
+    (c) => c !== item.code
+  ); }
 
- onSelectAll(items: any) {
-    console.log('All Items Selected:', items);
-    this.selectedValues = items;
+ onGeoSelectAll(items: any) {
+    this.selectedGeoValues = items.map((i: any) => i.country || i.code);
    }
 
- onDeSelectAll(items: any) {
-   console.log('All Items Deselected:', items);
-   this.selectedValues = [];
-   } 
+ onGeoDeSelectAll(items: any) {
+     this.selectedGeoValues = items.map((i: any) => i.code);
+   }
 
- onSubmitGeographicCoverageInfo() {
-    const formValues = this.geographicCoverageForm.value;
-    formValues.documentNo = this.documentNo;
-    const payload = {
-            ...formValues,
-            code: formValues.code.map((c: any) => c.code)
-          };
-    console.log('Payload to submit:', payload);
-    
-  }   
+ onAreaSelect(item: any){
+    this.selectedAreaOfFocusValues.push(item.country || item.code);
+  }
+
+ onAreaDeSelect(item: any){
+      this.selectedAreaOfFocusValues = this.selectedAreaOfFocusValues.filter(
+    (c) => c !== item.code
+  );
+ }
+
+ onAreaSelectAll(items: any) {
+    this.selectedAreaOfFocusValues = items.map((i: any) => i.country || i.code);
+   }
+
+ onAreaDeSelectAll(items: any) {
+     this.selectedAreaOfFocusValues = items.map((i: any) => i.code);
+   }
 
   previousStep() {
     if (this.currentStep > 1) {
@@ -406,7 +480,38 @@ onItemSelect(item: any){
     this.uploadedDocuments = this.uploadedDocuments.filter(doc => doc.id !== documentId);
   }
 
-  deleteAreaOfFocus() {
+  deleteAreaOfFocus(lineNo:any, actionType: string) {
+    let formValues = this.areaOfFocusForm.value;
+    formValues.action=actionType,
+    formValues.lineNo=lineNo,
+    formValues.documentNo=this.documentNo,
+      this.registrationService.createAreaOfFocusInfo(formValues).subscribe({next:(res) => {
+        this.notificationService.success('', res['responseDescription']);
+        this.getAreasOfFocusByDocumentNo()
+        },
+          error: (err) => {
+              this.loading = false;
+              const message = err.error?.responseDescription || 'Failed to delete the request.';
+              this.notificationService.error('', message);
+            }
+        })
+  }
+
+  deleteGeoCoverarge(lineNo:any, actionType: string){
+     let formValues = this.geographicCoverageForm.value;
+    formValues.action=actionType,
+    formValues.lineNo=lineNo,
+    formValues.documentNo=this.documentNo,
+      this.registrationService.createGeoLocationInfo(formValues).subscribe({next:(res) => {
+        this.notificationService.success('', res['responseDescription']);
+        this.getGeoCoverageByDocumentNo()
+        },
+          error: (err) => {
+              this.loading = false;
+              const message = err.error?.responseDescription || 'Failed to delete the request.';
+              this.notificationService.error('', message);
+            }
+        })
   }
 
 
@@ -475,5 +580,6 @@ onItemSelect(item: any){
       this.experience=data
     })
    }
+
 
 }
