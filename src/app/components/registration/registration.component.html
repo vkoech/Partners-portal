@@ -147,7 +147,7 @@
 
     <!-- Step 2: Area of Focus Details -->
     <div class="step-content" *ngIf="currentStep === 2">
-      <form [formGroup]="areaOfFocusForm" (ngSubmit)="onSubmitAreaOfFocusInfo('create')">
+      <form [formGroup]="areaOfFocusForm" (ngSubmit)="onSubmitAreaOfFocusInfo()">
         <div class="form-section">
           <h4>Add Area Of Focus Details</h4>
           <div class="form-row">
@@ -188,11 +188,7 @@
                   <td>{{focus.code}}</td>
                   <!-- <td>{{ focus.description }}</td> -->
                   <td>
-                    <!-- <button type="button" class="edit-btn"(click)="onSubmitAreaOfFocusInfo('update') ">
-                      <img src="assets/edit.svg" alt="Delete" width="16" height="16" />
-                      Edit
-                    </button> -->
-                      <button type="button" class="delete-btn" (click)="deleteAreaOfFocus(focus.lineNo,'delete')">
+                    <button type="button" class="delete-btn" (click)="deleteAreaOfFocus(focus.lineNo,'delete')">
                       <img src="assets/delete.svg" alt="Delete" width="16" height="16" />
                       Delete
                     </button>
@@ -237,7 +233,7 @@
             </div>
           </div>
         </div>
-         <button type="submit" class="submit">Submit</button>
+         <button type="submit" class="submit">Save</button>
         </form>
         <!-- Geo Coverage Table -->
         @if(geoCoverageList.length>0){
@@ -279,8 +275,6 @@
         </div>
       </div>
     </div>
-
-
       <!-- Step 3: Experience -->
     <div class="step-content" *ngIf="currentStep === 4">
       <form [formGroup]="experienceForm" (ngSubmit)="onSubmitExperienceInfo()">
@@ -317,7 +311,9 @@
             </div>
           </div>
         </div>
-         <button type="submit" class="submit" [disabled]="experienceForm.invalid">Submit</button>
+         <button type="submit" class="submit" [disabled]="experienceForm.invalid">
+            {{ isEditMode ? 'Update' : 'Save' }}
+          </button>
       </form>
 
         <!-- Program Experience Table -->
@@ -346,6 +342,10 @@
                   <td>{{ experience.projectValue }}</td>
                   <td>{{ experience.description}}</td>
                   <td>
+                    <button type="button" class="edit-btn"(click)="editExperience(experience) ">
+                      <img src="assets/edit.svg" alt="Delete" width="16" height="16" />
+                      Edit
+                    </button>
                     <button type="button" class="delete-btn" (click)="deleteExperience(experience,'delete')">
                       <img src="assets/delete.svg" alt="Delete" width="16" height="16" />
                       Delete
@@ -395,8 +395,14 @@
               <label>Phone Number: <span class="required">*</span></label>
               <input type="text" formControlName="phoneNo">
             </div>
+             <div class="form-group">
+              <label>Full Name: <span class="required">*</span></label>
+              <input type="text" formControlName="names">
+            </div>
           </div>
-          <button type="submit" class="submit">Submit</button>
+          <button type="submit" class="submit">
+            {{ isEditMode ? 'Update' : 'Save' }}
+          </button>
         </div>
        </form>
         <!-- Contact Person Table -->
@@ -422,6 +428,10 @@
                   <td>{{ contact.phoneNo }}</td>
                   <td>{{ contact.contactType }}</td>
                   <td>
+                       <button type="button" class="edit-btn"(click)="editConatct(contact) ">
+                      <img src="assets/edit.svg" alt="Delete" width="16" height="16" />
+                      Edit
+                    </button>
                     <button type="button" class="delete-btn" (click)="deleteConatacPerson(contact,'delete')">
                       <img src="assets/delete.svg" alt="Delete" width="16" height="16" />
                       Delete

@@ -185,7 +185,7 @@ export class RegistrationComponent implements OnInit {
 
   }
 
-  onSubmitAreaOfFocusInfo(actionType: string){
+  onSubmitAreaOfFocusInfo(){
       this.loading=true
         if( this.areaOfFocusForm.valid){
         let formValues = this.areaOfFocusForm.value;
@@ -196,6 +196,7 @@ export class RegistrationComponent implements OnInit {
         this.registrationService.createAreaOfFocusInfo(formValues).subscribe({next:(res) => {
         this.notificationService.success('', res['responseDescription']);
         this.getAreasOfFocusByDocumentNo()
+        this.areaOfFocusForm.reset()
         this.isEditMode = true;
         this.areaOfFocusForm.reset()
         },
@@ -240,9 +241,11 @@ export class RegistrationComponent implements OnInit {
 
   contactPersonInfo(){
       this.loading=true
+      const actionType = this.isEditMode ? 'update' : 'create';
         if( this.contactPersonForm.valid){
         let formValues = this.contactPersonForm.value;
         formValues.documentNo = this.documentNo;
+        formValues.action=actionType
         this.registrationService.createContactPersonInfo(formValues).subscribe({next:(res) => {
         this.notificationService.success('', res['responseDescription']);
         this.getContactsPersonByDocumentNo()
@@ -260,7 +263,7 @@ export class RegistrationComponent implements OnInit {
         this.contactPersonForm.markAllAsTouched();
       }
   }
-  
+
  deleteConatacPerson(row: any, actionType:string){
   let formValues = this.areaOfFocusForm.value;
     formValues.action=actionType,
@@ -285,11 +288,12 @@ export class RegistrationComponent implements OnInit {
  }
 
   onSubmitExperienceInfo(){
+    const actionType = this.isEditMode ? 'update' : 'create';
      this.loading=true
         if( this.experienceForm.valid){
         let formValues = this.experienceForm.value;
         formValues.documentNo = this.documentNo;
-        formValues.action = 'Create';
+        formValues.action=actionType;
         this.registrationService.createExperience(formValues).subscribe({next:(res) => {
         this.notificationService.success('', res['responseDescription']);
         // this.router.navigate(['purchase-requisition']);
@@ -331,9 +335,25 @@ export class RegistrationComponent implements OnInit {
         })
  }
 
-  onSubmit(){
+ editExperience(row: any) {
+  this.isEditMode = true;
 
-  }
+  this.experienceForm.patchValue({
+    ...row,
+    action: 'update'
+  });
+}
+
+
+ editConatct(row: any) {
+  this.isEditMode = true;
+
+  this.contactPersonForm.patchValue({
+    ...row,
+    action: 'update'
+  });
+}
+
 
   editAreaOfFocus(actionType: string){
 
