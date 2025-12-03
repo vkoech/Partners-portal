@@ -6,12 +6,11 @@
   min-height: 100vh;
   background: #F5F8FC;
   padding: 0;
-  width: 100%;
 }
 
 .main-content {
   flex: 1;
-  margin-left: 280px;
+  margin-left: 240px;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
@@ -93,11 +92,6 @@
   display: none;
 }
 
-.table-container {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
 .filter-btn {
   background: $white;
   border: 1px solid #e9ecef;
@@ -144,7 +138,6 @@
   width: 100%;
   border-collapse: collapse;
   background: $white;
-  min-width: 1000px;
 }
 
 .payment-table thead tr {

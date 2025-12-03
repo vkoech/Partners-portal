@@ -37,58 +37,13 @@ export class NewPaymentRequestComponent implements OnInit, OnDestroy {
   paymentRequestLineForm!: FormGroup;
   showAddLineModal = false;
   isEditMode = false;
+  showModal = false;
   currentEditingLine: PaymentRequestLine | null = null;
   
-  paymentRequestLines: PaymentRequestLine[] = [
-    {
-      id: '1',
-      currencyCode: 'KSH',
-      amount: 16000,
-      description: 'Cooperate Meeting'
-    }
-  ];
-  
-  uploadedDocuments: UploadedDocument[] = [
-    {
-      id: '1',
-      name: 'Cash Request',
-      type: 'PDF',
-      size: 1024000,
-      uploadDate: '2025-01-15'
-    },
-    {
-      id: '2',
-      name: 'Invoice',
-      type: 'PDF',
-      size: 2048000,
-      uploadDate: '2025-01-15'
-    },
-    {
-      id: '3',
-      name: 'Quotation',
-      type: 'PDF',
-      size: 1536000,
-      uploadDate: '2025-01-15'
-    }
-  ];
-  
-  currencyOptions = [
-    { code: 'KSH', name: 'Kenyan Shilling' },
-    { code: 'USD', name: 'US Dollar' },
-    { code: 'EUR', name: 'Euro' }
-  ];
-  
-  documentTypes = [
-    { value: 'cash-request', label: 'Cash Request' },
-    { value: 'invoice', label: 'Invoice' },
-    { value: 'quotation', label: 'Quotation' },
-    { value: 'receipt', label: 'Receipt' }
-  ];
-
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private fb: FormBuilder
+    private fb: FormBuilder,
   ) {
     this.initializeForms();
   }
@@ -104,18 +59,37 @@ export class NewPaymentRequestComponent implements OnInit, OnDestroy {
 
   private initializeForms() {
     this.paymentRequestForm = this.fb.group({
-      documentNo: ['SUBPR-25-0021'],
-      approvedFunding: ['', Validators.required],
-      requestedDate: ['', Validators.required],
-      requestedAmount: ['', [Validators.required, Validators.min(1)]],
-      projectCode: ['', Validators.required],
-      description: ['', Validators.required]
+      no: [''],
+      emailAddress: [''],
+      subgranteeNo: [''],
+      documentDate: [''],
+      applicationDate: [''],
+      subAwardStartDate: [''],
+      subAwardEndDate: [''],
+      projectCode: [''],
+      purpose: [''],
+      currencyCode: [''],
+      reportingCycle: [''],
+      budgetAmount: [''],
+      budgetAmountLCY: [''],
+      obligatedAmount: [''],
+      obligatedAmountLCY: [''],
+      subAwardTitle: ['']
     });
 
     this.paymentRequestLineForm = this.fb.group({
-      currencyCode: ['', Validators.required],
-      amount: ['', [Validators.required, Validators.min(1)]],
-      description: ['', Validators.required]
+        lineNo: [''],
+        documentNo: [''],
+        projectCode: [''],
+        projectName: [''],
+        activityCode: [''],
+        activityName: [''],
+        applicationDate: [''],
+        appliedAmount: [''],
+        appliedAmountLCY: [''],
+        obligatedAmount: [''],
+        obligatedAmountLCY: [''],
+        description: ['']
     });
   }
 
@@ -140,33 +114,11 @@ export class NewPaymentRequestComponent implements OnInit, OnDestroy {
   }
 
   submitLine() {
-    if (this.paymentRequestLineForm.valid) {
-      const formValue = this.paymentRequestLineForm.value;
-      
-      if (this.isEditMode && this.currentEditingLine) {
-        // Update existing line
-        const index = this.paymentRequestLines.findIndex(line => line.id === this.currentEditingLine!.id);
-        if (index !== -1) {
-          this.paymentRequestLines[index] = {
-            ...this.currentEditingLine,
-            ...formValue
-          };
-        }
-      } else {
-        // Add new line
-        const newLine: PaymentRequestLine = {
-          id: Date.now().toString(),
-          ...formValue
-        };
-        this.paymentRequestLines.push(newLine);
-      }
-      
-      this.closeAddLineModal();
-    }
+    
   }
 
   deleteLine(lineId: string) {
-    this.paymentRequestLines = this.paymentRequestLines.filter(line => line.id !== lineId);
+    
   }
 
   triggerFileUpload() {
@@ -175,54 +127,38 @@ export class NewPaymentRequestComponent implements OnInit, OnDestroy {
     fileInput.accept = '.pdf,.jpg,.jpeg,.png';
     fileInput.onchange = (event: any) => {
       const file = event.target.files[0];
-      if (file) {
-        this.handleFileUpload(file);
-      }
     };
     fileInput.click();
   }
 
-  private handleFileUpload(file: File) {
-    // Simulate file upload
-    const newDocument: UploadedDocument = {
-      id: Date.now().toString(),
-      name: file.name,
-      type: file.type.includes('pdf') ? 'PDF' : 'Image',
-      size: file.size,
-      uploadDate: new Date().toISOString().split('T')[0]
-    };
-    
-    this.uploadedDocuments.push(newDocument);
-  }
 
   viewDocument(document: UploadedDocument) {
     console.log('Viewing document:', document.name);
   }
 
   deleteDocument(documentId: string) {
-    this.uploadedDocuments = this.uploadedDocuments.filter(doc => doc.id !== documentId);
   }
 
   onSubmit() {
-    if (this.paymentRequestForm.valid) {
-      console.log('Payment Request Form:', this.paymentRequestForm.value);
-      console.log('Payment Request Lines:', this.paymentRequestLines);
-      console.log('Uploaded Documents:', this.uploadedDocuments);
-      
-      // Navigate back to payment request list
-      this.router.navigate(['/payment-request']);
-    }
+
   }
 
   onCancel() {
     this.router.navigate(['/payment-request']);
   }
 
-  formatFileSize(bytes: number): string {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-  }
+  openCustomModal() {
+  this.showModal = true;
+}
+
+closeCustomModal() {
+  this.showModal = false;
+}
+
+saveModal() {
+  console.log(this.paymentRequestForm.value);
+  this.closeCustomModal();
+}
+
+
 }

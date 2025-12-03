@@ -28,7 +28,8 @@ export class PaymentRequestComponent implements OnInit, OnDestroy {
   email: any
   user: AuthUser | null = null;
   subgranteeNo: any;
-  loading=false
+  loading=false;
+  payment_request:  any[] = [];
 
   get totalPages(): number {
     return Math.ceil(this.paymentRequestList.length / this.itemsPerPage);
