@@ -8,8 +8,8 @@
       <div class="user-info">
         <img src="assets/user.svg" alt="User" class="user-avatar">
         <div class="user-details">
-          <div class="user-name">Michael Robinson</div>
-          <div class="user-email">technical.sysre.co.ke</div>
+          <div class="user-name">{{ user?.partnerAccountName }}</div>
+          <div class="user-email">{{ user?.emailAddress }}</div>
         </div>
       </div>
       <button class="logout-btn" (click)="logout()" title="Logout">

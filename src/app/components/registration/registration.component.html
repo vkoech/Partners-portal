@@ -132,7 +132,7 @@
               <input type="text" formControlName="registrationCertificateNo">
             </div>
           </div>
-           <button type="submit" class="submit">Submit</button>
+           <button type="submit" class="submit">Save</button>
         </div>
       </form>
 
@@ -337,9 +337,9 @@
                 @for(experience of experience; track experience.lineNo){
                   <tr>
                   <td>{{ experience.majorDonorOrPartner }}</td>
-                  <td>{{ experience.startDate }}</td>
-                  <td>{{ experience.endDate }}</td>
-                  <td>{{ experience.projectValue }}</td>
+                  <td>{{ experience.projectValue}}</td>
+                  <td>{{ experience.startDate}}</td>
+                  <td>{{ experience.endDate}}</td>
                   <td>{{ experience.description}}</td>
                   <td>
                     <button type="button" class="edit-btn"(click)="editExperience(experience) ">
@@ -519,7 +519,7 @@
               </button>
               <div class="action-buttons">
                 <button type="button" class="back" (click)="previousStep()">Previous</button>
-                <button type="button" class="next" (click)="nextStep()">next</button>
+                <button type="button" class="next" (click)="nextStep()">Next</button>
               </div>
             </div>
         </div>
@@ -654,8 +654,6 @@
                   <td>{{ experience.startDate }}</td>
                   <td>{{ experience.endDate }}</td>
                   <td>{{ experience.description}}</td>
-                  <td>
-                  </td>
                 </tr>
               }
               </tbody>
@@ -690,15 +688,21 @@
           </div>
         </div>
       }
-        <div class="confirmation-text">
-        <label class="confirmation-label">
-          <input type="checkbox" [(ngModel)]="isConfirmed" name="confirmCheck"/>
-          <span>I confirm the provided details</span>
-        </label>
-        <button type="submit" class="submit" [disabled]="!isConfirmed">
-          Submit
-        </button>
-      </div>
+      <form [formGroup]="confirmForm" (ngSubmit)="onSubmitProfile()">
+            <div class="confirmation-text">
+              <label class="confirmation-label">
+                <input type="checkbox" formControlName="isConfirmed" />
+                <span>I confirm that the provided information is accurate.</span>
+              </label>
+              <button type="submit" class="submit"
+                      [class.active]="confirmForm.get('isConfirmed')?.value"
+                      [class.inactive]="!confirmForm.get('isConfirmed')?.value"
+                      [disabled]="!confirmForm.get('isConfirmed')?.value">
+                Submit
+              </button>
+            </div>
+          </form>
+
       <div class="action-buttons">
        <button type="button" class="back" (click)="previousStep()">Previous</button>
       </div>

@@ -1,4 +1,6 @@
-<div class="sidebar-overlay" *ngIf="open" (click)="closeSidebar()"></div>
+@if (open) {
+  <div class="sidebar-overlay" (click)="closeSidebar()"></div>
+}
 <div class="sidebar" [ngClass]="{ 'sidebar-open': open }">
   <div class="logo-container">
     <div class="logo">
@@ -6,7 +8,7 @@
       <!-- <span class="logo-text">inSupplyHealth</span> -->
     </div>
   </div>
-  
+
   <!-- Partners Portal Sidebar -->
   <div class="sidebar-content">
     <nav class="nav-menu">
@@ -16,26 +18,32 @@
         </i>
         Approved Funding
       </a>
-      
+
       <a routerLink="/payment-request" routerLinkActive="active" class="nav-item">
         <i class="icon-payment">
           <img src="assets/payment-request.svg" alt="Payment Request" width="20" height="20">
         </i>
         Payment Request
       </a>
-      
+
       <a routerLink="/payment-surrender" routerLinkActive="active" class="nav-item">
         <i class="icon-surrender">
           <img src="assets/payment-surrender.svg" alt="Payment Surrender" width="20" height="20">
         </i>
         Payment Surrender
       </a>
-      
+
       <a routerLink="/reimbursements" routerLinkActive="active" class="nav-item">
         <i class="icon-reimbursements">
           <img src="assets/reimbursement.svg" alt="Reimbursements" width="20" height="20">
         </i>
         Reimbursements
+      </a>]
+       <a routerLink="/profile" routerLinkActive="active" class="nav-item">
+        <i class="icon-reimbursements">
+          <img src="assets/user.svg" alt="Reimbursements" width="20" height="20">
+        </i>
+        Profile
       </a>
     </nav>
   </div>

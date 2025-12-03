@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { RegistrationService } from '../../services/registration-service';
@@ -19,7 +19,8 @@ export interface UploadedDocument {
   standalone: true,
   imports: [CommonModule, FormsModule, ReactiveFormsModule, NgMultiSelectDropDownModule],
   templateUrl: './registration.component.html',
-  styleUrls: ['./registration.component.scss']
+  styleUrls: ['./registration.component.scss'],
+  providers: [DatePipe]
 })
 export class RegistrationComponent implements OnInit {
   currentStep = 1;
@@ -30,6 +31,7 @@ export class RegistrationComponent implements OnInit {
   contactPersonForm: FormGroup;
   docuumentForm: FormGroup;
   SummaryForm: FormGroup;
+  confirmForm: FormGroup;
   experienceForm: FormGroup;
   geographicCoverageForm: FormGroup;
   user: AuthUser | null = null;
@@ -60,6 +62,7 @@ export class RegistrationComponent implements OnInit {
     private registrationService: RegistrationService,
     private authService: AuthService,
     private notificationService: NotificationService,
+    private datePipe: DatePipe
   ) {
     this.initializeForms();
 
@@ -136,7 +139,7 @@ export class RegistrationComponent implements OnInit {
     validators: this.dateRangeValidator
   })
 
-    this.contactPersonForm= this.fb.group({
+  this.contactPersonForm= this.fb.group({
       lineNo:0,
       documentNo:[''],
       contactType:[''],
@@ -145,6 +148,11 @@ export class RegistrationComponent implements OnInit {
       names:[''],
       action:['']
     })
+  this.confirmForm = this.fb.group({
+    isConfirmed: [false],
+    documentNo:[''],
+    emailAddress:['']
+  });
   }
 
 
@@ -296,7 +304,7 @@ export class RegistrationComponent implements OnInit {
         formValues.action=actionType;
         this.registrationService.createExperience(formValues).subscribe({next:(res) => {
         this.notificationService.success('', res['responseDescription']);
-        // this.router.navigate(['purchase-requisition']);
+        this.getPatnerExperience();
         },
           error: (err) => {
               this.loading = false;
@@ -335,14 +343,36 @@ export class RegistrationComponent implements OnInit {
         })
  }
 
- editExperience(row: any) {
-  this.isEditMode = true;
+editExperience(row: any) {
+    let formattedStartDate = '';
+    if (row.startDate) {
+      const startParts = row.startDate.split('/');
+      if (startParts.length === 3) {
+        formattedStartDate = `${startParts[2]}-${startParts[1].padStart(2, '0')}-${startParts[0].padStart(2, '0')}`;
+      } else {
+        formattedStartDate = this.datePipe.transform(new Date(row.startDate), 'yyyy-MM-dd') || '';
+      }
+    }
 
-  this.experienceForm.patchValue({
-    ...row,
-    action: 'update'
-  });
-}
+    let formattedEndDate = '';
+    if (row.endDate) {
+      const endParts = row.endDate.split('/');
+      if (endParts.length === 3) {
+        formattedEndDate = `${endParts[2]}-${endParts[1].padStart(2, '0')}-${endParts[0].padStart(2, '0')}`;
+      } else {
+        formattedEndDate = this.datePipe.transform(new Date(row.endDate), 'yyyy-MM-dd') || '';
+      }
+    }
+
+    this.isEditMode = true;
+
+    this.experienceForm.patchValue({
+      ...row,
+      startDate: formattedStartDate,
+      endDate: formattedEndDate,
+      action: 'update'
+    });
+  }
 
 
  editConatct(row: any) {
@@ -539,11 +569,16 @@ onGeoSelect(item: any){
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  getPartnersProfile(){
-   this.registrationService.getPartnersProfile(this.email).subscribe(data => {
-      this.personalInfoForm.patchValue(data)
-    });
-  }
+ getPartnersProfile() {
+      this.registrationService.getPartnersProfile(this.email).subscribe(data => {
+        if (data.dateRegistered) {
+          const parts = data.dateRegistered.split('/');
+          data.dateRegistered = `${parts[2]}-${parts[1].padStart(2,'0')}-${parts[0].padStart(2,'0')}`;
+        }
+        this.personalInfoForm.patchValue(data);
+      });
+    }
+
 
   getAreaOfFocus(){
    this.registrationService.getAreaOfFocus().subscribe(data => {
@@ -600,6 +635,23 @@ onGeoSelect(item: any){
       this.experience=data
     })
    }
-
-
+  onSubmitProfile() {
+    if (this.confirmForm.valid) {
+      let formValues = this.confirmForm.value;
+      formValues.documentNo = this.documentNo;
+      formValues.emailAddress=this.email;
+      this.registrationService.submitPartnerProfile(formValues).subscribe({next:(res) => {
+        this.notificationService.success('', res['responseDescription']);
+        this.confirmForm.reset();
+        this.router.navigate(['payment-request']);
+        },
+          error: (err) => {
+              this.loading = false;
+              const message = err.error?.responseDescription || 'Failed to update request.';
+              this.notificationService.error('', message);
+              this.confirmForm.reset();
+            }
+        });
+      }
+    }
 }

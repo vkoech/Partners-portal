@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -6,19 +6,9 @@ import { Subject, takeUntil } from 'rxjs';
 import { SidebarComponent } from '../shared/sidebar/sidebar.component';
 import { HeaderComponent } from '../shared/header/header.component';
 import { FooterComponent } from '../shared/footer/footer.component';
-
-export interface PaymentRequest {
-  id: string;
-  funding: string;
-  programme: string;
-  purpose: string;
-  budgetAmount: number;
-  obligatedAmount: number;
-  date: string;
-  description: string;
-  status: string;
-}
-
+import { Payment } from '../../services/payment';
+import { AuthService, AuthUser } from '../../services/auth.service';
+import { NotificationService } from '../../services/notification.service';
 @Component({
   selector: 'app-payment-request',
   standalone: true,
@@ -34,19 +24,11 @@ export class PaymentRequestComponent implements OnInit, OnDestroy {
   currentPage = 1;
   itemsPerPage = 5;
 
-  paymentRequestList: PaymentRequest[] = [
-    {
-      id: '1',
-      funding: 'Grants',
-      programme: 'Med supply',
-      purpose: 'Pharmaceutical',
-      budgetAmount: 160000,
-      obligatedAmount: 100000,
-      date: '20/5/2025',
-      description: 'For wards',
-      status: 'Open'
-    },
-  ];
+  paymentRequestList: any[] = [];
+  email: any
+  user: AuthUser | null = null;
+  subgranteeNo: any;
+  loading=false
 
   get totalPages(): number {
     return Math.ceil(this.paymentRequestList.length / this.itemsPerPage);
@@ -58,10 +40,19 @@ export class PaymentRequestComponent implements OnInit, OnDestroy {
     return this.paymentRequestList.slice(startIndex, endIndex);
   }
 
-  constructor(private router: Router) {}
+  private router = inject(Router);
+  private paymentService = inject(Payment);
+  private authService = inject(AuthService);
+  private notificationService=inject(NotificationService)
 
   ngOnInit(): void {
-    // Initialize component
+    this.user = this.authService.getLoggedInUser();
+    this.subgranteeNo = this.user?.partnerAccountNo;
+    this.email=this.user?.emailAddress;
+
+    this.paymentService.getAllFundingApplications(this.email).subscribe(data=>{
+     this.paymentRequestList=data;
+    });
   }
 
   ngOnDestroy() {
@@ -69,9 +60,26 @@ export class PaymentRequestComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  navigateToNewPaymentRequest() {
-    this.router.navigate(['/new-payment-request']);
-  }
+ createNewPaymentRequest (){
+       const formValues = {
+          subgranteeNo: this.subgranteeNo,
+          emailAddress: this.email
+       }
+    this.paymentService.createUpdateFundingApplication(formValues).subscribe({next:(res) => {
+     this.router.navigate(['/new-payment-request',btoa(res.no)]);
+        },
+          error: (err) => {
+              this.loading = false;
+              const message = err.error?.responseDescription || 'Failed to update request.';
+              this.notificationService.error('', message);
+            }
+        });
+      }
+   getSingleFundingApplication(){
+      this.paymentService.getAllFundingApplications(this.email).subscribe(data=>{
+      this.paymentRequestList=data;
+      });
+    }
 
   editRequest(id: string) {
     this.router.navigate(['/new-payment-request', id]);

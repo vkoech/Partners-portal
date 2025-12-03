@@ -443,7 +443,7 @@
 
 .submit {
   padding: 8px 16px;
-  background-color: #E73846;;
+  background-color: #E73846;
   color: white;
   border: none;
   border-radius: 6px;
@@ -454,6 +454,14 @@
 .upload-btn:disabled {
   background-color: #ccc;
   cursor: not-allowed;
+}
+.submit.inactive {
+  background-color: #bdbdbd;
+  cursor: not-allowed;
+}
+
+.submit.active {
+  background-color: #E73846;
 }
 
 

@@ -20,7 +20,7 @@ export interface ResetPasswordRequest {
 
 export interface AuthUser {
   employeeNo: string;
-  employeeName: string;
+  partnerAccountName: string;
   emailAddress: string;
   employmentDate: string;
   gender: string;

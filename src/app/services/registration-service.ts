@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../environments/environment.prod';
 import { Observable } from 'rxjs/internal/Observable';
+import { Profile } from '../components/registration/Profile';
 
 @Injectable({
   providedIn: 'root'
@@ -31,11 +32,12 @@ export class RegistrationService {
   createGeoLocationInfo(applicationBody: any): Observable<any> {
     return this.httpClient.post<any>(this.baseUrl + 'PartnerProfile/geo-coverage', applicationBody);
   }
+  submitPartnerProfile(applicationBody: any): Observable<any> {
+      return this.httpClient.post<any>(this.baseUrl + 'PartnerProfile/SubmitPartnerProfile', applicationBody);
+    }
 
-
-  getPartnersProfile(email: string): Observable<Array<any>>{
-
-    return this.httpClient.get<Array<any>>(this.baseUrl+'PartnerProfile/profile?email='+email);
+  getPartnersProfile(email: string): Observable<Profile>{
+    return this.httpClient.get<Profile>(this.baseUrl+'PartnerProfile/profile?email='+email);
   }
 
   getAreaOfFocus(): Observable<Array<any>>{

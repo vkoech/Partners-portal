@@ -1,24 +1,24 @@
 <div class="payment-request-container">
   <app-sidebar [sidebarType]="'finance'" [(open)]="sidebarOpen"></app-sidebar>
-  
+
   <div class="main-content">
-    <app-header 
-      title="PAYMENT REQUEST" 
+    <app-header
+      title="PAYMENT REQUEST"
       subtitle="Finance Services/Payment Request"
       headerClass="finance"
       [showBackButton]="false"
       [(sidebarOpen)]="sidebarOpen">
     </app-header>
-    
+
     <div class="payment-request-content">
       <div class="card-header">
         <h2>PAYMENT REQUEST</h2>
-        <button class="add-new-btn" (click)="navigateToNewPaymentRequest()">
+        <button class="add-new-btn" (click)="createNewPaymentRequest()">
           <img src="assets/add.svg" alt="Add" width="24" height="24" />
           ADD NEW PAYMENT REQUEST
         </button>
       </div>
-      
+
       <div class="card-body">
         <button class="filter-btn">
           <img src="assets/filter.svg" alt="Add filter" width="10" height="10" style="margin-right: 6px;" /> Add filter
@@ -28,7 +28,7 @@
           <input type="text" placeholder="Search here" [(ngModel)]="searchTerm">
         </div>
       </div>
-      
+
       <!-- Desktop Table -->
       <div class="table-container hide-mobile">
         <table class="payment-table">
@@ -47,7 +47,7 @@
           </thead>
           <tbody>
             <tr *ngFor="let request of paginatedData; let i = index" [class.striped]="i % 2 === 1">
-              <td>{{ request.funding }}</td>
+              <!-- <td>{{ request.funding }}</td>
               <td>{{ request.programme }}</td>
               <td>{{ request.purpose }}</td>
               <td>{{ request.budgetAmount | currency:'KSH':'symbol':'1.0-0' }}</td>
@@ -58,7 +58,7 @@
                 <span class="status-badge" [class]="'status-' + request.status.toLowerCase()">
                   {{ request.status }}
                 </span>
-              </td>
+              </td> -->
               <td class="action-cell">
                 <button class="action-btn edit-btn" (click)="editRequest(request.id)">
                   <img src="assets/editlogo.svg" alt="Edit" width="16" height="16" />
@@ -69,9 +69,9 @@
           </tbody>
         </table>
       </div>
-      
+
       <!-- Mobile Cards -->
-      <div class="mobile-cards show-mobile">
+      <!-- <div class="mobile-cards show-mobile">
         <div class="request-card" *ngFor="let request of paginatedData">
           <div class="card-header-mobile">
             <h3>{{ request.funding }}</h3>
@@ -112,13 +112,13 @@
             </button>
           </div>
         </div>
-      </div>
-      
+      </div> -->
+
       <!-- Pagination -->
       <div class="pagination">
         <button class="page-btn" [disabled]="currentPage === 1" (click)="previousPage()">Prev</button>
-        <button *ngFor="let page of getVisiblePages()" 
-                class="page-btn" 
+        <button *ngFor="let page of getVisiblePages()"
+                class="page-btn"
                 [class.active]="page === currentPage"
                 (click)="goToPage(page)">
           {{ page }}
@@ -126,7 +126,7 @@
         <button class="page-btn" [disabled]="currentPage === totalPages" (click)="nextPage()">Next</button>
       </div>
     </div>
-    
+
     <app-footer></app-footer>
   </div>
 </div>
