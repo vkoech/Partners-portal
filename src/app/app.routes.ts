@@ -1,3 +1,4 @@
+import { CashRequest } from './components/cash-request/cash-request';
 import { Routes } from '@angular/router';
 import { LoginComponent } from './components/login/login.component';
 import { PaymentRequestComponent } from './components/payment-request/payment-request.component';
@@ -12,6 +13,7 @@ import { Signup } from './components/signup/signup';
 import { ForgotPassword } from './components/forgot-password/forgot-password';
 import { ResetPassword } from './components/reset-password/reset-password';
 import { Otp } from './components/otp/otp';
+import { NewCashRequest } from './components/cash-request/new-cash-request/new-cash-request';
 
 export const routes: Routes = [
   { path: '', component: LoginComponent },
@@ -24,6 +26,8 @@ export const routes: Routes = [
   { path: 'reset-password', component: ResetPassword },
   { path: 'approved-funding', component: ApprovedFundingComponent },
   { path: 'payment-request', component: PaymentRequestComponent },
+  { path: 'cash-request', component: CashRequest },
+  { path: 'new-cash-request/:id', component: NewCashRequest },
   { path: 'new-payment-request', component: NewPaymentRequestComponent },
   { path: 'new-payment-request/:id', component: NewPaymentRequestComponent },
   { path: 'payment-surrender', component: PaymentSurrenderComponent },

@@ -32,5 +32,7 @@ export class Payment {
   createUpdateFundingApplication(applicationBody: any): Observable<any> {
     return this.httpClient.post<any>(this.baseUrl + 'PartnerProfile/CreateUpdateFundingApplication', applicationBody);
   }
-
+  createUpdateFundingApplicationLine(applicationBody: any): Observable<any> {
+    return this.httpClient.post<any>(this.baseUrl + 'PartnerProfile/CreateUpdateFundingApplicationLine', applicationBody);
+  }
 }

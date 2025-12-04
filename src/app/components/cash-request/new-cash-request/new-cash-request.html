@@ -3,8 +3,8 @@
   
   <div class="main-content">
     <app-header 
-      title="Funding Application" 
-      subtitle="Finance Services/Payment Request"
+      title="Cash Application" 
+      subtitle="Finance Services/Cash Request"
       headerClass="finance"
       [showBackButton]="true"
       [(sidebarOpen)]="sidebarOpen">
@@ -13,11 +13,21 @@
     <div class="new-payment-request-content">
      <div class="new-payment-request-section card-effect">
        <div class="section-header">
-        <h2>Funding Application</h2>
+        <h2>Cash Application</h2>
        </div>     
     <div class="new-payment-request-content">
     <form [formGroup]="paymentRequestForm">
       <div class="form-section">
+         <div class="form-row">
+           <div class="form-group">
+            <label>Application Number</label>
+            <input type="text" formControlName="areaOfFocus">
+          </div>
+          <div class="form-group">
+            <label>Application Date</label>
+            <input type="date" formControlName="projectCode">
+          </div>
+        </div>
         <div class="form-row">
            <div class="form-group">
             <label>Area of Focus</label>
@@ -26,6 +36,16 @@
           <div class="form-group">
             <label>Project Code</label>
             <input type="text" formControlName="projectCode">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Start Date</label>
+            <input type="text" formControlName="startDate">
+          </div>
+           <div class="form-group">
+            <label>End Date</label>
+            <input type="text" formControlName="endDate">
           </div>
         </div>
          <div class="form-group">
@@ -57,19 +77,39 @@
             <label>Sub-Awardee Title</label>
             <input type="text" formControlName="subAwardTitle">
           </div>
+           <div class="form-group">
+            <label>Amont Requested</label>
+            <input type="text" formControlName="amountRequested">
+          </div>
         </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Direct Cost(%)</label>
+            <input type="text" formControlName="directCost">
+          </div>
+           <div class="form-group">
+            <label>Direct Cost Amount</label>
+            <input type="text" formControlName="directCostAmount">
+          </div>
+         </div>
+          <div class="form-row">
+           <div class="form-group">
+            <label>Total Amount</label>
+            <input type="text" formControlName="totalAmount">
+          </div>
+          </div>
         </div>
      </form>
     </div>
    <div class="modal-btn-container">
-      <button class="open-modal-btn" (click)="openCustomModal()">Add Funding Lines</button>
+      <button class="open-modal-btn" (click)="openCustomModal()">Add Cash Request Lines</button>
     </div>
    <!-- Custom Modal -->
   @if(showModal)
   {
     <div class="custom-modal-backdrop">
     <div class="custom-modal"> 
-      <h3>Funding Request</h3>
+      <h3>Cash Request</h3>
         <form [formGroup]="paymentRequestLineForm">
           <div class="modal-row">
             <input placeholder="Category" formControlName="category">

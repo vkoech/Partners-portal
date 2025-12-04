@@ -3,8 +3,8 @@
 
   <div class="main-content">
     <app-header
-      title="FUNDING APPLICATION"
-      subtitle="Finance Services/Funding Application"
+      title="CASH REQUEST"
+      subtitle="Finance Services/Cash Request"
       headerClass="finance"
       [showBackButton]="false"
       [(sidebarOpen)]="sidebarOpen">
@@ -12,10 +12,10 @@
 
     <div class="payment-request-content">
       <div class="card-header">
-        <h2>FUNDING APPLICATION</h2>
+        <h2>CASH REQUEST</h2>
         <button class="add-new-btn" (click)="createNewPaymentRequest()">
           <img src="assets/add.svg" alt="Add" width="24" height="24" />
-          ADD NEW FUNDING APPLICATION
+          ADD NEW CASH REQUEST
         </button>
       </div>
 
@@ -66,12 +66,15 @@
       </div>
       <div class="pagination">
         <button class="page-btn" [disabled]="currentPage === 1" (click)="previousPage()">Prev</button>
-        <button *ngFor="let page of getVisiblePages()"
+        @for (page of getVisiblePages(); track page)
+         {
+          <button 
                 class="page-btn"
                 [class.active]="page === currentPage"
                 (click)="goToPage(page)">
           {{ page }}
         </button>
+        }
         <button class="page-btn" [disabled]="currentPage === totalPages" (click)="nextPage()">Next</button>
       </div>
     </div>

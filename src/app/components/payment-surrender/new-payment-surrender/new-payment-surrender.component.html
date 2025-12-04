@@ -3,8 +3,8 @@
   
   <div class="main-content">
     <app-header 
-      title="PAYMENT SURRENDER" 
-      subtitle="Finance Services/Payment Surrender"
+      title="CASH SURRENDER" 
+      subtitle="Finance Services/Cash Surrender"
       headerClass="finance"
       [showBackButton]="true"
       [(sidebarOpen)]="sidebarOpen">
@@ -14,7 +14,7 @@
       <form [formGroup]="paymentSurrenderForm" (ngSubmit)="onSubmit()" class="form">
         <div class="new-payment-surrender-section card-effect">
           <div class="section-header">
-            <h2>PAYMENT SURRENDER</h2>
+            <h2>CASH SURRENDER</h2>
           </div>
           
           <div class="section-body">
@@ -24,9 +24,9 @@
               <div class="form-layout">
                 <div class="form-row">
                   <div class="form-group full-width">
-                    <label>Select Payment Request: *</label>
+                    <label>Select Cash Request: *</label>
                     <select formControlName="paymentRequest">
-                      <option value="">Select Payment Request</option>
+                      <option value="">Select Cash Request</option>
                       <option value="PR-001">PR-001 - Medical Supplies</option>
                       <option value="PR-002">PR-002 - Equipment Purchase</option>
                     </select>
@@ -62,6 +62,16 @@
                     <input type="number" formControlName="surrenderedAmount" placeholder="40,000">
                   </div>
                 </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Start Date</label>
+                      <input type="text" formControlName="startDate">
+                      </div>
+                      <div class="form-group">
+                        <label>End Date</label>
+                        <input type="text" formControlName="endDate">
+                      </div>
+                    </div>
                 
                 <div class="form-row">
                   <div class="form-group">

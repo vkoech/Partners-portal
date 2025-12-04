@@ -1,26 +1,20 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Subject, takeUntil } from 'rxjs';
-import { SidebarComponent } from '../../shared/sidebar/sidebar.component';
-import { HeaderComponent } from '../../shared/header/header.component';
-import { FooterComponent } from '../../shared/footer/footer.component';
-import { Payment } from '../../../services/payment';
+import { Component } from '@angular/core';
+import { FormsModule, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
+import { Router, ActivatedRoute } from '@angular/router';
 import { NotificationService } from '../../../services/notification.service';
-
-
+import { Payment } from '../../../services/payment';
+import { FooterComponent } from '../../shared/footer/footer.component';
+import { HeaderComponent } from '../../shared/header/header.component';
+import { SidebarComponent } from '../../shared/sidebar/sidebar.component';
 
 @Component({
-  selector: 'app-new-payment-request',
-  standalone: true,
+  selector: 'app-new-cash-request',
   imports: [CommonModule, FormsModule, ReactiveFormsModule, SidebarComponent, HeaderComponent, FooterComponent],
-  templateUrl: './new-payment-request.component.html',
-  styleUrls: ['./new-payment-request.component.scss']
+  templateUrl: './new-cash-request.html',
+  styleUrl: './new-cash-request.scss'
 })
-export class NewPaymentRequestComponent implements OnInit, OnDestroy {
-  private destroy$ = new Subject<void>();
-  
+export class NewCashRequest {
   sidebarOpen = false;
   paymentRequestForm!: FormGroup;
   paymentRequestLineForm!: FormGroup;
@@ -57,8 +51,6 @@ export class NewPaymentRequestComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 
   private initializeForms() {
@@ -80,8 +72,8 @@ export class NewPaymentRequestComponent implements OnInit, OnDestroy {
       obligatedAmountLCY: [''],
       subAwardTitle: [''],
       areaOfFocus:[''],
-      description: ['']
-
+      description: [''],
+      directCost:['']
     });
 
     this.paymentRequestLineForm = this.fb.group({
@@ -190,6 +182,5 @@ saveModal() {
   console.log(this.paymentRequestForm.value);
   this.closeCustomModal();
 }
-
 
 }

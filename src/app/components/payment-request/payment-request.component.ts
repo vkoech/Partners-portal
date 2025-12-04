@@ -53,6 +53,7 @@ export class PaymentRequestComponent implements OnInit, OnDestroy {
 
     this.paymentService.getAllFundingApplications(this.email).subscribe(data=>{
      this.paymentRequestList=data;
+     console.log(data)
     });
   }
 
@@ -82,8 +83,8 @@ export class PaymentRequestComponent implements OnInit, OnDestroy {
       });
     }
 
-  editRequest(id: string) {
-    this.router.navigate(['/new-payment-request', id]);
+  editRequest(no: string) {
+    this.router.navigate(['/new-payment-request',btoa(no)]);
   }
 
   viewRequest(id: string) {
