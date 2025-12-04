@@ -13,6 +13,7 @@ import { AuthService } from '../../services/auth.service';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent {
+  [x: string]: any;
   email = '';
   password = '';
   rememberMe = false;
@@ -34,11 +35,20 @@ export class LoginComponent {
     this.authService.login(this.LoginForm.value).subscribe({
     next: (res) => {
     this.loading = false;
+
     localStorage.setItem('auth_token', res.jwt);
     localStorage.setItem('refreshToken', res.refreshToken || '');
     localStorage.setItem('userName', this.LoginForm.value.username);
     this.notificationService.success('', res.responseDescription);
-    this.router.navigate(['/register']);
+      const decoded = this.decodeToken(res.jwt);
+      if (decoded) {
+        const status = decoded.status;
+        if (status === 'Approved') {
+          this.router.navigate(['/funding-request']);
+        } else {
+          this.router.navigate(['/register']);
+        }
+      }
   },
   error: (err) => {
     this.loading = false;
@@ -47,6 +57,18 @@ export class LoginComponent {
   }
   });
 }
+
+decodeToken(token: string): any {
+  try {
+    const payload = token.split('.')[1];
+    const decoded = atob(payload);
+    return JSON.parse(decoded);
+  } catch (e) {
+    console.error('Invalid token', e);
+    return null;
+  }
+}
+
 
 
 goToReset(event?: Event) {

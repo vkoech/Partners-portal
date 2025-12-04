@@ -1,4 +1,4 @@
-<div class="payment-surrender-container">
+<div class="payment-request-container">
   <app-sidebar [sidebarType]="'finance'" [(open)]="sidebarOpen"></app-sidebar>
   
   <div class="main-content">
@@ -10,7 +10,7 @@
       [(sidebarOpen)]="sidebarOpen">
     </app-header>
     
-    <div class="payment-surrender-content">
+    <div class="payment-request-content">
       <div class="card-header">
         <h2>CASH SURRENDER</h2>
         <button class="add-new-btn" (click)="navigateToNewPaymentSurrender()">
@@ -29,79 +29,42 @@
         </div>
       </div>
       
-      <!-- Desktop Table -->
-      <div class="table-container hide-mobile">
-        <table class="surrender-table">
+      <div class="table-container">
+        <table class="payment-table">
           <thead>
             <tr>
               <th>No.</th>
-              <th>Currency Code</th>
-              <th>Amount Advanced (LCY)</th>
-              <th>Actual Spent (LCY)</th>
-              <th>Description</th>
+              <th>Application Date</th>
+              <th>Project Code</th>
+              <th>Purpose</th>
+              <th>Budget Amount</th>
+              <th>Budget Amount LCY</th>
+              <th>Obligated Amount</th>
               <th>Status</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let surrender of paginatedData; let i = index" [class.striped]="i % 2 === 1">
-              <td>{{ surrender.no }}</td>
-              <td>{{ surrender.currencyCode }}</td>
-              <td>{{ surrender.amountAdvanced | currency:'KSH':'symbol':'1.0-0' }}</td>
-              <td>{{ surrender.actualSpent | currency:'KSH':'symbol':'1.0-0' }}</td>
-              <td>{{ surrender.description }}</td>
-              <td>
-                <span class="status-badge" [class]="'status-' + surrender.status.toLowerCase()">
-                  {{ surrender.status }}
-                </span>
-              </td>
-              <td class="action-cell">
-                <button class="action-btn view-btn" (click)="viewSurrender(surrender.id)">
-                  <img src="assets/view.svg" alt="View" width="16" height="16" />
-                  VIEW
-                </button>
-              </td>
-            </tr>
+           @for (request of paymentSurrenderList ; track request.no ) {
+             <tr>
+                <td>{{request.no}}</td>
+                <td>{{request.applicationDate}}</td>
+                <td>{{request.projectCode}}</td>
+                <td>{{request.purpose}}</td>
+                <td>{{request.budgetAmount}}</td>
+                <td>{{request.budgetAmountLCY}}</td>
+                <td>{{request.obligatedAmountLCY}}</td>
+                <td>{{request.status}}</td>
+                <td class="action-cell">
+                  <button class="action-btn edit-btn" (click)="editRequest(request.no)">
+                    <img src="assets/edit.svg" alt="Edit" width="16" height="16" />
+                    EDIT
+                  </button>
+                </td>
+            </tr>}
           </tbody>
         </table>
       </div>
-      
-      <!-- Mobile Cards -->
-      <div class="mobile-cards show-mobile">
-        <div class="surrender-card" *ngFor="let surrender of paginatedData">
-          <div class="card-header-mobile">
-            <h3>{{ surrender.no }}</h3>
-            <span class="status-badge" [class]="'status-' + surrender.status.toLowerCase()">
-              {{ surrender.status }}
-            </span>
-          </div>
-          <div class="card-body-mobile">
-            <div class="card-row">
-              <span class="card-label">Currency Code:</span>
-              <span class="card-value">{{ surrender.currencyCode }}</span>
-            </div>
-            <div class="card-row">
-              <span class="card-label">Amount Advanced:</span>
-              <span class="card-value">{{ surrender.amountAdvanced | currency:'KSH':'symbol':'1.0-0' }}</span>
-            </div>
-            <div class="card-row">
-              <span class="card-label">Actual Spent:</span>
-              <span class="card-value">{{ surrender.actualSpent | currency:'KSH':'symbol':'1.0-0' }}</span>
-            </div>
-            <div class="card-row">
-              <span class="card-label">Description:</span>
-              <span class="card-value">{{ surrender.description }}</span>
-            </div>
-          </div>
-          <div class="card-actions">
-            <button class="action-btn view-btn mobile" (click)="viewSurrender(surrender.id)">
-              <img src="assets/view.svg" alt="View" width="16" height="16" />
-              VIEW
-            </button>
-          </div>
-        </div>
-      </div>
-      
       <!-- Pagination -->
       <div class="pagination">
         <button class="page-btn" [disabled]="currentPage === 1" (click)="previousPage()">Prev</button>

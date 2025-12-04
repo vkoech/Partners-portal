@@ -9,6 +9,7 @@ import { FormsModule } from '@angular/forms';
 import { FooterComponent } from '../shared/footer/footer.component';
 import { HeaderComponent } from '../shared/header/header.component';
 import { SidebarComponent } from '../shared/sidebar/sidebar.component';
+import { CashRequestService } from '../../services/cash-request-service';
 
 @Component({
   selector: 'app-cash-request',
@@ -25,25 +26,15 @@ export class CashRequest {
     currentPage = 1;
     itemsPerPage = 5;
   
-    paymentRequestList: any[] = [];
+    cash_request_list: any[] = [];
     email: any
     user: AuthUser | null = null;
     subgranteeNo: any;
     loading=false;
     payment_request:  any[] = [];
-  
-    get totalPages(): number {
-      return Math.ceil(this.paymentRequestList.length / this.itemsPerPage);
-    }
-  
-    get paginatedData(): PaymentRequest[] {
-      const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-      const endIndex = startIndex + this.itemsPerPage;
-      return this.paymentRequestList.slice(startIndex, endIndex);
-    }
-  
+
     private router = inject(Router);
-    private paymentService = inject(Payment);
+    private cashRequestService = inject(CashRequestService);
     private authService = inject(AuthService);
     private notificationService=inject(NotificationService)
   
@@ -52,8 +43,8 @@ export class CashRequest {
       this.subgranteeNo = this.user?.partnerAccountNo;
       this.email=this.user?.emailAddress;
   
-      this.paymentService.getAllFundingApplications(this.email).subscribe(data=>{
-       this.paymentRequestList=data;
+      this.cashRequestService.getAllCashRequests(this.email).subscribe(data=>{
+       this.cash_request_list=data;
       });
     }
   
@@ -67,7 +58,7 @@ export class CashRequest {
             subgranteeNo: this.subgranteeNo,
             emailAddress: this.email
          }
-      this.paymentService.createUpdateFundingApplication(formValues).subscribe({next:(res) => {
+      this.cashRequestService.createUpdateCashRequest(formValues).subscribe({next:(res) => {
        this.router.navigate(['/new-cash-request',btoa(res.no)]);
           },
             error: (err) => {
@@ -78,8 +69,8 @@ export class CashRequest {
           });
         }
      getSingleFundingApplication(){
-        this.paymentService.getAllFundingApplications(this.email).subscribe(data=>{
-        this.paymentRequestList=data;
+        this.cashRequestService.getSingleCashRequest(this.email).subscribe(data=>{
+        // this=data;
         });
       }
   
@@ -96,38 +87,5 @@ export class CashRequest {
         this.currentPage--;
       }
     }
-  
-    nextPage() {
-      if (this.currentPage < this.totalPages) {
-        this.currentPage++;
-      }
-    }
-  
-    goToPage(page: number) {
-      if (page >= 1 && page <= this.totalPages) {
-        this.currentPage = page;
-      }
-    }
-  
-    getVisiblePages(): number[] {
-      const pages: number[] = [];
-      const maxVisible = 5;
-  
-      if (this.totalPages <= maxVisible) {
-        for (let i = 1; i <= this.totalPages; i++) {
-          pages.push(i);
-        }
-      } else {
-        const start = Math.max(1, this.currentPage - 2);
-        const end = Math.min(this.totalPages, start + maxVisible - 1);
-  
-        for (let i = start; i <= end; i++) {
-          pages.push(i);
-        }
-      }
-  
-      return pages;
-    }
-  
 
 }

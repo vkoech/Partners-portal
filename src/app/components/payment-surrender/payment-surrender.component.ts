@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -6,16 +6,9 @@ import { Subject, takeUntil } from 'rxjs';
 import { SidebarComponent } from '../shared/sidebar/sidebar.component';
 import { HeaderComponent } from '../shared/header/header.component';
 import { FooterComponent } from '../shared/footer/footer.component';
-
-export interface PaymentSurrender {
-  id: string;
-  no: string;
-  currencyCode: string;
-  amountAdvanced: number;
-  actualSpent: number;
-  description: string;
-  status: string;
-}
+import { AuthService, AuthUser } from '../../services/auth.service';
+import { CashRequestService } from '../../services/cash-request-service';
+import { NotificationService } from '../../services/notification.service';
 
 @Component({
   selector: 'app-payment-surrender',
@@ -32,32 +25,37 @@ export class PaymentSurrenderComponent implements OnInit, OnDestroy {
   currentPage = 1;
   itemsPerPage = 10;
 
-  paymentSurrenderList: PaymentSurrender[] = [
-    {
-      id: '1',
-      no: 'SUBPS_0020',
-      currencyCode: 'KES',
-      amountAdvanced: 160000,
-      actualSpent: 100000,
-      description: 'For wards',
-      status: 'Open'
-    },
-  ];
+  
+  email: any
+  user: AuthUser | null = null;
+  subgranteeNo: any;
+  loading=false;
+  payment_request:  any[] = [];
+
+  paymentSurrenderList: any[] = [];
 
   get totalPages(): number {
     return Math.ceil(this.paymentSurrenderList.length / this.itemsPerPage);
   }
 
-  get paginatedData(): PaymentSurrender[] {
+  get paginatedData(): any[] {
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
     const endIndex = startIndex + this.itemsPerPage;
     return this.paymentSurrenderList.slice(startIndex, endIndex);
   }
-
-  constructor(private router: Router) {}
+  private router = inject(Router);
+  private cashRequestService = inject(CashRequestService);
+  private authService = inject(AuthService);
+  private notificationService=inject(NotificationService)
 
   ngOnInit(): void {
-    // Initialize component
+      this.user = this.authService.getLoggedInUser();
+      this.subgranteeNo = this.user?.partnerAccountNo;
+      this.email=this.user?.emailAddress;
+  
+      this.cashRequestService.getAllCashRequests(this.email).subscribe(data=>{
+       this.paymentSurrenderList=data;
+      });
   }
 
   ngOnDestroy() {
@@ -72,6 +70,9 @@ export class PaymentSurrenderComponent implements OnInit, OnDestroy {
   viewSurrender(id: string) {
     this.router.navigate(['/new-payment-surrender', id]);
   }
+  editRequest(no: string) {
+      this.router.navigate(['/new-cash-request',btoa(no)]);
+    }
 
   previousPage() {
     if (this.currentPage > 1) {

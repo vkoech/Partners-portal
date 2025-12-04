@@ -50,10 +50,8 @@ export class PaymentRequestComponent implements OnInit, OnDestroy {
     this.user = this.authService.getLoggedInUser();
     this.subgranteeNo = this.user?.partnerAccountNo;
     this.email=this.user?.emailAddress;
-
     this.paymentService.getAllFundingApplications(this.email).subscribe(data=>{
      this.paymentRequestList=data;
-     console.log(data)
     });
   }
 
@@ -68,7 +66,7 @@ export class PaymentRequestComponent implements OnInit, OnDestroy {
           emailAddress: this.email
        }
     this.paymentService.createUpdateFundingApplication(formValues).subscribe({next:(res) => {
-     this.router.navigate(['/new-payment-request',btoa(res.no)]);
+     this.router.navigate(['/funding-request',btoa(res.no)]);
         },
           error: (err) => {
               this.loading = false;
@@ -84,7 +82,7 @@ export class PaymentRequestComponent implements OnInit, OnDestroy {
     }
 
   editRequest(no: string) {
-    this.router.navigate(['/new-payment-request',btoa(no)]);
+    this.router.navigate(['/funding-request',btoa(no)]);
   }
 
   viewRequest(id: string) {

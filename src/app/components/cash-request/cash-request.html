@@ -44,7 +44,7 @@
             </tr>
           </thead>
           <tbody>
-           @for (request of paymentRequestList ; track request.no ) {
+           @for (request of cash_request_list ; track request.no ) {
              <tr>
                 <td>{{request.no}}</td>
                 <td>{{request.applicationDate}}</td>
@@ -64,19 +64,7 @@
           </tbody>
         </table>
       </div>
-      <div class="pagination">
-        <button class="page-btn" [disabled]="currentPage === 1" (click)="previousPage()">Prev</button>
-        @for (page of getVisiblePages(); track page)
-         {
-          <button 
-                class="page-btn"
-                [class.active]="page === currentPage"
-                (click)="goToPage(page)">
-          {{ page }}
-        </button>
-        }
-        <button class="page-btn" [disabled]="currentPage === totalPages" (click)="nextPage()">Next</button>
-      </div>
+   
     </div>
     <app-footer></app-footer>
   </div>
