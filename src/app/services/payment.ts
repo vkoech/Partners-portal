@@ -35,4 +35,19 @@ export class Payment {
   createUpdateFundingApplicationLine(applicationBody: any): Observable<any> {
     return this.httpClient.post<any>(this.baseUrl + 'PartnerProfile/CreateUpdateFundingApplicationLine', applicationBody);
   }
+  getProjectCodes(): Observable<any>{
+   return this.httpClient.get<any>(this.baseUrl+'OData/getProjectCodes');
+  }
+  getcurrencyCodes(): Observable<any>{
+   return this.httpClient.get<any>(this.baseUrl+'OData/getCurrencies');
+  }
+ getReportingCycles(): Observable<any>{
+   return this.httpClient.get<any>(this.baseUrl+'OData/getReportingCycles');
+  }
+ getCategories(): Observable<any>{
+   return this.httpClient.get<any>(this.baseUrl+'OData/getCategories');
+  }
+ getActivityCodes(approvedFundingNo : string): Observable<any>{
+   return this.httpClient.get<any>(this.baseUrl+'OData/getActivityCodes/'+ approvedFundingNo );
+  }
 }

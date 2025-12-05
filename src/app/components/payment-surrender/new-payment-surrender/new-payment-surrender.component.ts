@@ -6,6 +6,9 @@ import { Subject, takeUntil } from 'rxjs';
 import { SidebarComponent } from '../../shared/sidebar/sidebar.component';
 import { HeaderComponent } from '../../shared/header/header.component';
 import { FooterComponent } from '../../shared/footer/footer.component';
+import { NotificationService } from '../../../services/notification.service';
+import { Payment } from '../../../services/payment';
+import { RegistrationService } from '../../../services/registration-service';
 
 export interface PaymentSurrenderLine {
   id: string;
@@ -32,63 +35,54 @@ export interface UploadedDocument {
 })
 export class NewPaymentSurrenderComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
-  
+
   sidebarOpen = false;
-  paymentSurrenderForm!: FormGroup;
-  paymentSurrenderLineForm!: FormGroup;
+  surrenderForm!: FormGroup;
+  surrenderLineForm!: FormGroup;
   showAddLineModal = false;
   isEditMode = false;
-  currentEditingLine: PaymentSurrenderLine | null = null;
-  
-  paymentSurrenderLines: PaymentSurrenderLine[] = [
-    {
-      id: '1',
-      currencyCode: 'KSH',
-      amount: 16000,
-      description: 'Cooperate Meeting'
-    }
-  ];
-  
-  uploadedDocuments: UploadedDocument[] = [
-    {
-      id: '1',
-      name: 'Financial Report',
-      type: 'PDF',
-      size: 1024000,
-      uploadDate: '2025-01-15'
-    },
-    {
-      id: '2',
-      name: 'Bank Reconciliation',
-      type: 'PDF',
-      size: 2048000,
-      uploadDate: '2025-01-15'
-    },
-    {
-      id: '3',
-      name: 'Vouchers',
-      type: 'PDF',
-      size: 1536000,
-      uploadDate: '2025-01-15'
-    }
-  ];
-  
-  currencyOptions = [
-    { code: 'KSH', name: 'Kenyan Shilling' },
-    { code: 'USD', name: 'US Dollar' },
-    { code: 'EUR', name: 'Euro' }
-  ];
+  showModal = false;
+  loading=false;
+  subgranteeNo: string;
+  no: string;
+  paymentApplicationLines: any;
+  project_code_list: any;
+  currency_code_list: any;
+  area_of_focus_items: any;
+  isConfirmed = false;
+
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private paymentService: Payment,
+    private notificationService: NotificationService,
+    private registrationService: RegistrationService,
+
+
   ) {
     this.initializeForms();
+    const encodedNo = this.route.snapshot.paramMap.get('id');
+      if (encodedNo) {
+        this.no = atob(encodedNo);
+      }
   }
 
   ngOnInit(): void {
-    // Initialize component
+    this.paymentService.getSingleFundingApplication(this.no).subscribe(data=>{
+        this.surrenderForm.patchValue(data);
+      });
+    this.paymentService.getProjectCodes().subscribe(data=>{
+        this.project_code_list=data;
+      });
+    this.paymentService.getcurrencyCodes().subscribe(data=>{
+        this.currency_code_list=data;
+      });
+    this.registrationService.getAreaOfFocus().subscribe(data => {
+      this.area_of_focus_items = data;
+    });
+    this.getFundsApplicationLines()
   }
 
   ngOnDestroy() {
@@ -97,72 +91,71 @@ export class NewPaymentSurrenderComponent implements OnInit, OnDestroy {
   }
 
   private initializeForms() {
-    this.paymentSurrenderForm = this.fb.group({
-      paymentRequest: ['', Validators.required],
-      currencyCode: ['KES'],
-      disbursedAmount: [120000],
-      surrenderCurrencyCode: ['KES'],
-      surrenderedAmount: ['', [Validators.required, Validators.min(1)]],
-      surrenderDate: ['', Validators.required],
-      description: ['', Validators.required]
+    this.surrenderForm = this.fb.group({
+      no: [''],
+      emailAddress: [''],
+      subgranteeNo: [''],
+      documentDate: [''],
+      paymentRequest: [''],
+      currencyCode: [''],
+      disbursedAmount: [''],
+      surrenderedAmount: [''],
+      startDate: [''],
+      endDate: [''],
+      surrenderDate: [''],
     });
 
-    this.paymentSurrenderLineForm = this.fb.group({
-      currencyCode: ['', Validators.required],
-      amount: ['', [Validators.required, Validators.min(1)]],
-      secondCurrencyCode: [''],
-      description: ['', Validators.required]
+    this.surrenderLineForm = this.fb.group({
+        lineNo: [''],
+        documentNo: [''],
+        amountReceived: [''],
+        amountSpent: [''],
+        balance: [''],
+        currencyCode: [''],
+        category: [''],
+        description:['']
     });
   }
 
   openAddLineModal() {
     this.showAddLineModal = true;
     this.isEditMode = false;
-    this.paymentSurrenderLineForm.reset();
-  }
-
-  openEditLineModal(line: PaymentSurrenderLine) {
-    this.showAddLineModal = true;
-    this.isEditMode = true;
-    this.currentEditingLine = line;
-    this.paymentSurrenderLineForm.patchValue(line);
-  }
-
-  closeAddLineModal() {
-    this.showAddLineModal = false;
-    this.isEditMode = false;
-    this.currentEditingLine = null;
-    this.paymentSurrenderLineForm.reset();
+    this.surrenderLineForm.reset();
   }
 
   submitLine() {
-    if (this.paymentSurrenderLineForm.valid) {
-      const formValue = this.paymentSurrenderLineForm.value;
-      
-      if (this.isEditMode && this.currentEditingLine) {
-        // Update existing line
-        const index = this.paymentSurrenderLines.findIndex(line => line.id === this.currentEditingLine!.id);
-        if (index !== -1) {
-          this.paymentSurrenderLines[index] = {
-            ...this.currentEditingLine,
-            ...formValue
-          };
-        }
-      } else {
-        // Add new line
-        const newLine: PaymentSurrenderLine = {
-          id: Date.now().toString(),
-          ...formValue
-        };
-        this.paymentSurrenderLines.push(newLine);
+    this.loading=true
+      if( this.surrenderLineForm.valid){
+      let formValues = this.surrenderLineForm.value;
+      formValues.subgranteeNo = this.subgranteeNo;
+      formValues.no = this.no;
+      this.paymentService.createUpdateFundingApplicationLine(formValues).subscribe({next:(res) => {
+      this.notificationService.success('', res['responseDescription']);
+        this.getFundsApplicationLines();
+        this.isEditMode = true;
+        },
+          error: (err) => {
+              this.loading = false;
+              const message = err.error?.responseDescription || 'Failed to update request.';
+              this.notificationService.error('', message);
+            }
+        });
       }
-      
-      this.closeAddLineModal();
-    }
+      else {
+        this.notificationService.warning('', 'Please fill all required fields correctly.');
+        this.loading = false;
+        this.surrenderForm.markAllAsTouched();
+      }
   }
 
   deleteLine(lineId: string) {
-    this.paymentSurrenderLines = this.paymentSurrenderLines.filter(line => line.id !== lineId);
+
+  }
+
+  getFundsApplicationLines(){
+     this.paymentService.getAllFundingApplicationLines(this.no).subscribe(data=>{
+      this.paymentApplicationLines=data
+    });
   }
 
   triggerFileUpload() {
@@ -171,46 +164,56 @@ export class NewPaymentSurrenderComponent implements OnInit, OnDestroy {
     fileInput.accept = '.pdf,.jpg,.jpeg,.png';
     fileInput.onchange = (event: any) => {
       const file = event.target.files[0];
-      if (file) {
-        this.handleFileUpload(file);
-      }
     };
     fileInput.click();
   }
 
-  private handleFileUpload(file: File) {
-    // Simulate file upload
-    const newDocument: UploadedDocument = {
-      id: Date.now().toString(),
-      name: file.name,
-      type: file.type.includes('pdf') ? 'PDF' : 'Image',
-      size: file.size,
-      uploadDate: new Date().toISOString().split('T')[0]
-    };
-    
-    this.uploadedDocuments.push(newDocument);
-  }
-
-  viewDocument(document: UploadedDocument) {
-    console.log('Viewing document:', document.name);
-  }
-
   deleteDocument(documentId: string) {
-    this.uploadedDocuments = this.uploadedDocuments.filter(doc => doc.id !== documentId);
   }
 
-  onSubmit() {
-    if (this.paymentSurrenderForm.valid) {
-      console.log('Payment Surrender Form:', this.paymentSurrenderForm.value);
-      console.log('Payment Surrender Lines:', this.paymentSurrenderLines);
-      console.log('Uploaded Documents:', this.uploadedDocuments);
-      
-      // Navigate back to payment surrender list
-      this.router.navigate(['/payment-surrender']);
+    onCheckboxChange(event: Event) {
+      const input = event.target as HTMLInputElement;
+      this.isConfirmed = input.checked;
     }
+
+  onSubmitPaymentHeader() {
+      this.loading=true
+      if( this.surrenderForm.valid){
+      let formValues = this.surrenderForm.value;
+      formValues.subgranteeNo = this.subgranteeNo;
+      formValues.no = this.no;
+      this.paymentService.createUpdateFundingApplication(formValues).subscribe({next:(res) => {
+      this.notificationService.success('', res['responseDescription']);
+        this.isEditMode = true;
+        },
+          error: (err) => {
+              this.loading = false;
+              const message = err.error?.responseDescription || 'Failed to update request.';
+              this.notificationService.error('', message);
+            }
+        });
+      }
+      else {
+        this.notificationService.warning('', 'Please fill all required fields correctly.');
+        this.loading = false;
+        this.surrenderForm.markAllAsTouched();
+      }
   }
 
   onCancel() {
-    this.router.navigate(['/payment-surrender']);
+    this.router.navigate(['/payment-request']);
   }
+
+      openCustomModal() {
+      this.showModal = true;
+    }
+
+    closeCustomModal() {
+      this.showModal = false;
+    }
+
+    saveModal() {
+      console.log(this.surrenderForm.value);
+      this.closeCustomModal();
+    }
 }

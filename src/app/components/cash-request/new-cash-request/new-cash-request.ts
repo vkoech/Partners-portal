@@ -7,6 +7,7 @@ import { Payment } from '../../../services/payment';
 import { FooterComponent } from '../../shared/footer/footer.component';
 import { HeaderComponent } from '../../shared/header/header.component';
 import { SidebarComponent } from '../../shared/sidebar/sidebar.component';
+import { RegistrationService } from '../../../services/registration-service';
 
 @Component({
   selector: 'app-new-cash-request',
@@ -25,27 +26,44 @@ export class NewCashRequest {
   subgranteeNo: string;
   no: string;
   paymentApplicationLines: any;
+  project_code_list: any;
+  currency_code_list: any;
+  area_of_focus_items: any;
+  activity_code_list:any;
+  approvedFundingNo:any
 
-  
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private fb: FormBuilder,
     private paymentService: Payment,
     private notificationService: NotificationService,
-
+    private registrationService: RegistrationService,
   ) {
     this.initializeForms();
-    const encodedNo = this.route.snapshot.paramMap.get('id');  
+    const encodedNo = this.route.snapshot.paramMap.get('id');
       if (encodedNo) {
-        this.no = atob(encodedNo); 
-        console.log('Decoded No:', this.no);
+        this.no = atob(encodedNo);
       }
   }
 
   ngOnInit(): void {
     this.paymentService.getSingleFundingApplication(this.no).subscribe(data=>{
       this.paymentRequestForm.patchValue(data);
+    });
+
+    this.paymentService.getProjectCodes().subscribe(data=>{
+        this.project_code_list=data;
+      });
+    this.paymentService.getcurrencyCodes().subscribe(data=>{
+        this.currency_code_list=data;
+      });
+    this.paymentService.getActivityCodes(this.approvedFundingNo).subscribe(data=>{
+        this.activity_code_list=data;
+      });
+    this.registrationService.getAreaOfFocus().subscribe(data => {
+      this.area_of_focus_items = data;
     });
     this.getFundsApplicationLines()
   }
@@ -119,7 +137,7 @@ export class NewCashRequest {
   }
 
   deleteLine(lineId: string) {
-    
+
   }
 
   getFundsApplicationLines(){

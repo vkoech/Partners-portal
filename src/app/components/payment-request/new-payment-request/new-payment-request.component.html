@@ -1,31 +1,42 @@
 <div class="new-payment-request-container">
   <app-sidebar [sidebarType]="'finance'" [(open)]="sidebarOpen"></app-sidebar>
-  
+
   <div class="main-content">
-    <app-header 
-      title="Funding Application" 
+    <app-header
+      title="Funding Application"
       subtitle="Finance Services/Payment Request"
       headerClass="finance"
       [showBackButton]="true"
       [(sidebarOpen)]="sidebarOpen">
     </app-header>
-<!-- I confirm that the provided information is accurate. -->
     <div class="new-payment-request-content">
      <div class="new-payment-request-section card-effect">
        <div class="section-header">
         <h2>Funding Application</h2>
-       </div>     
+       </div>
     <div class="new-payment-request-content">
     <form [formGroup]="paymentRequestForm">
       <div class="form-section">
         <div class="form-row">
            <div class="form-group">
             <label>Area of Focus</label>
-            <input type="text" formControlName="areaOfFocus">
+            <select formControlName="areaOfFocus">
+              <option value="" [selected]=true disabled>Select</option>
+               @for (area of area_of_focus_items; track area.code) {
+                <option [value]="area.code">
+                  {{ area.description}}
+                </option>}
+            </select>
           </div>
           <div class="form-group">
             <label>Project Code</label>
-            <input type="text" formControlName="projectCode">
+             <select formControlName="projectCode">
+                  <option value="" [selected]=true disabled>Select</option>
+                  @for (project of project_code_list; track project.code) {
+                  <option [value]="project.code">
+                    {{ project.name}}
+                  </option>}
+                </select>
           </div>
         </div>
          <div class="form-group">
@@ -35,21 +46,33 @@
         <div class="form-row">
           <div class="form-group">
             <label>Project Start Date</label>
-            <input type="text" formControlName="subAwardStartDate">
+            <input type="date" formControlName="subAwardStartDate">
           </div>
            <div class="form-group">
             <label>Project End Date</label>
-            <input type="text" formControlName="subAwardEndDate">
+            <input type="date" formControlName="subAwardEndDate">
           </div>
         </div>
-        <div class="form-row">      
+        <div class="form-row">
           <div class="form-group">
             <label>Currency</label>
-            <input type="text" formControlName="currencyCode">
+              <select formControlName="currencyCode">
+                  <option value="" [selected]=true disabled>Select</option>
+                  @for (currency_type of currency_code_list; track currency_type.code) {
+                  <option [value]="currency_type.code">
+                    {{ currency_type.description}}
+                  </option>}s
+                </select>
           </div>
           <div class="form-group">
             <label>Reporting Cycle</label>
-            <input type="text" formControlName="reportingCycle">
+            <select formControlName="reportingCycle">
+              <option value="" [selected]=true disabled>Select</option>
+                  @for (cycle_list of reporting_cycle_list; track cycle_list.code) {
+                  <option [value]="cycle_list.code">
+                    {{ cycle_list.description}}
+                  </option>}s
+            </select>
           </div>
         </div>
         <div class="form-row">
@@ -68,21 +91,24 @@
   @if(showModal)
   {
     <div class="custom-modal-backdrop">
-    <div class="custom-modal"> 
+    <div class="custom-modal">
       <h3>Funding Request</h3>
         <form [formGroup]="paymentRequestLineForm">
           <div class="modal-row">
-            <input placeholder="Category" formControlName="category">
-            <input placeholder="Amount" formControlName="amount">
-          </div>
-          <div class="modal-row">
-            <input placeholder="Applied Amount" formControlName="appliedAmount">
+             <select formControlName="category">
+                  <option value="" [selected]=true disabled>Select Category</option>
+                  @for (category of category_list; track category.code) {
+                  <option [value]="category.code">
+                    {{ category.description}}
+                  </option>}
+                </select>
+          <input placeholder="Applied Amount" formControlName="appliedAmount">
           </div>
           <div class="modal-row">
             <textarea placeholder="Description" formControlName="description"></textarea>
           </div>
           <div class="modal-actions">
-            <button type="button"  class="submit" (click)="saveModal()">Save</button>
+            <button type="button"  class="submit" (click)="submitLine()">Save</button>
             <button type="button" class="submit" (click)="closeCustomModal()">Cancel</button>
           </div>
         </form>
@@ -90,11 +116,10 @@
     </div>
   }
 
-      <table class="simple-table">
+      <table class="request-line-table">
               <thead>
                 <tr>
                   <th>Category</th>
-                  <th>Amount</th>
                   <th>Applied Amount</th>
                   <th>Applied Amount (LCY)</th>
                   <th>Description</th>
@@ -104,24 +129,26 @@
               <tbody>
                 <tr *ngFor="let row of paymentApplicationLines">
                   <td>{{ row.category }}</td>
-                  <td>{{ row.amount }}</td>
                   <td>{{ row.appliedAmount }}</td>
                   <td>{{ row.appliedAmountLCY }}</td>
                   <td>{{ row.description }}</td>
                 </tr>
               </tbody>
             </table>
-          <div class="section-footer">
-            <input type="checkbox" formControlName="isConfirmed" />
-                <span>I confirm that the provided information is accurate.</span>
-            <button class="submit" (click)="onSubmitPaymentHeader()" >
-                @if(loading)
-                  {
-                    <span  class="spinner"></span>
-                  }
-                  Submit</button>
-                  <button class="submit" (click)="onCancel()">Close</button>
-                </div>
+         <div class="section-footer">
+            <input type="checkbox" (change)="onCheckboxChange($event)" />
+            <span>I confirm that the provided information is accurate.</span>
+            <button class="submit"
+                    (click)="onSubmitPaymentHeader()"
+                    [disabled]="!isConfirmed">
+              @if(loading)
+              {
+                <span class="spinner"></span>}
+              Submit
+            </button>
+            <button class="submit" (click)="onCancel()">Close</button>
+          </div>
+
               <app-footer></app-footer>
             </div>
     </div>

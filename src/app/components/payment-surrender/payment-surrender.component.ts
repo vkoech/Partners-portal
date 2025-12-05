@@ -25,7 +25,7 @@ export class PaymentSurrenderComponent implements OnInit, OnDestroy {
   currentPage = 1;
   itemsPerPage = 10;
 
-  
+
   email: any
   user: AuthUser | null = null;
   subgranteeNo: any;
@@ -52,7 +52,7 @@ export class PaymentSurrenderComponent implements OnInit, OnDestroy {
       this.user = this.authService.getLoggedInUser();
       this.subgranteeNo = this.user?.partnerAccountNo;
       this.email=this.user?.emailAddress;
-  
+
       this.cashRequestService.getAllCashRequests(this.email).subscribe(data=>{
        this.paymentSurrenderList=data;
       });
@@ -71,7 +71,7 @@ export class PaymentSurrenderComponent implements OnInit, OnDestroy {
     this.router.navigate(['/new-payment-surrender', id]);
   }
   editRequest(no: string) {
-      this.router.navigate(['/new-cash-request',btoa(no)]);
+      this.router.navigate(['/new-payment-surrender',btoa(no)]);
     }
 
   previousPage() {
