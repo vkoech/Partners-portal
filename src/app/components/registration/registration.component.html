@@ -1,7 +1,8 @@
 <div class="registration-container">
   <div class="registration-content">
     <div class="registration-header">
-      <h6>REGISTER</h6>
+      <h6>SUB-GRANTEE REGISTISTRATION FORM</h6>
+      <div class="status">Application Status: {{status.status}}</div>
     </div>
 
     <!-- Step Navigation -->
@@ -24,7 +25,7 @@
        (click)="goToStep(3)"
        [class.disabled]="!stepCompleted[2]">
         <div class="step-number">03</div>
-        <div class="step-label">GEO COVERAGE</div>
+        <div class="step-label">GEOGRAPHICAL COVERAGE</div>
       </div>
       <div class="step" [class.active]="currentStep === 4"
        [class.completed]="stepCompleted[4]"
@@ -52,7 +53,7 @@
         (click)="goToStep(7)"
          [class.disabled]="!stepCompleted[6]">
         <div class="step-number">07</div>
-        <div class="step-label">SUMMARY</div>
+        <div class="step-label">PROFILE</div>
       </div>
     </div>
 
@@ -286,8 +287,12 @@
               <input type="text" formControlName="majorDonorOrPartner">
             </div>
             <div class="form-group">
-              <label>Project Value: <span class="required">*</span></label>
-              <input type="text" formControlName="projectValue">
+              <label>Project Type: <span class="required">*</span></label>
+                <select formControlName="projetcType" class="form-input">
+                  <option value="">Select</option>
+                  <option value="Prime">Prime</option>
+                  <option value="Sub-Prime">Sub-Prime</option>
+                </select>
             </div>
           </div>
           <div class="form-row">
@@ -301,6 +306,22 @@
             </div>
             <div *ngIf="experienceForm.hasError('dateRangeInvalid')" style="color:red;">
               End date cannot be earlier than start date.
+            </div>
+          </div>
+          <div class="form-row">
+             <div class="form-group">
+              <label>Currency: <span class="required">*</span></label>
+                <select formControlName="currencyCode">
+                  <option value="" [selected]=true disabled>Select</option>
+                  @for (currency_type of currency_code_list; track currency_type.code) {
+                  <option [value]="currency_type.code">
+                    {{ currency_type.description}}
+                  </option>}
+                </select>
+            </div>
+            <div class="form-group">
+              <label>Project Value: <span class="required">*</span></label>
+              <input type="text" formControlName="projectValue">
             </div>
           </div>
           <div class="form-row">
@@ -374,11 +395,22 @@
       <form [formGroup]="contactPersonForm" (ngSubmit)="contactPersonInfo()">
         <div class="form-section">
           <h4>Add Contact Person Details</h4>
+           <div class="form-row">
+            <div class="form-group">
+              <label>Contact Type(): <span class="required">*</span></label>
+                <select formControlName="contactType" class="form-input">
+                  <option value="">Select</option>
+                  <option value="Primary Contact">Primary Contact</option>
+                  <option value="Secondary Contact">Secondary Contact</option>
+                  <option value="Secondary Contact">Other Contact</option>
+                </select>
+            </div>
+           </div>
           <div class="form-row">
             <div class="form-group">
-              <label>Contact Type: <span class="required">*</span></label>
-                <select formControlName="contactType">
-                  <option value="" [selected]=true disabled>Contact Type</option>
+              <label>Role: <span class="required">*</span></label>
+                <select formControlName="roleType">
+                  <option value="" [selected]=true disabled>Select</option>
                   @for (contact_type of contact_type_list; track contact_type.code) {
                   <option [value]="contact_type.code">
                     {{ contact_type.description}}

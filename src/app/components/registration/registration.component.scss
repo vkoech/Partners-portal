@@ -46,13 +46,16 @@
   z-index: 1;
 }
 
-.registration-header h6 {
+.registration-header h6{
   font-size: 1.5rem;
   font-weight: 600;
   margin: 0;
   position: relative;
   z-index: 2;
   letter-spacing: 2px;
+}
+.registration-header .status {
+  color: #fff !important;
 }
 
 .step-navigation {

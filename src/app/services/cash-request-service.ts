@@ -19,10 +19,14 @@ export class CashRequestService {
  getAllCashRequestLines(documentNo: string): Observable<any>{
      return this.httpClient.get<any>(this.baseUrl+'CashRequest/GetAllCashRequestLines/'+documentNo);
     }
+
+ getApprovedFundingRequests(emailAddress: string): Observable<any>{
+     return this.httpClient.get<any>(this.baseUrl+'CashRequest/GetApprovedFundingRequests/'+emailAddress);
+    }
  createUpdateCashRequest(applicationBody: any): Observable<any> {
       return this.httpClient.post<any>(this.baseUrl + 'CashRequest/CreateUpdateCashRequest', applicationBody);
     }
  createUpdateCashRequestLine(applicationBody: any): Observable<any> {
     return this.httpClient.post<any>(this.baseUrl + 'CashRequest/CreateUpdateCashRequestLine', applicationBody);
-  }   
+  }
 }

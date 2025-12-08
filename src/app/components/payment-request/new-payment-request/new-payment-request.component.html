@@ -34,7 +34,7 @@
                   <option value="" [selected]=true disabled>Select</option>
                   @for (project of project_code_list; track project.code) {
                   <option [value]="project.code">
-                    {{ project.name}}
+                    {{ project.description}}
                   </option>}
                 </select>
           </div>

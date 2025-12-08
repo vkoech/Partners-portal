@@ -6,6 +6,7 @@ import { RegistrationService } from '../../services/registration-service';
 import { AuthService, AuthUser } from '../../services/auth.service';
 import { NotificationService } from '../../services/notification.service';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
+import { Payment } from '../../services/payment';
 
 export interface UploadedDocument {
   id: string;
@@ -55,6 +56,8 @@ export class RegistrationComponent implements OnInit {
   dropdownSettings = {};
   selectedAreaOfFocusValues: any[] = [];
   selectedGeoValues: any[] = [];
+  currency_code_list:any;
+  status:any;
 
   constructor(
     private router: Router,
@@ -62,7 +65,8 @@ export class RegistrationComponent implements OnInit {
     private registrationService: RegistrationService,
     private authService: AuthService,
     private notificationService: NotificationService,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
+    private paymentService: Payment,
   ) {
     this.initializeForms();
 
@@ -129,6 +133,8 @@ export class RegistrationComponent implements OnInit {
       lineNo:0,
       documentNo:[''],
       majorDonorOrPartner:[''],
+      projectType:[''],
+      currencyCode:[''],
       startDate:[''],
       endDate:[''],
       projectValue:[''],
@@ -143,6 +149,7 @@ export class RegistrationComponent implements OnInit {
       lineNo:0,
       documentNo:[''],
       contactType:[''],
+      roleType:[''],
       emailAddress:[''],
       phoneNo:[''],
       names:[''],
@@ -153,6 +160,9 @@ export class RegistrationComponent implements OnInit {
     documentNo:[''],
     emailAddress:['']
   });
+   this.paymentService.getcurrencyCodes().subscribe(data=>{
+        this.currency_code_list=data;
+      });
   }
 
 
@@ -571,6 +581,7 @@ onGeoSelect(item: any){
 
  getPartnersProfile() {
       this.registrationService.getPartnersProfile(this.email).subscribe(data => {
+      this.status=data;
         if (data.dateRegistered) {
           const parts = data.dateRegistered.split('/');
           data.dateRegistered = `${parts[2]}-${parts[1].padStart(2,'0')}-${parts[0].padStart(2,'0')}`;

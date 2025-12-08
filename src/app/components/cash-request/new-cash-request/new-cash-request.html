@@ -19,7 +19,7 @@
       <div class="form-section">
          <div class="form-row">
            <div class="form-group">
-            <label>Application Number</label>
+            <label>Approved Application Number</label>
              <select formControlName="areaOfFocus">
               <option value="" [selected]=true disabled>Select</option>
                @for (approved of activity_code_list; track approved.code) {
@@ -51,7 +51,7 @@
                   <option value="" [selected]=true disabled>Select</option>
                   @for (project of project_code_list; track project.code) {
                   <option [value]="project.code">
-                    {{ project.name}}
+                    {{ project.description}}
                   </option>}
                 </select>
           </div>

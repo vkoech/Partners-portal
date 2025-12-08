@@ -8,6 +8,8 @@ import { FooterComponent } from '../../shared/footer/footer.component';
 import { HeaderComponent } from '../../shared/header/header.component';
 import { SidebarComponent } from '../../shared/sidebar/sidebar.component';
 import { RegistrationService } from '../../../services/registration-service';
+import { CashRequestService } from '../../../services/cash-request-service';
+import { AuthService, AuthUser } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-new-cash-request',
@@ -23,7 +25,7 @@ export class NewCashRequest {
   isEditMode = false;
   showModal = false;
   loading=false;
-  subgranteeNo: string;
+  subgranteeNo: any;
   no: string;
   paymentApplicationLines: any;
   project_code_list: any;
@@ -32,6 +34,8 @@ export class NewCashRequest {
   activity_code_list:any;
   approvedFundingNo:any;
   category_list:any
+  email: any
+  user: AuthUser | null = null;
 
 
   constructor(
@@ -41,7 +45,14 @@ export class NewCashRequest {
     private paymentService: Payment,
     private notificationService: NotificationService,
     private registrationService: RegistrationService,
+    private cashRequestService : CashRequestService,
+     private authService: AuthService,
+
   ) {
+
+  this.user = this.authService.getLoggedInUser();
+      this.subgranteeNo = this.user?.partnerAccountNo;
+      this.email=this.user?.emailAddress;
     this.initializeForms();
     const encodedNo = this.route.snapshot.paramMap.get('id');
       if (encodedNo) {
@@ -63,7 +74,7 @@ export class NewCashRequest {
     this.paymentService.getCategories().subscribe(data=>{
         this.category_list=data;
       });
-    this.paymentService.getActivityCodes(this.approvedFundingNo).subscribe(data=>{
+    this.cashRequestService.getApprovedFundingRequests(this.email).subscribe(data=>{
         this.activity_code_list=data;
       });
     this.registrationService.getAreaOfFocus().subscribe(data => {
