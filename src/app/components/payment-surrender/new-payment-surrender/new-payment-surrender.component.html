@@ -77,7 +77,14 @@
           <div class="modal-row">
             <div class="form-field">
              <label>Category</label>
-            <input formControlName="category">
+                <select formControlName="category">
+                  <option value="" [selected]="true" disabled>Select Category</option>
+                  @for (category of category_list; track category.code) {
+                    <option [value]="category.code">
+                      {{ category.description }}
+                    </option>
+                  }
+                </select>
             </div>
               <div class="form-field">
                 <label>Amount Received</label>

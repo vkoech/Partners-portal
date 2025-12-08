@@ -563,6 +563,23 @@
 .request-line-table th {
    background: #F8A5A5;
 }
+.modal-row {
+  display: flex;
+  gap: 15px;
+  width: 100%;
+}
+
+.modal-row select,
+.modal-row input {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
 button[disabled] {
   opacity: 0.5;
   cursor: not-allowed;
@@ -592,6 +609,9 @@ label {
    font-weight: 300;
    font-size: small;
 }
+
+
+
 
 
 

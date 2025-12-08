@@ -50,6 +50,7 @@ export class NewPaymentSurrenderComponent implements OnInit, OnDestroy {
   currency_code_list: any;
   area_of_focus_items: any;
   isConfirmed = false;
+  category_list: any
 
 
   constructor(
@@ -78,6 +79,9 @@ export class NewPaymentSurrenderComponent implements OnInit, OnDestroy {
       });
     this.paymentService.getcurrencyCodes().subscribe(data=>{
         this.currency_code_list=data;
+      });
+    this.paymentService.getCategories().subscribe(data=>{
+        this.category_list=data;
       });
     this.registrationService.getAreaOfFocus().subscribe(data => {
       this.area_of_focus_items = data;

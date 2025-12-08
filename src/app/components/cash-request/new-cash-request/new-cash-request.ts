@@ -30,7 +30,8 @@ export class NewCashRequest {
   currency_code_list: any;
   area_of_focus_items: any;
   activity_code_list:any;
-  approvedFundingNo:any
+  approvedFundingNo:any;
+  category_list:any
 
 
   constructor(
@@ -58,6 +59,9 @@ export class NewCashRequest {
       });
     this.paymentService.getcurrencyCodes().subscribe(data=>{
         this.currency_code_list=data;
+      });
+    this.paymentService.getCategories().subscribe(data=>{
+        this.category_list=data;
       });
     this.paymentService.getActivityCodes(this.approvedFundingNo).subscribe(data=>{
         this.activity_code_list=data;
