@@ -63,7 +63,8 @@ export class PaymentRequestComponent implements OnInit, OnDestroy {
  createNewPaymentRequest (){
        const formValues = {
           subgranteeNo: this.subgranteeNo,
-          emailAddress: this.email
+          emailAddress: this.email,
+          no:''
        }
     this.paymentService.createUpdateFundingApplication(formValues).subscribe({next:(res) => {
      this.router.navigate(['/funding-request',btoa(res.no)]);
