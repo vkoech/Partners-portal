@@ -75,18 +75,36 @@
       <h3>Cash Surender</h3>
         <form [formGroup]="surrenderLineForm">
           <div class="modal-row">
-            <input placeholder="Category" formControlName="category">
-            <input placeholder="Amount Received" formControlName="amountReceived">
-          </div>
-          <div class="modal-row">
-            <input placeholder="Amount Spent" formControlName="currencyCode">
-            <input placeholder="Balance" formControlName="balance">
-          </div>
+            <div class="form-field">
+             <label>Category</label>
+            <input formControlName="category">
+            </div>
+              <div class="form-field">
+                <label>Amount Received</label>
+               <input formControlName="amountReceived">
+              </div>
+            </div>
+            <div class="modal-row">
+             <div class="form-field">
+               <label>Amount Spent</label>
+               <input formControlName="currencyCode">
+            </div>
+            <div class="form-field">
+              <label>Balance</label>
+              <input formControlName="balance">
+            </div>
+            </div>
            <div class="modal-row">
-            <input placeholder="Currency" formControlName="currencyCode">
+             <div class="form-field">
+               <label>Currency</label>
+               <input formControlName="currencyCode">
+            </div>
           </div>
           <div class="modal-row">
-            <textarea placeholder="Description" formControlName="description"></textarea>
+            <div class="form-field full-width">
+              <label>Description</label>
+              <textarea formControlName="description"></textarea>
+            </div>
           </div>
           <div class="modal-actions">
             <button type="button"  class="submit" (click)="saveModal()">Save</button>

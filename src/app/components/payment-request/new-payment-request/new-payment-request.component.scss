@@ -592,6 +592,25 @@ button.submit:not([disabled]) {
   color: white;
 }
 
+//modal
+.form-field {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  margin-right: 12px;
+}
+
+.form-field.full-width {
+  flex: 1 1 100%;
+}
+
+label {
+  margin-bottom: 4px;
+   font-weight: 300;
+   font-size: small;
+}
+
+
 
 
 

@@ -171,7 +171,7 @@ export class NewPaymentSurrenderComponent implements OnInit, OnDestroy {
   deleteDocument(documentId: string) {
   }
 
-    onCheckboxChange(event: Event) {
+  onCheckboxChange(event: Event) {
       const input = event.target as HTMLInputElement;
       this.isConfirmed = input.checked;
     }
