@@ -97,12 +97,12 @@ export class NewPaymentRequestComponent implements OnInit, OnDestroy {
       no: [''],
       emailAddress: [''],
       subgranteeNo: [''],
-      documentDate: [''],
+      // documentDate: [''],
       applicationDate: [''],
       subAwardStartDate: [''],
       subAwardEndDate: [''],
       projectCode: [''],
-      purpose: [''],
+      // purpose: [''],
       currencyCode: [''],
       reportingCycle: [''],
       budgetAmount: [''],
@@ -113,7 +113,10 @@ export class NewPaymentRequestComponent implements OnInit, OnDestroy {
       areaOfFocus:[''],
       description: [''],
       declarationDone:[''],
-      declarationDate:['']
+      declarationDate:[''],
+      status:[''],
+      responseDescription:[''],
+      responseCode:true
     });
 
     this.paymentRequestLineForm = this.fb.group({
@@ -137,9 +140,11 @@ export class NewPaymentRequestComponent implements OnInit, OnDestroy {
       if( this.paymentRequestLineForm.valid){
       let formValues = this.paymentRequestLineForm.value;
       formValues.documentNo = this.no;
+      formValues.declarationDone=this.isConfirmed;
       this.paymentService.createUpdateFundingApplicationLine(formValues).subscribe({next:(res) => {
       this.notificationService.success('', res['responseDescription']);
-        // this.getPartnersProfile();
+        this.getFundsApplicationLines();
+        this.closeCustomModal();
         this.isEditMode = true;
         },
           error: (err) => {
@@ -156,9 +161,13 @@ export class NewPaymentRequestComponent implements OnInit, OnDestroy {
       }
   }
 
-  deleteLine(lineId: string) {
+  deleteRequest(lineId: string) {
+
+   }
+   editRequest(lineId: string) {
 
   }
+
 
   getFundsApplicationLines(){
      this.paymentService.getAllFundingApplicationLines(this.no).subscribe(data=>{
@@ -210,7 +219,7 @@ export class NewPaymentRequestComponent implements OnInit, OnDestroy {
   }
 
   onCancel() {
-    this.router.navigate(['/payment-request']);
+    this.router.navigate(['/funding-request']);
   }
 
   openCustomModal() {

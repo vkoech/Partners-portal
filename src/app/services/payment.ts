@@ -30,10 +30,10 @@ export class Payment {
    return this.httpClient.get<any>(this.baseUrl+'FundingApplication/DeleteFundingApplicationLine/'+ lineNo+'/'+documentNo);
   }
   createUpdateFundingApplication(applicationBody: any): Observable<any> {
-    return this.httpClient.post<any>(this.baseUrl + 'PartnerProfile/CreateUpdateFundingApplication', applicationBody);
+    return this.httpClient.post<any>(this.baseUrl + 'FundingApplication/CreateUpdateFundingApplication', applicationBody);
   }
   createUpdateFundingApplicationLine(applicationBody: any): Observable<any> {
-    return this.httpClient.post<any>(this.baseUrl + 'PartnerProfile/CreateUpdateFundingApplicationLine', applicationBody);
+    return this.httpClient.post<any>(this.baseUrl + 'FundingApplication/CreateUpdateFundingApplicationLine', applicationBody);
   }
   getProjectCodes(): Observable<any>{
    return this.httpClient.get<any>(this.baseUrl+'OData/getProjectCodes');
