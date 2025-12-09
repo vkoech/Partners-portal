@@ -6,18 +6,9 @@ import { Subject, takeUntil } from 'rxjs';
 import { SidebarComponent } from '../shared/sidebar/sidebar.component';
 import { HeaderComponent } from '../shared/header/header.component';
 import { FooterComponent } from '../shared/footer/footer.component';
-
-export interface ApprovedFunding {
-  id: string;
-  funding: string;
-  programme: string;
-  purpose: string;
-  budgetAmount: number;
-  obligatedAmount: number;
-  date: string;
-  description: string;
-  status: string;
-}
+import { AuthService, AuthUser } from '../../services/auth.service';
+import { NotificationService } from '../../services/notification.service';
+import { Payment } from '../../services/payment';
 
 @Component({
   selector: 'app-approved-funding',
@@ -34,34 +25,34 @@ export class ApprovedFundingComponent implements OnInit, OnDestroy {
   currentPage = 1;
   itemsPerPage = 5;
 
-  approvedFundingList: ApprovedFunding[] = [
-    {
-      id: '1',
-      funding: 'Grants',
-      programme: 'Med supply',
-      purpose: 'Pharmaceutical',
-      budgetAmount: 160000,
-      obligatedAmount: 100000,
-      date: '20/5/2025',
-      description: 'For wards',
-      status: 'Open'
-    },
-  ];
+  paymentRequestList: any
+  email: any
+  user: AuthUser | null = null;
+  subgranteeNo: any;
 
   get totalPages(): number {
-    return Math.ceil(this.approvedFundingList.length / this.itemsPerPage);
+    return Math.ceil(this.paymentRequestList.length / this.itemsPerPage);
   }
 
-  get paginatedData(): ApprovedFunding[] {
+  get paginatedData(): any[] {
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
     const endIndex = startIndex + this.itemsPerPage;
-    return this.approvedFundingList.slice(startIndex, endIndex);
+    return this.paymentRequestList.slice(startIndex, endIndex);
   }
 
-  constructor(private router: Router) {}
+  constructor(private router: Router,
+   private paymentService: Payment,
+   private authService: AuthService,
+   private notificationService: NotificationService
+  ) {}
 
   ngOnInit(): void {
-    // Initialize component
+    this.user = this.authService.getLoggedInUser();
+    this.subgranteeNo = this.user?.partnerAccountNo;
+    this.email=this.user?.emailAddress;
+    this.paymentService.getApprovedFundApplications(this.email).subscribe(data=>{
+     this.paymentRequestList=data;
+    });
   }
 
   ngOnDestroy() {

@@ -1,12 +1,11 @@
 @use 'sass:color';
 @use '../../../styles.scss' as *;
 
-.approved-funding-container {
+.payment-request-container {
   display: flex;
   min-height: 100vh;
   background: #F5F8FC;
   padding: 0;
-  width: 100%;
 }
 
 .main-content {
@@ -18,7 +17,7 @@
   transition: margin-left 0.3s ease;
 }
 
-.approved-funding-content {
+.payment-request-content {
   flex: 1;
   padding: 30px;
   position: relative;
@@ -49,7 +48,7 @@
 
 .card-body {
   background-color: #FCFAFA;
-  border-radius: 0 0 15px 15px;
+  border-radius: 0;
   display: flex;
   align-items: center;
   gap: 20px;
@@ -58,6 +57,39 @@
   box-sizing: border-box;
   margin: 0;
   border-bottom: 1px solid #e9ecef;
+}
+
+.add-new-btn {
+  background: #f8f9fa;
+  color: $primary-red;
+  padding: 8px 12px;
+  border: 2px solid $white;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.add-new-btn:hover {
+  background: #e9ecef;
+  transform: translateY(-2px);
+}
+
+.table-container {
+  overflow-x: auto;
+  background: $white;
+  border-radius: 0 0 15px 15px;
+}
+
+/* Hide scrollbars but keep functionality */
+.table-container::-webkit-scrollbar {
+  display: none;
 }
 
 .filter-btn {
@@ -69,7 +101,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 14px;
+  font-size: 12px;
   color: $text-dark;
 }
 
@@ -102,18 +134,17 @@
   border-radius: 0 0 15px 15px;
 }
 
-.funding-table {
+.payment-table {
   width: 100%;
   border-collapse: collapse;
   background: $white;
-  min-width: 1000px;
 }
 
-.funding-table thead tr {
+.payment-table thead tr {
   background: #F8A5A5;
 }
 
-.funding-table th {
+.payment-table th {
   color: $text-dark;
   padding: 15px 12px;
   text-align: left;
@@ -122,15 +153,15 @@
   white-space: nowrap;
 }
 
-.funding-table tbody tr:nth-child(odd) {
+.payment-table tbody tr:nth-child(odd) {
   background-color: #ffffff;
 }
 
-.funding-table tbody tr:nth-child(even) {
+.payment-table tbody tr:nth-child(even) {
   background-color: #BCC8ED;
 }
 
-.funding-table td {
+.payment-table td {
   padding: 15px 12px;
   font-size: 12px;
   color: $text-dark;
@@ -161,13 +192,36 @@
   color: #155724;
 }
 
+.action-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  text-transform: uppercase;
+  background: $primary-bg;
+  color: $white;
+  box-shadow: 0 2px 4px rgba(28, 53, 87, 0.2);
+}
+
+.action-btn:hover {
+  background: color.adjust($primary-bg, $lightness: -7%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(28, 53, 87, 0.3);
+}
+
 /* Mobile Cards */
 .mobile-cards {
   display: none;
   padding: 20px 0;
 }
 
-.funding-card {
+.request-card {
   background: $white;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -221,6 +275,19 @@
   flex: 1;
   margin-left: 10px;
   word-wrap: break-word;
+}
+
+.card-actions {
+  padding: 15px 20px;
+  border-top: 1px solid #e9ecef;
+  background: #f8f9fa;
+  display: flex;
+  justify-content: center;
+}
+
+.action-btn.mobile {
+  padding: 8px 16px;
+  font-size: 11px;
 }
 
 .pagination {
@@ -277,7 +344,7 @@
     margin-left: 0 !important;
   }
 
-  .approved-funding-content {
+  .payment-request-content {
     padding: 20px 15px;
     margin-top: -40px;
   }
@@ -289,6 +356,11 @@
 
   .card-header h2 {
     font-size: 16px;
+  }
+
+  .add-new-btn {
+    font-size: 11px;
+    padding: 10px 16px;
   }
 
   .mobile-cards {
@@ -316,7 +388,7 @@
 }
 
 @media (max-width: 600px) {
-  .approved-funding-content {
+  .payment-request-content {
     padding: 15px 10px;
     margin-top: -25px;
   }
@@ -328,6 +400,11 @@
 
   .card-header h2 {
     font-size: 14px;
+  }
+
+  .add-new-btn {
+    font-size: 10px;
+    padding: 8px 12px;
   }
 
   .pagination {

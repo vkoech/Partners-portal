@@ -63,6 +63,15 @@ export class NewPaymentRequestComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.paymentService.getSingleFundingApplication(this.no).subscribe(data=>{
+      if (data.subAwardEndDate ) {
+          const parts = data.subAwardEndDate.split('/');
+          data.subAwardEndDate = `${parts[2]}-${parts[1].padStart(2,'0')}-${parts[0].padStart(2,'0')}`;
+        }
+       if (data.subAwardStartDate ) {
+          const parts = data.subAwardStartDate.split('/');
+          data.subAwardStartDate = `${parts[2]}-${parts[1].padStart(2,'0')}-${parts[0].padStart(2,'0')}`;
+        }
+        console.log(data)
         this.paymentRequestForm.patchValue(data);
       });
     this.paymentService.getProjectCodes().subscribe(data=>{
@@ -117,7 +126,10 @@ export class NewPaymentRequestComponent implements OnInit, OnDestroy {
       status:[''],
       responseDescription:[''],
       responseCode:true
-    });
+    },
+    {
+    validators: this.dateRangeValidator
+  });
 
     this.paymentRequestLineForm = this.fb.group({
         lineNo: [''],
@@ -127,6 +139,16 @@ export class NewPaymentRequestComponent implements OnInit, OnDestroy {
         appliedAmountLCY: [''],
         description: ['']
     });
+
+  }
+ dateRangeValidator(form: FormGroup) {
+    const start = form.get('subAwardStartDate')?.value;
+    const end = form.get('subAwardEndDate')?.value;
+    if (!start || !end) return null;
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+
+    return endDate < startDate ? { dateRangeInvalid: true } : null;
   }
 
   openAddLineModal() {
@@ -201,7 +223,7 @@ export class NewPaymentRequestComponent implements OnInit, OnDestroy {
       formValues.no = this.no;
       this.paymentService.createUpdateFundingApplication(formValues).subscribe({next:(res) => {
       this.notificationService.success('', res['responseDescription']);
-        // this.getPartnersProfile();
+      this.router.navigate(['/funding-request']);
         this.isEditMode = true;
         },
           error: (err) => {

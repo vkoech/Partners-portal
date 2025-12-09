@@ -22,6 +22,10 @@ export class Payment {
    return this.httpClient.get<any>(this.baseUrl+'FundingApplication/GetAllFundingApplicationLines/'+documentNo);
   }
 
+  getApprovedFundApplications(email: string): Observable<any>{
+      return this.httpClient.get<any>(this.baseUrl+'FundingApplication/GetApprovedFundApplications/'+email);
+    }
+
   getSingleFundingApplicationLine(lineNo: string, documentNo: string): Observable<any>{
    return this.httpClient.get<any>(this.baseUrl+'FundingApplication/GetSingleFundingApplicationLine/'+ lineNo+'/'+documentNo);
   }
