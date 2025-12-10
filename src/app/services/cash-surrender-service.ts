@@ -26,4 +26,14 @@ export class CashSurrenderService {
    createUpdateCashSurrenderLine(applicationBody: any): Observable<any> {
       return this.httpClient.post<any>(this.baseUrl + 'CashSurrender/CreateUpdateCashSurrenderLine', applicationBody);
     } 
+   getCashRequestDetailsByNo(documentNo: string): Observable<any>{
+       return this.httpClient.get<any>(this.baseUrl+'CashSurrender/GetCashRequestDetailsByNo/'+documentNo);
+   }
+  getPostedCashRequests(emailAddress:string): Observable<any>{
+   return this.httpClient.get<any>(this.baseUrl+'CashSurrender/GetPostedCashRequests/'+emailAddress);
+  }
+  validateCashSurrenderLines(cashSurrenderNo :string, disbursementNo: string): Observable<any>{
+   return this.httpClient.get<any>(this.baseUrl+'CashSurrender/ValidateCashSurrenderLines/'+cashSurrenderNo +'/'+ disbursementNo);
+  }    
+
 }

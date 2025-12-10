@@ -45,6 +45,7 @@ export class Payment {
   getProjectCodes(): Observable<any>{
    return this.httpClient.get<any>(this.baseUrl+'OData/getProjectCodes');
   }
+
   getcurrencyCodes(): Observable<any>{
    return this.httpClient.get<any>(this.baseUrl+'OData/getCurrencies');
   }
@@ -57,7 +58,7 @@ export class Payment {
  getActivityCodes(approvedFundingNo : string): Observable<any>{
    return this.httpClient.get<any>(this.baseUrl+'OData/getActivityCodes/'+ approvedFundingNo );
   }
- getFundingApplicationDetailsByN(approvedFundingApplicationNo : string): Observable<any>{
+ getFundingApplicationDetailsByNo(approvedFundingApplicationNo : string): Observable<any>{
    return this.httpClient.get<any>(this.baseUrl+'CashRequest/GetFundingApplicationDetailsByNo/'+ approvedFundingApplicationNo);
   }
 }

@@ -90,7 +90,7 @@ export class NewCashRequest {
     });
     this.getAllCashRequestLines();
 
-    this.paymentService.getFundingApplicationDetailsByN(this.approvedApplicationNo).subscribe(data => {
+    this.paymentService.getFundingApplicationDetailsByNo(this.approvedApplicationNo).subscribe(data => {
     this.paymentRequestForm.patchValue(data);
   });
   }
@@ -207,6 +207,7 @@ export class NewCashRequest {
       let formValues = this.paymentRequestForm.value;
       formValues.subgranteeNo = this.subgranteeNo;
       formValues.no = this.no;
+      formValues.declarationDone = this.isConfirmed;
       this.cashRequestService.createUpdateCashRequest(formValues).subscribe({next:(res) => {
       this.notificationService.success('', res['responseDescription']);
       this.router.navigate(['/cash-request']);
@@ -247,7 +248,7 @@ onCheckboxChange(event: Event) {
 getApplicationNo(){
  const selected = this.paymentRequestForm.get('approvedApplicationNo')?.value;
   if (!selected) return;
-  this.paymentService.getFundingApplicationDetailsByN(selected).subscribe(data => {
+  this.paymentService.getFundingApplicationDetailsByNo(selected).subscribe(data => {
     this.paymentRequestForm.patchValue(data);
   });
 }

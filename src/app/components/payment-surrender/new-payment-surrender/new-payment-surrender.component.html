@@ -20,53 +20,42 @@
         <div class="form-row">
           <div class="form-group">
            <label>Select Cash Request: *</label>
-            <select formControlName="paymentRequest">
-              <option value="">Select Cash Request</option>
-               <option value="PR-001">PR-001 - Medical Supplies</option>
-                <option value="PR-002">PR-002 - Equipment Purchase</option>
-            </select>
+            <select formControlName="paymentRequestNo" (change)="cashRequest()">
+                <option value="" [selected]="true" disabled>Select</option>
+                @for (cash of cash_list; track cash.paymentRequestNo) {
+                  <option [value]="cash.paymentRequestNo">
+                    {{ cash.description }}
+                  </option>
+                }
+              </select>
           </div>
           <div class="form-group">
               <label>Currency</label>
-              <select formControlName="currencyCode">
-                  <option value="" [selected]=true disabled>Select</option>
-                  @for (currency_type of currency_code_list; track currency_type.code) {
-                  <option [value]="currency_type.code">
-                    {{ currency_type.description}}
-                  </option>}s
-                </select>
+              <input type="text" formControlName="currencyCode" readonly>
           </div>
         </div>
-         <div class="form-group">
-           <label>Disbursed Amount:</label>
-            <input type="number" formControlName="disbursedAmount" readonly>
-          </div>
         <div class="form-row">
+          <div class="form-group">
+            <label>Disbursed Amount:</label>
+              <input type="text" formControlName="disbursedAmount" readonly>
+            </div>
           <div class="form-group">
             <label>Surrendered Amount:</label>
-             <input type="number" formControlName="surrenderedAmount">
+             <input type="text" formControlName="surrenderedAmount">
           </div>
-           <div class="form-group">
-             <label>Start Date</label>
-             <input type="date" formControlName="startDate">
           </div>
-        </div>
         <div class="form-row">
           <div class="form-group">
-            <label>End Date</label>
-             <input type="date" formControlName="endDate">
-          </div>
-          <div class="form-group">
-             <label>Surrender Date:</label>
-             <input type="date" formControlName="surrenderDate">
-          </div>
+            <label>Description:</label>
+              <textarea formControlName="description"></textarea>
+          </div> 
         </div>
         </div>
      </form>
     </div>
-   <div class="modal-btn-container">
+   <!-- <div class="modal-btn-container">
       <button class="open-modal-btn" (click)="openCustomModal()">Add Cash Surrender</button>
-    </div>
+    </div> -->
    <!-- Custom Modal -->
   @if(showModal)
   {
@@ -78,7 +67,7 @@
             <div class="form-field">
              <label>Category</label>
                 <select formControlName="category">
-                  <option value="" [selected]="true" disabled>Select Category</option>
+                  <option value="" [selected]="true" disabled>Select</option>
                   @for (category of category_list; track category.code) {
                     <option [value]="category.code">
                       {{ category.description }}

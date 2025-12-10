@@ -9,6 +9,8 @@ import { FooterComponent } from '../../shared/footer/footer.component';
 import { NotificationService } from '../../../services/notification.service';
 import { Payment } from '../../../services/payment';
 import { RegistrationService } from '../../../services/registration-service';
+import { AuthService, AuthUser } from '../../../services/auth.service';
+import { CashSurrenderService } from '../../../services/cash-surrender-service';
 
 export interface PaymentSurrenderLine {
   id: string;
@@ -43,14 +45,18 @@ export class NewPaymentSurrenderComponent implements OnInit, OnDestroy {
   isEditMode = false;
   showModal = false;
   loading=false;
-  subgranteeNo: string;
+  subgranteeNo: any;
   no: string;
   paymentApplicationLines: any;
   project_code_list: any;
   currency_code_list: any;
   area_of_focus_items: any;
   isConfirmed = false;
-  category_list: any
+  category_list: any;
+  cash_list:any
+  email: any;
+  user: AuthUser | null = null;
+
 
 
   constructor(
@@ -60,14 +66,17 @@ export class NewPaymentSurrenderComponent implements OnInit, OnDestroy {
     private paymentService: Payment,
     private notificationService: NotificationService,
     private registrationService: RegistrationService,
-
-
+    private authService:AuthService,
+    private cashSurrenderService: CashSurrenderService,
   ) {
     this.initializeForms();
     const encodedNo = this.route.snapshot.paramMap.get('id');
       if (encodedNo) {
         this.no = atob(encodedNo);
       }
+    this.user = this.authService.getLoggedInUser();
+    this.subgranteeNo = this.user?.partnerAccountNo;
+    this.email=this.user?.emailAddress;   
   }
 
   ngOnInit(): void {
@@ -83,10 +92,14 @@ export class NewPaymentSurrenderComponent implements OnInit, OnDestroy {
     this.paymentService.getCategories().subscribe(data=>{
         this.category_list=data;
       });
+    this.cashSurrenderService.getPostedCashRequests(this.email).subscribe(data=>{
+        this.cash_list=data;
+      });  
     this.registrationService.getAreaOfFocus().subscribe(data => {
       this.area_of_focus_items = data;
     });
-    this.getFundsApplicationLines()
+    
+    this.getAllCashSurrenderLines()
   }
 
   ngOnDestroy() {
@@ -107,6 +120,8 @@ export class NewPaymentSurrenderComponent implements OnInit, OnDestroy {
       startDate: [''],
       endDate: [''],
       surrenderDate: [''],
+      paymentRequestNo:[''],
+      description:['']
     });
 
     this.surrenderLineForm = this.fb.group({
@@ -135,7 +150,7 @@ export class NewPaymentSurrenderComponent implements OnInit, OnDestroy {
       formValues.no = this.no;
       this.paymentService.createUpdateFundingApplicationLine(formValues).subscribe({next:(res) => {
       this.notificationService.success('', res['responseDescription']);
-        this.getFundsApplicationLines();
+        this.getAllCashSurrenderLines();
         this.isEditMode = true;
         },
           error: (err) => {
@@ -152,13 +167,29 @@ export class NewPaymentSurrenderComponent implements OnInit, OnDestroy {
       }
   }
 
+  cashRequest(){
+    this.validateCashSurrenderLines()
+    const selected = this.surrenderForm.get('paymentRequestNo')?.value;
+    if (!selected) return;
+    this.cashSurrenderService.getCashRequestDetailsByNo(selected).subscribe(data => {
+      this.surrenderForm.patchValue(data);
+    });
+  }
+
   deleteLine(lineId: string) {
 
   }
 
-  getFundsApplicationLines(){
-     this.paymentService.getAllFundingApplicationLines(this.no).subscribe(data=>{
+  getAllCashSurrenderLines(){
+     this.cashSurrenderService.getAllCashSurrenderLines(this.no).subscribe(data=>{
       this.paymentApplicationLines=data
+    });
+  }
+
+  validateCashSurrenderLines(){
+     const disbursementNo = this.surrenderForm.get('paymentRequestNo')?.value;
+     this.cashSurrenderService.validateCashSurrenderLines(this.no, disbursementNo).subscribe(data=>{
+      this.getAllCashSurrenderLines()
     });
   }
 

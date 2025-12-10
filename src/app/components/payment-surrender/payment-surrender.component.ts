@@ -48,6 +48,7 @@ export class PaymentSurrenderComponent implements OnInit, OnDestroy {
   private authService = inject(AuthService);
   private notificationService=inject(NotificationService)
 
+
   ngOnInit(): void {
       this.user = this.authService.getLoggedInUser();
       this.subgranteeNo = this.user?.partnerAccountNo;
