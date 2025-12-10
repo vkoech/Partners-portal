@@ -33,12 +33,10 @@
           <thead>
             <tr>
               <th>No.</th>
-              <th>Application Date</th>
+              <th>Requested Date</th>
               <th>Project Code</th>
-              <th>Purpose</th>
               <th>Requested Amount</th>
               <th>Requested Amount (LCY)</th>
-              <!-- <th>Obligated Amount</th> -->
               <th>Status</th>
               <th>Actions</th>
             </tr>
@@ -47,15 +45,13 @@
            @for (request of cash_request_list ; track request.no ) {
              <tr>
                 <td>{{request.no}}</td>
-                <td>{{request.applicationDate}}</td>
+                <td>{{request.requestedDate}}</td>
                 <td>{{request.projectCode}}</td>
-                <td>{{request.purpose}}</td>
-                <td>{{request.budgetAmount}}</td>
-                <td>{{request.budgetAmountLCY}}</td>
-                <!-- <td>{{request.obligatedAmountLCY}}</td> -->
+                <td>{{request.requestedAmount}}</td>
+                <td>{{request.requestedAmountLCY}}</td>
                 <td>{{request.status}}</td>
                 <td class="action-cell">
-                  <button class="action-btn edit-btn" (click)="editRequest(request.no)">
+                  <button class="action-btn edit-btn" (click)="editRequest(request.no, request.approvedApplicationNo)">
                     <img src="assets/edit.svg" alt="Edit" width="16" height="16" />
                     EDIT
                   </button>

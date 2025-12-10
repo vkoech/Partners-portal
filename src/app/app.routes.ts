@@ -30,6 +30,7 @@ export const routes: Routes = [
   { path: 'funding-request', component: NewPaymentRequestComponent },
   { path: 'funding-request/:id', component: NewPaymentRequestComponent },
   { path: 'cash-request', component: CashRequest },
+  { path: 'new-cash-request/:id/:id2', component: NewCashRequest },
   { path: 'new-cash-request/:id', component: NewCashRequest },
   { path: 'payment-surrender', component: PaymentSurrenderComponent },
   { path: 'new-payment-surrender', component: NewPaymentSurrenderComponent },

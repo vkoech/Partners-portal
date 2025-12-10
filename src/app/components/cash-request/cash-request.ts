@@ -45,6 +45,7 @@ export class CashRequest {
   
       this.cashRequestService.getAllCashRequests(this.email).subscribe(data=>{
        this.cash_request_list=data;
+       console.log(data)
       });
     }
   
@@ -56,7 +57,21 @@ export class CashRequest {
    createNewPaymentRequest (){
          const formValues = {
             subgranteeNo: this.subgranteeNo,
-            emailAddress: this.email
+            emailAddress: this.email,
+            no: '',
+            status: '',
+            areaOfFocus: '',
+            description: '',
+            projectCode: '',
+            currencyCode: '',
+            documentDate: '',
+            requestedDate: '',
+            declarationDate: '',
+            declarationDone: '',
+            subAwardEndDate: '',
+            subAwardStartDate: '',
+            approvedApplicationNo: '',
+            indirectCostPercentage: '', 
          }
       this.cashRequestService.createUpdateCashRequest(formValues).subscribe({next:(res) => {
        this.router.navigate(['/new-cash-request',btoa(res.no)]);
@@ -74,9 +89,14 @@ export class CashRequest {
         });
       }
   
-    editRequest(no: string) {
-      this.router.navigate(['/new-cash-request',btoa(no)]);
+   editRequest(no: string, approvedApplicationNo: string) {
+      this.router.navigate([
+       '/new-cash-request',
+        btoa(no),
+        btoa(approvedApplicationNo)
+      ]);
     }
+
   
     viewRequest(id: string) {
       this.router.navigate(['/view-payment-request', id]);

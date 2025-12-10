@@ -27,6 +27,7 @@ export class NewCashRequest {
   loading=false;
   subgranteeNo: any;
   no: string;
+  approvedApplicationNo: string;
   paymentApplicationLines: any;
   project_code_list: any;
   currency_code_list: any;
@@ -36,6 +37,7 @@ export class NewCashRequest {
   category_list:any
   email: any
   user: AuthUser | null = null;
+  isConfirmed = false;
 
 
   constructor(
@@ -55,9 +57,15 @@ export class NewCashRequest {
       this.email=this.user?.emailAddress;
     this.initializeForms();
     const encodedNo = this.route.snapshot.paramMap.get('id');
+    const encodedNo2 = this.route.snapshot.paramMap.get('id2');
+
       if (encodedNo) {
         this.no = atob(encodedNo);
       }
+        if (encodedNo2) {
+        this.approvedApplicationNo = atob(encodedNo2);
+      }
+
   }
 
   ngOnInit(): void {
@@ -81,6 +89,10 @@ export class NewCashRequest {
       this.area_of_focus_items = data;
     });
     this.getAllCashRequestLines();
+
+    this.paymentService.getFundingApplicationDetailsByN(this.approvedApplicationNo).subscribe(data => {
+    this.paymentRequestForm.patchValue(data);
+  });
   }
 
   ngOnDestroy() {
@@ -101,7 +113,6 @@ export class NewCashRequest {
         currencyCode: [''],
         requestedAmount: [''],
         requestedAmountLCY: [''],
-        comments: [''],
         description: [''],
         projectCode: [''],
         declarationDone: [''],
@@ -112,6 +123,8 @@ export class NewCashRequest {
         responseDescription: [''],
         status: ['']
     });
+
+    
 
     this.paymentRequestLineForm = this.fb.group({
         lineNo: [''],
@@ -194,9 +207,9 @@ export class NewCashRequest {
       let formValues = this.paymentRequestForm.value;
       formValues.subgranteeNo = this.subgranteeNo;
       formValues.no = this.no;
-      this.paymentService.createUpdateFundingApplication(formValues).subscribe({next:(res) => {
+      this.cashRequestService.createUpdateCashRequest(formValues).subscribe({next:(res) => {
       this.notificationService.success('', res['responseDescription']);
-      this.router.navigate(['/payment-request']);
+      this.router.navigate(['/cash-request']);
         this.isEditMode = true;
         },
           error: (err) => {
@@ -226,7 +239,10 @@ closeCustomModal() {
   this.paymentRequestLineForm.reset();
 }
 
-
+onCheckboxChange(event: Event) {
+      const input = event.target as HTMLInputElement;
+      this.isConfirmed = input.checked;
+    }
 
 getApplicationNo(){
  const selected = this.paymentRequestForm.get('approvedApplicationNo')?.value;
