@@ -1,3 +1,4 @@
+import { CashRequestService } from './../../../services/cash-request-service';
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
@@ -8,7 +9,6 @@ import { FooterComponent } from '../../shared/footer/footer.component';
 import { HeaderComponent } from '../../shared/header/header.component';
 import { SidebarComponent } from '../../shared/sidebar/sidebar.component';
 import { RegistrationService } from '../../../services/registration-service';
-import { CashRequestService } from '../../../services/cash-request-service';
 import { AuthService, AuthUser } from '../../../services/auth.service';
 
 @Component({
@@ -80,7 +80,7 @@ export class NewCashRequest {
     this.registrationService.getAreaOfFocus().subscribe(data => {
       this.area_of_focus_items = data;
     });
-    this.getFundsApplicationLines()
+    this.getAllCashRequestLines();
   }
 
   ngOnDestroy() {
@@ -88,25 +88,29 @@ export class NewCashRequest {
 
   private initializeForms() {
     this.paymentRequestForm = this.fb.group({
-      no: [''],
-      emailAddress: [''],
-      subgranteeNo: [''],
-      documentDate: [''],
-      applicationDate: [''],
-      subAwardStartDate: [''],
-      subAwardEndDate: [''],
-      projectCode: [''],
-      purpose: [''],
-      currencyCode: [''],
-      reportingCycle: [''],
-      budgetAmount: [''],
-      budgetAmountLCY: [''],
-      obligatedAmount: [''],
-      obligatedAmountLCY: [''],
-      subAwardTitle: [''],
-      areaOfFocus:[''],
-      description: [''],
-      directCost:['']
+        no: [''],
+        emailAddress: [''],
+        subgranteeNo: [''],
+        approvedApplicationNo: [''],
+        subAwardStartDate:[''],
+        subAwardEndDate:[''],
+        reportingCycle:[''],
+        areaOfFocus: [''],
+        documentDate: [''],
+        requestedDate: [''],
+        currencyCode: [''],
+        requestedAmount: [''],
+        requestedAmountLCY: [''],
+        comments: [''],
+        description: [''],
+        projectCode: [''],
+        declarationDone: [''],
+        declarationDate: [''],
+        indirectCostPercentage: [''],
+        indirectCost: [''],
+        indirectCostLCY: [''],
+        responseDescription: [''],
+        status: ['']
     });
 
     this.paymentRequestLineForm = this.fb.group({
@@ -114,10 +118,11 @@ export class NewCashRequest {
         documentNo: [''],
         category: [''],
         amount: [''],
-        appliedAmount: [''],
-        appliedAmountLCY: [''],
+        amountLCY: [''],
+        projectCode:[''],
         description: ['']
     });
+    this.getAllCashRequestLines()
   }
 
   openAddLineModal() {
@@ -126,15 +131,31 @@ export class NewCashRequest {
     this.paymentRequestLineForm.reset();
   }
 
+  editRequest(row: any) {
+      this.showModal = true;
+      this.isEditMode = true;
+        this.paymentRequestLineForm.patchValue({
+    ...row,
+    action: 'update'
+     });
+    }
+   deleteRequest(lineNo: string) {
+     this.cashRequestService.deleteLine(lineNo, this.no,).subscribe(res=>{
+      this.notificationService.success('', res['responseDescription']);
+      this.getAllCashRequestLines();
+    });
+   }   
+
   submitLine() {
     this.loading=true
       if( this.paymentRequestLineForm.valid){
       let formValues = this.paymentRequestLineForm.value;
-      formValues.subgranteeNo = this.subgranteeNo;
-      formValues.no = this.no;
-      this.paymentService.createUpdateFundingApplicationLine(formValues).subscribe({next:(res) => {
+       formValues.projectCode=this.paymentRequestForm.get('projectCode')?.value;
+      formValues.documentNo = this.no;
+      this.cashRequestService.createUpdateCashRequestLine(formValues).subscribe({next:(res) => {
       this.notificationService.success('', res['responseDescription']);
-        // this.getPartnersProfile();
+      this.getAllCashRequestLines();
+      this.closeCustomModal();
         this.isEditMode = true;
         },
           error: (err) => {
@@ -151,12 +172,8 @@ export class NewCashRequest {
       }
   }
 
-  deleteLine(lineId: string) {
-
-  }
-
-  getFundsApplicationLines(){
-     this.paymentService.getAllFundingApplicationLines(this.no).subscribe(data=>{
+  getAllCashRequestLines(){
+     this.cashRequestService.getAllCashRequestLines(this.no).subscribe(data=>{
       this.paymentApplicationLines=data
     });
   }
@@ -171,9 +188,6 @@ export class NewCashRequest {
     fileInput.click();
   }
 
-  deleteDocument(documentId: string) {
-  }
-
   onSubmitPaymentHeader() {
       this.loading=true
       if( this.paymentRequestForm.valid){
@@ -182,7 +196,7 @@ export class NewCashRequest {
       formValues.no = this.no;
       this.paymentService.createUpdateFundingApplication(formValues).subscribe({next:(res) => {
       this.notificationService.success('', res['responseDescription']);
-        // this.getPartnersProfile();
+      this.router.navigate(['/payment-request']);
         this.isEditMode = true;
         },
           error: (err) => {
@@ -200,7 +214,7 @@ export class NewCashRequest {
   }
 
   onCancel() {
-    this.router.navigate(['/payment-request']);
+    this.router.navigate(['/cash-request']);
   }
 
   openCustomModal() {
@@ -209,11 +223,17 @@ export class NewCashRequest {
 
 closeCustomModal() {
   this.showModal = false;
+  this.paymentRequestLineForm.reset();
 }
 
-saveModal() {
-  console.log(this.paymentRequestForm.value);
-  this.closeCustomModal();
+
+
+getApplicationNo(){
+ const selected = this.paymentRequestForm.get('approvedApplicationNo')?.value;
+  if (!selected) return;
+  this.paymentService.getFundingApplicationDetailsByN(selected).subscribe(data => {
+    this.paymentRequestForm.patchValue(data);
+  });
 }
 
 }

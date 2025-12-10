@@ -29,4 +29,7 @@ export class CashRequestService {
  createUpdateCashRequestLine(applicationBody: any): Observable<any> {
     return this.httpClient.post<any>(this.baseUrl + 'CashRequest/CreateUpdateCashRequestLine', applicationBody);
   }
+ deleteLine(lineNo: string, documentNo: string): Observable<any>{
+    return this.httpClient.get<any>(this.baseUrl+'CashRequest/DeleteCashRequestLine/'+ lineNo+'/'+documentNo);
+    }  
 }

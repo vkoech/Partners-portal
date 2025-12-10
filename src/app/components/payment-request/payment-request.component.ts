@@ -101,6 +101,9 @@ export class PaymentRequestComponent implements OnInit, OnDestroy {
   editRequest(no: string) {
     this.router.navigate(['/funding-request',btoa(no)]);
   }
+  ViewRequest(no: string){
+    
+  }
 
   viewRequest(id: string) {
     this.router.navigate(['/view-payment-request', id]);

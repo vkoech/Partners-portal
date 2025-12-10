@@ -26,7 +26,4 @@ export class CashSurrenderService {
    createUpdateCashSurrenderLine(applicationBody: any): Observable<any> {
       return this.httpClient.post<any>(this.baseUrl + 'CashSurrender/CreateUpdateCashSurrenderLine', applicationBody);
     } 
-
-
-  
 }

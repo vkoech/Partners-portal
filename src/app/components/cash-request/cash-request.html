@@ -36,9 +36,9 @@
               <th>Application Date</th>
               <th>Project Code</th>
               <th>Purpose</th>
-              <th>Budget Amount</th>
-              <th>Budget Amount LCY</th>
-              <th>Obligated Amount</th>
+              <th>Requested Amount</th>
+              <th>Requested Amount (LCY)</th>
+              <!-- <th>Obligated Amount</th> -->
               <th>Status</th>
               <th>Actions</th>
             </tr>
@@ -52,7 +52,7 @@
                 <td>{{request.purpose}}</td>
                 <td>{{request.budgetAmount}}</td>
                 <td>{{request.budgetAmountLCY}}</td>
-                <td>{{request.obligatedAmountLCY}}</td>
+                <!-- <td>{{request.obligatedAmountLCY}}</td> -->
                 <td>{{request.status}}</td>
                 <td class="action-cell">
                   <button class="action-btn edit-btn" (click)="editRequest(request.no)">

@@ -71,7 +71,6 @@ export class NewPaymentRequestComponent implements OnInit, OnDestroy {
           const parts = data.subAwardStartDate.split('/');
           data.subAwardStartDate = `${parts[2]}-${parts[1].padStart(2,'0')}-${parts[0].padStart(2,'0')}`;
         }
-        console.log(data)
         this.paymentRequestForm.patchValue(data);
       });
     this.paymentService.getProjectCodes().subscribe(data=>{
@@ -150,13 +149,6 @@ export class NewPaymentRequestComponent implements OnInit, OnDestroy {
 
     return endDate < startDate ? { dateRangeInvalid: true } : null;
   }
-
-  openAddLineModal() {
-    this.showAddLineModal = true;
-    this.isEditMode = false;
-    this.paymentRequestLineForm.reset();
-  }
-
   submitLine() {
     this.loading=true
       if( this.paymentRequestLineForm.valid){
@@ -183,13 +175,24 @@ export class NewPaymentRequestComponent implements OnInit, OnDestroy {
       }
   }
 
-  deleteRequest(lineId: string) {
-
+  deleteRequest(lineNo: string) {
+     this.paymentService.deleteFundingApplicationLine(lineNo, this.no,).subscribe(res=>{
+      this.notificationService.success('', res['responseDescription']);
+      this.getFundsApplicationLines();
+    });
    }
-   editRequest(lineId: string) {
-
-  }
-
+  openCustomModal() {
+    this.showModal = true;
+    this.isEditMode = false;
+  }  
+  editRequest(row: any) {
+      this.showModal = true;
+      this.isEditMode = true;
+        this.paymentRequestLineForm.patchValue({
+    ...row,
+    action: 'update'
+  });
+    }
 
   getFundsApplicationLines(){
      this.paymentService.getAllFundingApplicationLines(this.no).subscribe(data=>{
@@ -239,17 +242,24 @@ export class NewPaymentRequestComponent implements OnInit, OnDestroy {
         this.paymentRequestForm.markAllAsTouched();
       }
   }
-
-  onCancel() {
+onCancel() {
     this.router.navigate(['/funding-request']);
   }
 
-  openCustomModal() {
-  this.showModal = true;
+getProjectCode() {
+  const selected = this.paymentRequestForm.get('projectCode')?.value;
+  if (!selected) return;
+  this.paymentService.getProjectDetails(selected).subscribe(data => {
+    this.paymentRequestForm.patchValue(data);
+  });
+
 }
+
+
 
 closeCustomModal() {
   this.showModal = false;
+  this.paymentRequestLineForm.reset();
 }
 
 }
