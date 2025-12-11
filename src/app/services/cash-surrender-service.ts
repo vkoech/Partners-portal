@@ -34,6 +34,10 @@ export class CashSurrenderService {
   }
   validateCashSurrenderLines(cashSurrenderNo :string, disbursementNo: string): Observable<any>{
    return this.httpClient.get<any>(this.baseUrl+'CashSurrender/ValidateCashSurrenderLines/'+cashSurrenderNo +'/'+ disbursementNo);
-  }    
+  }
+  
+  deleteCashSurrenderLine(lineNo: string, documentNo: string): Observable<any>{
+   return this.httpClient.get<any>(this.baseUrl+'CashSurrender/DeleteCashSurrenderLine/'+ lineNo+'/'+documentNo);
+  }
 
 }

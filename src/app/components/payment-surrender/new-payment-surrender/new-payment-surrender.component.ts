@@ -80,7 +80,7 @@ export class NewPaymentSurrenderComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.paymentService.getSingleFundingApplication(this.no).subscribe(data=>{
+    this.cashSurrenderService.getSingleCashRequest(this.no).subscribe(data=>{
         this.surrenderForm.patchValue(data);
       });
     this.paymentService.getProjectCodes().subscribe(data=>{
@@ -146,9 +146,8 @@ export class NewPaymentSurrenderComponent implements OnInit, OnDestroy {
     this.loading=true
       if( this.surrenderLineForm.valid){
       let formValues = this.surrenderLineForm.value;
-      formValues.subgranteeNo = this.subgranteeNo;
       formValues.no = this.no;
-      this.paymentService.createUpdateFundingApplicationLine(formValues).subscribe({next:(res) => {
+      this.cashSurrenderService.createUpdateCashSurrender(formValues).subscribe({next:(res) => {
       this.notificationService.success('', res['responseDescription']);
         this.getAllCashSurrenderLines();
         this.isEditMode = true;
@@ -176,10 +175,6 @@ export class NewPaymentSurrenderComponent implements OnInit, OnDestroy {
     });
   }
 
-  deleteLine(lineId: string) {
-
-  }
-
   getAllCashSurrenderLines(){
      this.cashSurrenderService.getAllCashSurrenderLines(this.no).subscribe(data=>{
       this.paymentApplicationLines=data
@@ -193,19 +188,6 @@ export class NewPaymentSurrenderComponent implements OnInit, OnDestroy {
     });
   }
 
-  triggerFileUpload() {
-    const fileInput = document.createElement('input');
-    fileInput.type = 'file';
-    fileInput.accept = '.pdf,.jpg,.jpeg,.png';
-    fileInput.onchange = (event: any) => {
-      const file = event.target.files[0];
-    };
-    fileInput.click();
-  }
-
-  deleteDocument(documentId: string) {
-  }
-
   onCheckboxChange(event: Event) {
       const input = event.target as HTMLInputElement;
       this.isConfirmed = input.checked;
@@ -217,7 +199,8 @@ export class NewPaymentSurrenderComponent implements OnInit, OnDestroy {
       let formValues = this.surrenderForm.value;
       formValues.subgranteeNo = this.subgranteeNo;
       formValues.no = this.no;
-      this.paymentService.createUpdateFundingApplication(formValues).subscribe({next:(res) => {
+      this.cashSurrenderService.createUpdateCashSurrenderLine(formValues).subscribe({next:(res) => {
+      this.router.navigate(['/payment-request']);
       this.notificationService.success('', res['responseDescription']);
         this.isEditMode = true;
         },
@@ -238,6 +221,22 @@ export class NewPaymentSurrenderComponent implements OnInit, OnDestroy {
   onCancel() {
     this.router.navigate(['/payment-request']);
   }
+
+ editRequest(row: any) {
+      this.showModal = true;
+      this.isEditMode = true;
+        this.surrenderLineForm.patchValue({
+    ...row,
+    action: 'update'
+    });
+    }
+    
+  deleteRequest(lineNo: string) {
+     this.cashSurrenderService.deleteCashSurrenderLine(lineNo, this.no,).subscribe(res=>{
+      this.notificationService.success('', res['responseDescription']);
+      this.getAllCashSurrenderLines()
+    });
+   }
 
       openCustomModal() {
       this.showModal = true;

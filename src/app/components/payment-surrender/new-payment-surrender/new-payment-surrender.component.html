@@ -119,6 +119,7 @@
                   <th>Amount Spent</th>
                   <th>Balance</th>
                   <th>Description</th>
+                  <th>Action</th>
                 </tr>
               </thead>
 
@@ -129,6 +130,17 @@
                   <td>{{ row.amountSpent }}</td>
                   <td>{{ row.balance }}</td>
                   <td>{{ row.description }}</td>
+
+                  <td>
+                   <button type="button" class="edit-btn" (click)="editRequest(row)">
+                      <img src="assets/edit.svg" alt="Edit" width="16" height="16" />
+                      Edit
+                   </button>
+                    <button type="button" class="delete-btn" (click)="deleteRequest(row.lineNo)">
+                      <img src="assets/delete.svg" alt="Delete" width="16" height="16" />
+                      Delete
+                    </button>
+                  </td>
                 </tr>
               </tbody>
             </table>
