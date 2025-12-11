@@ -13,7 +13,7 @@
     <div class="payment-request-content">
       <div class="card-header">
         <h2>CASH SURRENDER</h2>
-        <button class="add-new-btn" (click)="navigateToNewPaymentSurrender()">
+        <button class="add-new-btn" (click)="createNewSurrender()">
           <img src="assets/add.svg" alt="Add" width="16" height="16" />
           ADD NEW CASH SURRENDER
         </button>
@@ -36,7 +36,7 @@
               <th>No.</th>
               <th>Requested Date</th>
               <th>Project Code</th>
-              <th>Budget Amount LCY</th>
+              <th>Amount (LCY)</th>
               <th>Status</th>
               <th>Actions</th>
             </tr>
@@ -47,13 +47,21 @@
                 <td>{{request.no}}</td>
                 <td>{{request.requestedDate}}</td>
                 <td>{{request.projectCode}}</td>
-                <td>{{request.requestedAmountLCY}}</td>
+                <td>{{request.actualSpentLCY}}</td>
                 <td>{{request.status}}</td>
                 <td class="action-cell">
+                  @if(request.status ==='Open'){
                   <button class="action-btn edit-btn" (click)="editRequest(request.no)">
                     <img src="assets/edit.svg" alt="Edit" width="16" height="16" />
                     EDIT
                   </button>
+                 }
+                  @if(request.status !=='Open'){
+                  <button class="action-btn edit-btn" (click)="ViewRequest(request.no)">
+                    <!-- <img src="assets/edit.svg" alt="Edit" width="24" height="24" /> -->
+                    View
+                  </button>
+                 }
                 </td>
             </tr>}
           </tbody>

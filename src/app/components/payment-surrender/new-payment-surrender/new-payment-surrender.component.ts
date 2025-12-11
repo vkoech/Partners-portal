@@ -74,6 +74,9 @@ export class NewPaymentSurrenderComponent implements OnInit, OnDestroy {
       if (encodedNo) {
         this.no = atob(encodedNo);
       }
+    this.surrenderForm.patchValue({
+      no: this.no
+    });
     this.user = this.authService.getLoggedInUser();
     this.subgranteeNo = this.user?.partnerAccountNo;
     this.email=this.user?.emailAddress;   
@@ -81,7 +84,7 @@ export class NewPaymentSurrenderComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.cashSurrenderService.getSingleCashRequest(this.no).subscribe(data=>{
-        this.surrenderForm.patchValue(data);
+        // this.surrenderForm.patchValue(data);
       });
     this.paymentService.getProjectCodes().subscribe(data=>{
         this.project_code_list=data;
@@ -99,7 +102,7 @@ export class NewPaymentSurrenderComponent implements OnInit, OnDestroy {
       this.area_of_focus_items = data;
     });
     
-    this.getAllCashSurrenderLines()
+    // this.getAllCashSurrenderLines()
   }
 
   ngOnDestroy() {
@@ -109,14 +112,14 @@ export class NewPaymentSurrenderComponent implements OnInit, OnDestroy {
 
   private initializeForms() {
     this.surrenderForm = this.fb.group({
-      no: [''],
+      no: [{ value: '', disabled: true }],
       emailAddress: [''],
       subgranteeNo: [''],
       documentDate: [''],
       paymentRequest: [''],
-      currencyCode: [''],
-      disbursedAmount: [''],
-      surrenderedAmount: [''],
+      currencyCode: [{ value: '', disabled: true }],
+      disbursedAmount: [{ value: '', disabled: true }],
+      surrenderedAmount: [{ value: '', disabled: true }],
       startDate: [''],
       endDate: [''],
       surrenderDate: [''],
@@ -127,11 +130,10 @@ export class NewPaymentSurrenderComponent implements OnInit, OnDestroy {
     this.surrenderLineForm = this.fb.group({
         lineNo: [''],
         documentNo: [''],
-        amountReceived: [''],
-        amountSpent: [''],
-        balance: [''],
-        currencyCode: [''],
-        category: [''],
+        amountAdvanced: [{ value: '', disabled: true }],
+        actualSpent: [''],
+        currencyCode: [{ value: '', disabled: true }],
+        category: [{ value: '', disabled: true }],
         description:['']
     });
   }
@@ -147,8 +149,9 @@ export class NewPaymentSurrenderComponent implements OnInit, OnDestroy {
       if( this.surrenderLineForm.valid){
       let formValues = this.surrenderLineForm.value;
       formValues.no = this.no;
-      this.cashSurrenderService.createUpdateCashSurrender(formValues).subscribe({next:(res) => {
+      this.cashSurrenderService.createUpdateCashSurrenderLine(formValues).subscribe({next:(res) => {
       this.notificationService.success('', res['responseDescription']);
+      this.closeCustomModal();
         this.getAllCashSurrenderLines();
         this.isEditMode = true;
         },
@@ -199,8 +202,8 @@ export class NewPaymentSurrenderComponent implements OnInit, OnDestroy {
       let formValues = this.surrenderForm.value;
       formValues.subgranteeNo = this.subgranteeNo;
       formValues.no = this.no;
-      this.cashSurrenderService.createUpdateCashSurrenderLine(formValues).subscribe({next:(res) => {
-      this.router.navigate(['/payment-request']);
+      this.cashSurrenderService.createUpdateCashSurrender(formValues).subscribe({next:(res) => {
+      this.router.navigate(['/payment-surrender']);
       this.notificationService.success('', res['responseDescription']);
         this.isEditMode = true;
         },
@@ -219,7 +222,7 @@ export class NewPaymentSurrenderComponent implements OnInit, OnDestroy {
   }
 
   onCancel() {
-    this.router.navigate(['/payment-request']);
+    this.router.navigate(['/payment-surrender']);
   }
 
  editRequest(row: any) {
@@ -238,7 +241,7 @@ export class NewPaymentSurrenderComponent implements OnInit, OnDestroy {
     });
    }
 
-      openCustomModal() {
+   openCustomModal() {
       this.showModal = true;
     }
 

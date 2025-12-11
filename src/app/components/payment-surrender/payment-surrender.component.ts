@@ -9,6 +9,7 @@ import { FooterComponent } from '../shared/footer/footer.component';
 import { AuthService, AuthUser } from '../../services/auth.service';
 import { CashRequestService } from '../../services/cash-request-service';
 import { NotificationService } from '../../services/notification.service';
+import { CashSurrenderService } from '../../services/cash-surrender-service';
 
 @Component({
   selector: 'app-payment-surrender',
@@ -46,7 +47,8 @@ export class PaymentSurrenderComponent implements OnInit, OnDestroy {
   private router = inject(Router);
   private cashRequestService = inject(CashRequestService);
   private authService = inject(AuthService);
-  private notificationService=inject(NotificationService)
+  private notificationService=inject(NotificationService);
+  private cashSurrenderService=inject(CashSurrenderService)
 
 
   ngOnInit(): void {
@@ -54,7 +56,7 @@ export class PaymentSurrenderComponent implements OnInit, OnDestroy {
       this.subgranteeNo = this.user?.partnerAccountNo;
       this.email=this.user?.emailAddress;
 
-      this.cashRequestService.getAllCashRequests(this.email).subscribe(data=>{
+      this.cashSurrenderService.getAllCashSurrenders(this.email).subscribe(data=>{
        this.paymentSurrenderList=data;
       });
   }
@@ -64,15 +66,43 @@ export class PaymentSurrenderComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  navigateToNewPaymentSurrender() {
-    this.router.navigate(['/new-payment-surrender']);
+createNewSurrender(){
+    const formValues = {
+      subgranteeNo: this.subgranteeNo,
+      emailAddress: this.email,
+      no: '',
+      status: '',
+      actualSpent: '',
+      areaOfFocus: '',
+      description: '',
+      projectCode: '',
+      currencyCode: '',
+      requestedDate: '',
+      surrenderDate: '',
+      actualSpentLCY: '',
+      disbursedAmount: '',
+      paymentRequestNo: '',
+      disbursedAmountLCY: ''
+    };
+    this.cashSurrenderService.createUpdateCashSurrender(formValues).subscribe({next:(res) => {
+     this.router.navigate(['/new-payment-surrender',btoa(res.responseDescription)]);
+        },
+          error: (err) => {
+              this.loading = false;
+              const message = err.error?.responseDescription || 'Failed to update request.';
+              this.notificationService.error('', message);
+            }
+        });
+      }
+  ViewRequest(no: string){
+
   }
 
-  viewSurrender(id: string) {
-    this.router.navigate(['/new-payment-surrender', id]);
-  }
   editRequest(no: string) {
-      this.router.navigate(['/new-payment-surrender',btoa(no)]);
+      this.router.navigate([
+       '/new-payment-surrender',
+        btoa(no)
+      ]);
     }
 
   previousPage() {

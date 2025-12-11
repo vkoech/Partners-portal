@@ -17,6 +17,12 @@
     <div class="new-payment-request-content">
     <form [formGroup]="surrenderForm">
       <div class="form-section">
+         <div class="form-row">
+         <div class="form-group">
+           <label>No</label>
+            <input type="text" formControlName="no" readonly>
+          </div>
+          </div>
         <div class="form-row">
           <div class="form-group">
            <label>Select Cash Request: *</label>
@@ -66,36 +72,25 @@
           <div class="modal-row">
             <div class="form-field">
              <label>Category</label>
-                <select formControlName="category">
-                  <option value="" [selected]="true" disabled>Select</option>
-                  @for (category of category_list; track category.code) {
-                    <option [value]="category.code">
-                      {{ category.description }}
-                    </option>
-                  }
-                </select>
+               <input formControlName="category">
             </div>
-              <div class="form-field">
-                <label>Amount Received</label>
-               <input formControlName="amountReceived">
-              </div>
-            </div>
-            <div class="modal-row">
-             <div class="form-field">
-               <label>Amount Spent</label>
-               <input formControlName="currencyCode">
-            </div>
-            <div class="form-field">
-              <label>Balance</label>
-              <input formControlName="balance">
-            </div>
-            </div>
+            </div>    
            <div class="modal-row">
+             <div class="form-field">
+                <label>Amount Received</label>
+               <input formControlName="amountAdvanced">
+              </div>
              <div class="form-field">
                <label>Currency</label>
                <input formControlName="currencyCode">
             </div>
           </div>
+           <div class="modal-row">
+             <div class="form-field">
+               <label>Amount Spent</label>
+               <input formControlName="actualSpent">
+            </div>
+            </div>
           <div class="modal-row">
             <div class="form-field full-width">
               <label>Description</label>
@@ -103,7 +98,7 @@
             </div>
           </div>
           <div class="modal-actions">
-            <button type="button"  class="submit" (click)="saveModal()">Save</button>
+            <button type="button"  class="submit" (click)="submitLine()">Update</button>
             <button type="button" class="submit" (click)="closeCustomModal()">Cancel</button>
           </div>
         </form>
@@ -117,7 +112,6 @@
                   <th>Category</th>
                   <th>Amount Received</th>
                   <th>Amount Spent</th>
-                  <th>Balance</th>
                   <th>Description</th>
                   <th>Action</th>
                 </tr>
@@ -125,21 +119,15 @@
 
               <tbody>
                 <tr *ngFor="let row of paymentApplicationLines">
-                  <td>{{ row.category }}</td>
-                  <td>{{ row.amountReceived }}</td>
-                  <td>{{ row.amountSpent }}</td>
-                  <td>{{ row.balance }}</td>
-                  <td>{{ row.description }}</td>
-
+                  <td>{{row.category}}</td>
+                  <td>{{row.amountAdvanced}}</td>
+                  <td>{{row.actualSpent}}</td>
+                  <td>{{row.description}}</td>
                   <td>
                    <button type="button" class="edit-btn" (click)="editRequest(row)">
                       <img src="assets/edit.svg" alt="Edit" width="16" height="16" />
                       Edit
                    </button>
-                    <button type="button" class="delete-btn" (click)="deleteRequest(row.lineNo)">
-                      <img src="assets/delete.svg" alt="Delete" width="16" height="16" />
-                      Delete
-                    </button>
                   </td>
                 </tr>
               </tbody>

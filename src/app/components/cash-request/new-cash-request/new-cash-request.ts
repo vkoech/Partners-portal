@@ -100,26 +100,26 @@ export class NewCashRequest {
 
   private initializeForms() {
     this.paymentRequestForm = this.fb.group({
-        no: [''],
+        no: [{ value: '', disabled: true }],
         emailAddress: [''],
         subgranteeNo: [''],
         approvedApplicationNo: [''],
-        subAwardStartDate:[''],
-        subAwardEndDate:[''],
-        reportingCycle:[''],
-        areaOfFocus: [''],
+        subAwardStartDate:[{ value: '', disabled: true }],
+        subAwardEndDate:[{ value: '', disabled: true }],
+        reportingCycle:[{ value: '', disabled: true }],
+        areaOfFocus: [{ value: '', disabled: true }],
         documentDate: [''],
         requestedDate: [''],
-        currencyCode: [''],
-        requestedAmount: [''],
-        requestedAmountLCY: [''],
+        currencyCode: [{ value: '', disabled: true }],
+        requestedAmount: [{ value: '', disabled: true }],
+        requestedAmountLCY: [{ value: '', disabled: true }],
         description: [''],
-        projectCode: [''],
+        projectCode: [{ value: '', disabled: true }],
         declarationDone: [''],
         declarationDate: [''],
-        indirectCostPercentage: [''],
-        indirectCost: [''],
-        indirectCostLCY: [''],
+        indirectCostPercentage: [{ value: '', disabled: true }],
+        indirectCost: [{ value: '', disabled: true }],
+        indirectCostLCY: [{ value: '', disabled: true }],
         responseDescription: [''],
         status: ['']
     });
@@ -207,7 +207,6 @@ export class NewCashRequest {
       let formValues = this.paymentRequestForm.value;
       formValues.subgranteeNo = this.subgranteeNo;
       formValues.no = this.no;
-      formValues.declarationDone = this.isConfirmed;
       this.cashRequestService.createUpdateCashRequest(formValues).subscribe({next:(res) => {
       this.notificationService.success('', res['responseDescription']);
       this.router.navigate(['/cash-request']);

@@ -96,6 +96,9 @@ export class CashRequest {
         btoa(approvedApplicationNo)
       ]);
     }
+   ViewRequest(no: string,){
+
+    }
 
   
     viewRequest(id: string) {
