@@ -18,12 +18,13 @@ import { ViewPaymentRequest } from './components/payment-request/view-payment-re
 import { ViewCashRequest } from './components/cash-request/view-cash-request/view-cash-request';
 import { ViewApprovedFunding } from './components/approved-funding/view-approved-funding/view-approved-funding';
 import { ViewPaymentSurrender } from './components/payment-surrender/view-payment-surrender/view-payment-surrender';
+import { Profile } from './components/registration/profile/profile';
 
 export const routes: Routes = [
   { path: '', component: LoginComponent },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegistrationComponent },
-  { path: 'profile', component: RegistrationComponent },
+  { path: 'profile', component: Profile },
   { path: 'signup', component: Signup },
   { path: 'forgot-password', component: ForgotPassword },
   { path: 'otp-verification', component: Otp },

@@ -1,0 +1,171 @@
+    <div class="step-content">
+      <div class="form-section">
+        <h4>Profile Information</h4>
+
+        <div class="summary-grid">
+          <div class="summary-item">
+            <label>Organization Name</label>
+            <span>{{ personalInfoForm.get('legalNameOfOrganization')?.value }}</span>
+          </div>
+          <div class="summary-item">
+            <label>Tax Registration No.</label>
+            <span>{{ personalInfoForm.get('taxRegistrationNumber')?.value }}</span>
+          </div>
+          <div class="summary-item">
+            <label>Physical Address</label>
+            <span>{{ personalInfoForm.get('physicalAddress')?.value }}</span>
+          </div>
+          <div class="summary-item">
+            <label>Phone Number</label>
+            <span>{{ personalInfoForm.get('phoneNo')?.value }}</span>
+          </div>
+          <div class="summary-item">
+            <label>Trading/Operaing Name</label>
+            <span>{{ personalInfoForm.get('tradingName')?.value }}</span>
+          </div>
+          <div class="summary-item">
+            <label>Date of Registration</label>
+            <span>{{ personalInfoForm.get('dateRegistered')?.value }}</span>
+          </div>
+          <div class="summary-item">
+            <label>Type Of Governing Body</label>
+            <span>{{ personalInfoForm.get('governingBody')?.value }}</span>
+          </div>
+          <div class="summary-item">
+            <label>Email Address</label>
+            <span>{{ personalInfoForm.get('emailAddress')?.value }}</span>
+          </div>
+          <div class="summary-item">
+            <label>Acronym(If Any)</label>
+            <span>{{ personalInfoForm.get('acronym')?.value }}</span>
+          </div>
+          <div class="summary-item">
+            <label>Postal Address</label>
+            <span>{{ personalInfoForm.get('postalAddress')?.value }}</span>
+          </div>
+          <div class="summary-item">
+            <label>Website</label>
+            <span>{{ personalInfoForm.get('website')?.value }}</span>
+          </div>
+          <div class="summary-item">
+            <label>Country Of Registration</label>
+            <span>{{ personalInfoForm.get('country')?.value }}</span>
+          </div>
+          <div class="summary-item">
+            <label>Registration Certificate No.</label>
+            <span>{{ personalInfoForm.get('registrationCertificateNo')?.value }}</span>
+          </div>
+          <div class="summary-item">
+            <label>Status</label>
+            <span>{{ personalInfoForm.get('status')?.value }}</span>
+          </div>
+        </div>
+      </div>
+         <!-- Area Of Focus -->
+      @if(areaOfFocusList.length>0){
+          <div class="form-section">
+          <h3>Area Of Focus</h3>
+          <div class="table-container">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Area Of Focus</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for(focus of areaOfFocusList; track focus.lineNo){
+                  <tr>
+                  <td>{{focus.code}}</td>
+                  <td>{{ focus.description }}</td>
+                </tr>
+                 }
+              </tbody>
+            </table>
+          </div>
+        </div>}
+        <!-- Geo Coverage Table -->
+        @if(geoCoverageList.length>0){
+          <div class="form-section">
+          <h3>Geo Coverage</h3>
+          <div class="table-container">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Country</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for(geo of geoCoverageList; track geo.lineNo){
+                <tr>
+                  <td>{{ geo.country }}</td>
+                </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      }
+
+        @if(experience.length>0)
+        {
+          <div class="form-section">
+          <h3>Program Experience</h3>
+          <div class="table-container">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Major Donor</th>
+                  <th>Project Value</th>
+                  <th>Start Date</th>
+                  <th>End Date</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for(experience of experience; track experience.lineNo){
+                  <tr>
+                  <td>{{ experience.majorDonorOrPartner }}</td>
+                  <td>{{ experience.projectValue }}</td>
+                  <td>{{ experience.startDate }}</td>
+                  <td>{{ experience.endDate }}</td>
+                  <td>{{ experience.description}}</td>
+                </tr>
+              }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      }
+           @if(contact_person_details_list.length>0){
+          <div class="form-section">
+          <h3>Contact Person</h3>
+          <div class="table-container">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Full Name</th>
+                  <th>Email Address</th>
+                  <th>Mobile No.</th>
+                  <th>Contact Type</th>
+                </tr>
+              </thead>
+              <tbody>
+              @for (contact of contact_person_details_list; track contact.lineNo){
+                  <tr>
+                  <td>{{ contact.names }}</td>
+                  <td>{{ contact.emailAddress }}</td>
+                  <td>{{ contact.phoneNo }}</td>
+                  <td>{{ contact.contactType }}</td>
+                </tr>
+               }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      }
+
+      <div class="action-buttons">
+       <button type="button" class="back">Previous</button>
+      </div>
+    </div>

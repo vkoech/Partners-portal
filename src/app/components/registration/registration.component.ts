@@ -111,7 +111,8 @@ export class RegistrationComponent implements OnInit {
       postalAddress: ['',Validators.required],
       website: ['',Validators.required],
       country:['',Validators.required],
-      registrationCertificateNo:['',Validators.required]
+      registrationCertificateNo:['',Validators.required],
+      status:['']
     });
 
     this.areaOfFocusForm = this.fb.group({

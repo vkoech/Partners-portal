@@ -2,7 +2,7 @@
   <div class="registration-content">
     <div class="registration-header">
       <h6>SUB-GRANTEE REGISTISTRATION FORM</h6>
-      <div class="status">Application Status: {{status.status}}</div>
+         Status:<span>{{ personalInfoForm.get('status')?.value }}</span>
     </div>
 
     <!-- Step Navigation -->
@@ -288,7 +288,7 @@
             </div>
             <div class="form-group">
               <label>Project Type: <span class="required">*</span></label>
-                <select formControlName="projetcType" class="form-input">
+                <select formControlName="projectType" class="form-input">
                   <option value="">Select</option>
                   <option value="Prime">Prime</option>
                   <option value="Sub-Prime">Sub-Prime</option>
@@ -614,6 +614,10 @@
           <div class="summary-item">
             <label>Registration Certificate No</label>
             <span>{{ personalInfoForm.get('registrationCertificateNo')?.value }}</span>
+          </div>
+            <div class="summary-item">
+            <label>Status</label>
+            <span>{{ personalInfoForm.get('status')?.value }}</span>
           </div>
         </div>
       </div>
