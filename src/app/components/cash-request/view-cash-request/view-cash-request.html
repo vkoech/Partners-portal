@@ -1,1 +1,117 @@
-<p>view-cash-request works!</p>
+<div class="new-payment-request-container">
+  <app-sidebar [sidebarType]="'finance'" [(open)]="sidebarOpen"></app-sidebar>
+
+  <div class="main-content">
+    <app-header
+      title="Cash Application"
+      subtitle="Finance Services/Cash Request"
+      headerClass="finance"
+      [showBackButton]="true"
+      [(sidebarOpen)]="sidebarOpen">
+    </app-header>
+    <div class="new-payment-request-content">
+     <div class="new-payment-request-section card-effect">
+       <div class="section-header">
+        <h2>Cash Application</h2>
+       </div>
+    <div class="new-payment-request-content">
+    <form [formGroup]="paymentRequestForm">
+      <div class="form-section">
+         <div class="form-row">
+           <div class="form-group">
+            <label>No.</label>
+             <input type="text" formControlName="no">
+          </div>
+           <div class="form-group">
+            <label>Approved Application Number</label>
+              <input type="text" formControlName="approvedApplicationNo">
+          </div>
+        </div>
+        <div class="form-row">
+           <div class="form-group">
+            <label>Area of Focus</label>
+             <input type="text" formControlName="areaOfFocus">
+          </div>
+          <div class="form-group">
+            <label>Project Code</label>
+             <input type="text" formControlName="projectCode">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Project Start Date</label>
+            <input type="text" formControlName="subAwardStartDate">
+          </div>
+           <div class="form-group">
+            <label>Project End Date</label>
+            <input type="text" formControlName="subAwardEndDate">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Currency</label>
+            <input type="text" formControlName="currencyCode">
+          </div>
+          <div class="form-group">
+            <label>Reporting Cycle</label>
+            <input type="text" formControlName="reportingCycle">
+          </div>
+        </div>
+        <div class="form-row">
+           <div class="form-group">
+            <label>Requested Amount</label>
+            <input type="text" formControlName="requestedAmount">
+          </div>
+            <div class="form-group">
+            <label>Requested Amount(LCY)</label>
+            <input type="text" formControlName="requestedAmountLCY">
+          </div>
+        </div>
+        <div class="form-row">
+           <div class="form-group">
+              <label>Indirect Cost(%)</label>
+              <input type="text" formControlName="indirectCostPercentage">
+            </div>
+           <div class="form-group">
+            <label>Indirect Cost Amount</label>
+            <input type="text" formControlName="indirectCost">
+           </div>
+         </div>
+        <div class="form-group">
+           <label>Cash Request Description</label>
+            <textarea rows="2" formControlName="description"></textarea>
+        </div>
+        </div>
+     </form>
+    </div>
+   <div class="modal-btn-container">
+    </div>
+      <table class="request-line-table">
+              <thead>
+                <tr>
+                  <th>Category</th>
+                  <th>Amount</th>
+                  <th>Amount (LCY)</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                @for(row of paymentApplicationLines; track row){
+                  <tr>
+                  <td>{{ row.category }}</td>
+                  <td>{{ row.amount }}</td>
+                  <td>{{ row.amountLCY }}</td>
+                  <td>{{ row.description }}</td>
+                </tr>
+              }
+              </tbody>
+            </table>
+            <div class="section-footer">
+                  <button class="submit" (click)="onCancel()">Close</button>
+                </div>
+              <app-footer></app-footer>
+            </div>
+    </div>
+    </div>
+

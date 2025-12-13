@@ -17,7 +17,6 @@ import { SidebarComponent } from '../../shared/sidebar/sidebar.component';
 export class ViewApprovedFunding {
   sidebarOpen: any;
   paymentRequestForm: FormGroup<any>;
-  paymentRequestLineForm: FormGroup<any>;
   paymentApplicationLines:any;
   no: string;
   email: any;
@@ -58,15 +57,6 @@ export class ViewApprovedFunding {
         declarationDate:[{ value: '', disabled: true }],
         status:[{ value: '', disabled: true }],
       })
-
-      this.paymentRequestLineForm = this.fb.group({
-          lineNo: [''],
-          documentNo: [''],
-          category: [''],
-          appliedAmount: [''],
-          appliedAmountLCY: [''],
-          description: ['']
-      });
 
       this.paymentService.getSingleFundingApplication(this.no).subscribe(data=>{
           this.paymentRequestForm.patchValue(data);

@@ -65,12 +65,14 @@ export class NewCashRequest {
         if (encodedNo2) {
         this.approvedApplicationNo = atob(encodedNo2);
       }
-
+        this.paymentRequestForm.patchValue({
+            no: this.no
+          });
   }
 
   ngOnInit(): void {
-    this.paymentService.getSingleFundingApplication(this.no).subscribe(data=>{
-      this.paymentRequestForm.patchValue(data);
+    this.cashRequestService.getSingleCashRequest(this.no).subscribe(data=>{
+      // this.paymentRequestForm.patchValue(data);
     });
 
     this.paymentService.getProjectCodes().subscribe(data=>{
@@ -89,10 +91,13 @@ export class NewCashRequest {
       this.area_of_focus_items = data;
     });
     this.getAllCashRequestLines();
-
+    if (
+        this.approvedApplicationNo &&
+        this.approvedApplicationNo !== ''
+      )
     this.paymentService.getFundingApplicationDetailsByNo(this.approvedApplicationNo).subscribe(data => {
     this.paymentRequestForm.patchValue(data);
-  });
+    });
   }
 
   ngOnDestroy() {
@@ -124,7 +129,7 @@ export class NewCashRequest {
         status: ['']
     });
 
-    
+
 
     this.paymentRequestLineForm = this.fb.group({
         lineNo: [''],
@@ -157,7 +162,7 @@ export class NewCashRequest {
       this.notificationService.success('', res['responseDescription']);
       this.getAllCashRequestLines();
     });
-   }   
+   }
 
   submitLine() {
     this.loading=true

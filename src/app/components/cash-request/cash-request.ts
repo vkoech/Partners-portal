@@ -20,12 +20,12 @@ import { CashRequestService } from '../../services/cash-request-service';
 export class CashRequest {
 
   private destroy$ = new Subject<void>();
-  
+
     sidebarOpen = false;
     searchTerm = '';
     currentPage = 1;
     itemsPerPage = 5;
-  
+
     cash_request_list: any[] = [];
     email: any
     user: AuthUser | null = null;
@@ -37,23 +37,22 @@ export class CashRequest {
     private cashRequestService = inject(CashRequestService);
     private authService = inject(AuthService);
     private notificationService=inject(NotificationService)
-  
+
     ngOnInit(): void {
       this.user = this.authService.getLoggedInUser();
       this.subgranteeNo = this.user?.partnerAccountNo;
       this.email=this.user?.emailAddress;
-  
+
       this.cashRequestService.getAllCashRequests(this.email).subscribe(data=>{
        this.cash_request_list=data;
-       console.log(data)
       });
     }
-  
+
     ngOnDestroy() {
       this.destroy$.next();
       this.destroy$.complete();
     }
-  
+
    createNewPaymentRequest (){
          const formValues = {
             subgranteeNo: this.subgranteeNo,
@@ -71,7 +70,7 @@ export class CashRequest {
             subAwardEndDate: '',
             subAwardStartDate: '',
             approvedApplicationNo: '',
-            indirectCostPercentage: '', 
+            indirectCostPercentage: '',
          }
       this.cashRequestService.createUpdateCashRequest(formValues).subscribe({next:(res) => {
        this.router.navigate(['/new-cash-request',btoa(res.no)]);
@@ -88,7 +87,7 @@ export class CashRequest {
         // this=data;
         });
       }
-  
+
    editRequest(no: string, approvedApplicationNo: string) {
       this.router.navigate([
        '/new-cash-request',
@@ -97,14 +96,9 @@ export class CashRequest {
       ]);
     }
    ViewRequest(no: string,){
-
+      this.router.navigate(['/view-cash-request',btoa(no)]);
     }
 
-  
-    viewRequest(id: string) {
-      this.router.navigate(['/view-payment-request', id]);
-    }
-  
     previousPage() {
       if (this.currentPage > 1) {
         this.currentPage--;
