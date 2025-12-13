@@ -14,8 +14,8 @@ export class CashSurrenderService {
    getAllCashSurrenders(email: string): Observable<any>{
           return this.httpClient.get<any>(this.baseUrl+'CashSurrender/GetAllCashSurrenders/'+email);
         }
-   getSingleCashRequest(documentNo: string): Observable<any>{
-          return this.httpClient.get<any>(this.baseUrl+'CashRequest/GetSingleCashRequest/'+documentNo);
+   getSingleCashSurrender(documentNo: string): Observable<any>{
+          return this.httpClient.get<any>(this.baseUrl+'CashSurrender/GetSingleCashSurrender/'+documentNo);
         }
    getAllCashSurrenderLines(documentNo: string): Observable<any>{
        return this.httpClient.get<any>(this.baseUrl+'CashSurrender/GetAllCashSurrenderLines/'+documentNo);
@@ -25,7 +25,7 @@ export class CashSurrenderService {
       }
    createUpdateCashSurrenderLine(applicationBody: any): Observable<any> {
       return this.httpClient.post<any>(this.baseUrl + 'CashSurrender/CreateUpdateCashSurrenderLine', applicationBody);
-    } 
+    }
    getCashRequestDetailsByNo(documentNo: string): Observable<any>{
        return this.httpClient.get<any>(this.baseUrl+'CashSurrender/GetCashRequestDetailsByNo/'+documentNo);
    }
@@ -35,7 +35,7 @@ export class CashSurrenderService {
   validateCashSurrenderLines(cashSurrenderNo :string, disbursementNo: string): Observable<any>{
    return this.httpClient.get<any>(this.baseUrl+'CashSurrender/ValidateCashSurrenderLines/'+cashSurrenderNo +'/'+ disbursementNo);
   }
-  
+
   deleteCashSurrenderLine(lineNo: string, documentNo: string): Observable<any>{
    return this.httpClient.get<any>(this.baseUrl+'CashSurrender/DeleteCashSurrenderLine/'+ lineNo+'/'+documentNo);
   }

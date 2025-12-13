@@ -54,15 +54,11 @@
           <div class="form-group">
             <label>Description:</label>
               <textarea formControlName="description"></textarea>
-          </div> 
+          </div>
         </div>
         </div>
      </form>
     </div>
-   <!-- <div class="modal-btn-container">
-      <button class="open-modal-btn" (click)="openCustomModal()">Add Cash Surrender</button>
-    </div> -->
-   <!-- Custom Modal -->
   @if(showModal)
   {
     <div class="custom-modal-backdrop">
@@ -74,7 +70,7 @@
              <label>Category</label>
                <input formControlName="category">
             </div>
-            </div>    
+            </div>
            <div class="modal-row">
              <div class="form-field">
                 <label>Amount Received</label>
@@ -118,7 +114,9 @@
               </thead>
 
               <tbody>
-                <tr *ngFor="let row of paymentApplicationLines">
+               @for(row of paymentApplicationLines; track row)
+                 {
+                <tr>
                   <td>{{row.category}}</td>
                   <td>{{row.amountAdvanced}}</td>
                   <td>{{row.actualSpent}}</td>
@@ -130,6 +128,7 @@
                    </button>
                   </td>
                 </tr>
+              }
               </tbody>
             </table>
               <div class="section-footer">

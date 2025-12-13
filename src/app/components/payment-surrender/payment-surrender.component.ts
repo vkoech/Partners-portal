@@ -95,7 +95,7 @@ createNewSurrender(){
         });
       }
   ViewRequest(no: string){
-
+    this.router.navigate(['/view-payment-surrender',btoa(no)]);
   }
 
   editRequest(no: string) {

@@ -79,11 +79,11 @@ export class NewPaymentSurrenderComponent implements OnInit, OnDestroy {
     });
     this.user = this.authService.getLoggedInUser();
     this.subgranteeNo = this.user?.partnerAccountNo;
-    this.email=this.user?.emailAddress;   
+    this.email=this.user?.emailAddress;
   }
 
   ngOnInit(): void {
-    this.cashSurrenderService.getSingleCashRequest(this.no).subscribe(data=>{
+    this.cashSurrenderService.getSingleCashSurrender(this.no).subscribe(data=>{
         // this.surrenderForm.patchValue(data);
       });
     this.paymentService.getProjectCodes().subscribe(data=>{
@@ -97,11 +97,11 @@ export class NewPaymentSurrenderComponent implements OnInit, OnDestroy {
       });
     this.cashSurrenderService.getPostedCashRequests(this.email).subscribe(data=>{
         this.cash_list=data;
-      });  
+      });
     this.registrationService.getAreaOfFocus().subscribe(data => {
       this.area_of_focus_items = data;
     });
-    
+
     // this.getAllCashSurrenderLines()
   }
 
@@ -233,7 +233,7 @@ export class NewPaymentSurrenderComponent implements OnInit, OnDestroy {
     action: 'update'
     });
     }
-    
+
   deleteRequest(lineNo: string) {
      this.cashSurrenderService.deleteCashSurrenderLine(lineNo, this.no,).subscribe(res=>{
       this.notificationService.success('', res['responseDescription']);
