@@ -82,6 +82,10 @@ export class ApprovedFundingComponent implements OnInit, OnDestroy {
     this.currentPage = this.totalPages;
   }
 
+  ViewRequest(no: string){
+      this.router.navigate(['/view-approved-funds-application',btoa(no)]);
+    }
+
   getVisiblePages(): number[] {
     const pages: number[] = [];
     const maxVisible = 5;

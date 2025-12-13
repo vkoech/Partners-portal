@@ -35,6 +35,7 @@
               <th>Amount (LCY)</th>
               <th>Obligated Amount</th>
               <th>Status</th>
+               <th>Action</th>
             </tr>
           </thead>
           <tbody>
@@ -47,6 +48,13 @@
                 <td>{{request.amountLCY}}</td>
                 <td>{{request.obligatedAmountLCY}}</td>
                 <td>{{request.status}}</td>
+                <td>
+                  @if(request.status !=='Open'){
+                  <button class="action-btn edit-btn" (click)="ViewRequest(request.no)">
+                    View
+                  </button>
+                 }
+                </td>
             </tr>}
           </tbody>
         </table>

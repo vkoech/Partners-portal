@@ -14,6 +14,9 @@ import { ForgotPassword } from './components/forgot-password/forgot-password';
 import { ResetPassword } from './components/reset-password/reset-password';
 import { Otp } from './components/otp/otp';
 import { NewCashRequest } from './components/cash-request/new-cash-request/new-cash-request';
+import { ViewPaymentRequest } from './components/payment-request/view-payment-request/view-payment-request';
+import { ViewCashRequest } from './components/cash-request/view-cash-request/view-cash-request';
+import { ViewApprovedFunding } from './components/approved-funding/view-approved-funding/view-approved-funding';
 
 export const routes: Routes = [
   { path: '', component: LoginComponent },
@@ -29,12 +32,16 @@ export const routes: Routes = [
   { path: 'funding-request', component: PaymentRequestComponent },
   { path: 'funding-request', component: NewPaymentRequestComponent },
   { path: 'funding-request/:id', component: NewPaymentRequestComponent },
+  { path: 'view-funding-request/:id', component:  ViewPaymentRequest},
+  { path: 'view-approved-funds-application/:id', component:  ViewApprovedFunding},
   { path: 'cash-request', component: CashRequest },
   { path: 'new-cash-request/:id/:id2', component: NewCashRequest },
   { path: 'new-cash-request/:id', component: NewCashRequest },
+  { path: 'view-cash-request/:id', component: ViewCashRequest},
   { path: 'payment-surrender', component: PaymentSurrenderComponent },
   { path: 'new-payment-surrender', component: NewPaymentSurrenderComponent },
   { path: 'new-payment-surrender/:id', component: NewPaymentSurrenderComponent },
+   { path: 'view-payment-surrender/:id', component: ViewPaymentRequest },
   { path: 'reimbursements', component: ReimbursementsComponent },
   { path: 'new-reimbursement', component: NewReimbursementComponent },
   { path: 'new-reimbursement/:id', component: NewReimbursementComponent },
