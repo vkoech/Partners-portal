@@ -6,9 +6,7 @@ import { HeaderComponent } from '../../shared/header/header.component';
 import { SidebarComponent } from '../../shared/sidebar/sidebar.component';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService, AuthUser } from '../../../services/auth.service';
-import { NotificationService } from '../../../services/notification.service';
 import { Payment } from '../../../services/payment';
-import { RegistrationService } from '../../../services/registration-service';
 
 @Component({
   selector: 'app-view-payment-request',
@@ -79,7 +77,7 @@ subgranteeNo: any;
     });
 
   }
-
   onCancel() {
-}
+    this.router.navigate(['/funding-request']);
+  }
 }

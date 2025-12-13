@@ -1,1 +1,98 @@
-<p>view-approved-funding works!</p>
+<div class="new-payment-request-container">
+  <app-sidebar [sidebarType]="'finance'" [(open)]="sidebarOpen"></app-sidebar>
+
+  <div class="main-content">
+    <app-header
+      title="Approved Funding Application"
+      subtitle="Finance Services/Payment Request"
+      headerClass="finance"
+      [showBackButton]="true"
+      [(sidebarOpen)]="sidebarOpen">
+    </app-header>
+    <div class="new-payment-request-content">
+     <div class="new-payment-request-section card-effect">
+       <div class="section-header">
+        <h2>Approved Funding Application</h2>
+       </div>
+    <div class="new-payment-request-content">
+    <form [formGroup]="paymentRequestForm">
+      <div class="form-section">
+        <div class="form-row">
+           <div class="form-group">
+            <label>Area of Focus</label>
+              <input type="text" formControlName="areaOfFocus">
+          </div>
+          <div class="form-group">
+            <label>Project Code</label>
+              <input type="text" formControlName="projectCode">
+          </div>
+        </div>
+         <div class="form-group">
+           <label>Description</label>
+            <textarea rows="2" formControlName="description"></textarea>
+          </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Project Start Date</label>
+            <input type="text" formControlName="subAwardStartDate">
+          </div>
+           <div class="form-group">
+            <label>Project End Date</label>
+            <input type="text" formControlName="subAwardEndDate">
+          </div>
+           <div *ngIf="paymentRequestForm.hasError('dateRangeInvalid')" style="color:red;">
+              Award end date cannot be earlier than award start date.
+            </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Currency</label>
+              <input type="text" formControlName="currencyCode">
+          </div>
+          <div class="form-group">
+            <label>Reporting Cycle</label>
+              <input type="text" formControlName="reportingCycle">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Sub-Awardee Title</label>
+            <input type="text" formControlName="subAwardTitle">
+          </div>
+          <div class="form-group">
+            <label>Status</label>
+            <input type="text" formControlName="status">
+          </div>
+        </div>
+        </div>
+     </form>
+    </div>
+      <table class="request-line-table">
+              <thead>
+                <tr>
+                  <th>Category</th>
+                  <th>Applied Amount</th>
+                  <th>Applied Amount (LCY)</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                  @for (row of paymentApplicationLines; track row){
+                  <tr>
+                  <td>{{ row.category }}</td>
+                  <td>{{ row.appliedAmount }}</td>
+                  <td>{{ row.appliedAmountLCY }}</td>
+                  <td>{{ row.description}}</td>
+                </tr>
+                  }
+              </tbody>
+            </table>
+               <div class="section-footer">
+                  <button class="submit" (click)="onCancel()">Close</button>
+                </div>
+              <app-footer></app-footer>
+            </div>
+    </div>
+    </div>
+
