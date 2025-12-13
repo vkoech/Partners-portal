@@ -1,15 +1,15 @@
 <div class="payment-request-container">
   <app-sidebar [sidebarType]="'finance'" [(open)]="sidebarOpen"></app-sidebar>
-  
+
   <div class="main-content">
-    <app-header 
-      title="CASH SURRENDER" 
+    <app-header
+      title="CASH SURRENDER"
       subtitle="Finance Services/Cash Surrender"
       headerClass="finance"
       [showBackButton]="false"
       [(sidebarOpen)]="sidebarOpen">
     </app-header>
-    
+
     <div class="payment-request-content">
       <div class="card-header">
         <h2>CASH SURRENDER</h2>
@@ -18,7 +18,7 @@
           ADD NEW CASH SURRENDER
         </button>
       </div>
-      
+
       <div class="card-body">
         <button class="filter-btn">
           <img src="assets/filter.svg" alt="Add filter" width="10" height="10" style="margin-right: 6px;" /> Add filter
@@ -28,7 +28,7 @@
           <input type="text" placeholder="Search here" [(ngModel)]="searchTerm">
         </div>
       </div>
-      
+
       <div class="table-container">
         <table class="payment-table">
           <thead>
@@ -58,7 +58,7 @@
                  }
                   @if(request.status !=='Open'){
                   <button class="action-btn edit-btn" (click)="ViewRequest(request.no)">
-                    <!-- <img src="assets/edit.svg" alt="Edit" width="24" height="24" /> -->
+                    <img src="assets/view.svg" alt="Edit" width="16" height="16" />
                     View
                   </button>
                  }
@@ -70,8 +70,8 @@
       <!-- Pagination -->
       <div class="pagination">
         <button class="page-btn" [disabled]="currentPage === 1" (click)="previousPage()">Prev</button>
-        <button *ngFor="let page of getVisiblePages()" 
-                class="page-btn" 
+        <button *ngFor="let page of getVisiblePages()"
+                class="page-btn"
                 [class.active]="page === currentPage"
                 (click)="goToPage(page)">
           {{ page }}
@@ -79,7 +79,7 @@
         <button class="page-btn" [disabled]="currentPage === totalPages" (click)="nextPage()">Next</button>
       </div>
     </div>
-    
+
     <app-footer></app-footer>
   </div>
 </div>

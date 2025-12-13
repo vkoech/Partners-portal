@@ -50,7 +50,8 @@
                 <td>{{request.status}}</td>
                 <td>
                   @if(request.status !=='Open'){
-                  <button class="action-btn edit-btn" (click)="ViewRequest(request.no)">
+                 <button class="action-btn edit-btn" (click)="ViewRequest(request.no)">
+                    <img src="assets/view.svg" alt="Edit" width="16" height="16" />
                     View
                   </button>
                  }

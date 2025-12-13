@@ -128,8 +128,9 @@ ngOnInit(): void {
     })
   }
 
-
-
+  onCancel() {
+    this.router.navigate(['/funding-request']);
+  }
 
 
 }
