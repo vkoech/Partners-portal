@@ -29,6 +29,14 @@ export class RegistrationService {
     return this.httpClient.post<any>(this.baseUrl + 'PartnerProfile/program-exp', applicationBody);
   }
 
+  uploadDocument(applicationBody: any): Observable<any> {
+    return this.httpClient.post<any>(this.baseUrl + 'Document/upload', applicationBody);
+  }
+
+  getPartnerRegistrationMandatoryDocuments(): Observable<Profile>{
+    return this.httpClient.get<Profile>(this.baseUrl+'Document/GetPartnerRegistrationMandatoryDocuments');
+  }
+
   createGeoLocationInfo(applicationBody: any): Observable<any> {
     return this.httpClient.post<any>(this.baseUrl + 'PartnerProfile/geo-coverage', applicationBody);
   }
@@ -77,6 +85,10 @@ export class RegistrationService {
 
   getPatnerExperience(documentNo: string): Observable<Array<any>>{
     return this.httpClient.get<Array<any>>(this.baseUrl+'OData/partners/'+ documentNo +'/prog-exp');
+  }
+
+  getUploadedPortalAttachments(documentNo: string): Observable<Array<any>>{
+    return this.httpClient.get<Array<any>>(this.baseUrl+'Document/GetUploadedPortalAttachments/'+ documentNo);
   }
 
 

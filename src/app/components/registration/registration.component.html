@@ -490,72 +490,68 @@
     </div>
       <!-- Step 5: Documents -->
     <div class="step-content" *ngIf="currentStep === 6">
-      <form [formGroup]="contactPersonForm">
-        <div class="form-section">
-          <h3>Attachments</h3>
-          <div class="upload-section">
-            <div class="form-row">
-              <div class="form-group">
-                <label>Document Name:</label>
-                <select>
-                  <option value="">Tax Certificate</option>
-                  <option value="bank-details">Certified bank account details</option>
-                  <option value="registration">Registration Certificate</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label>Upload File</label>
-                <div class="file-upload-row">
-                  <input type="text" placeholder="Choose a File..." readonly>
-                  <button type="button" class="choose-file-btn" (click)="triggerFileUpload()">Choose File</button>
-                </div>
-              </div>
-            </div>
-            <button type="submit" class="upload-btn">UPLOAD</button>
-          </div>
-
-          <div class="uploaded-documents" *ngIf="uploadedDocuments.length > 0">
-            <h4>Uploaded Documents</h4>
-            <div class="documents-table-container">
-              <table class="documents-table">
-                <thead>
-                  <tr>
-                    <th>Document Name</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let document of uploadedDocuments; let i = index" [class.striped]="i % 2 === 1">
-                    <td>{{ document.name }}</td>
-                    <td>
-                      <div class="document-actions">
-                        <button type="button" class="action-btn view-btn" (click)="viewDocument(document)">
-                          <img src="assets/view.svg" alt="View" width="16" height="16" />
-                          VIEW
-                        </button>
-                        <button type="button" class="delete-btn" (click)="deleteDocument(document.id)">
-                          <img src="assets/delete.svg" alt="Delete" width="16" height="16" />
-                          Delete
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-            <div class="step-actions">
-              <button type="button" class="back-to-top-btn" (click)="backToTop()">
-                <img src="assets/arrow-up.svg" alt="Back to top" width="16" height="16" />
-                Back to top
-              </button>
-              <div class="action-buttons">
-                <button type="button" class="back" (click)="previousStep()">Previous</button>
-                <button type="button" class="next" (click)="nextStep()">Next</button>
-              </div>
-            </div>
+      <form [formGroup]="documentForm" (ngSubmit)="submitDocument()">
+      <div class="form-section">
+       <div class="upload-section">
+         <div class="form-row">
+        <div class="form-group">
+          <label>Document Code</label>
+           <select formControlName="documentCode">
+              <option value="" [selected]=true disabled>Select</option>
+               @for (document of document_list; track document.code) {
+                <option [value]="document.code">
+                 {{ document.description}}
+              </option>}
+          </select>
         </div>
+        <div class="form-group">
+          <label>Upload File</label>
+          <div class="file-upload-row">
+            <input type="text" [value]="selectedFile?.name || ''" placeholder="Choose a File..." readonly>
+            <input type="file" #fileInput accept=".pdf" hidden (change)="onFileSelected($event)">
+            <button type="button" class="choose-file-btn" (click)="fileInput.click()">
+              Choose File
+            </button>
+          </div>
+        </div>
+        </div>
+        <button type="submit" class="upload-btn" [disabled]="!documentForm.get('File')!.value">
+          UPLOAD
+        </button>
+      </div>
+      </div>
       </form>
+          <!-- Contact Person Table -->
+        @if(contact_person_details_list.length>0){
+          <div class="form-section">
+          <h3>Contact Person</h3>
+          <div class="table-container">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Document Type</th>
+                  <th>Description</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+              @for (contact of uploaded_document_list; track contact.lineNo){
+                  <tr>
+                  <td>{{ contact.documentCode }}</td>
+                  <td>{{ contact.documentDescription }}</td>
+                  <td>
+                    <button type="button" class="delete-btn" (click)="deleteConatacPerson(contact,'delete')">
+                      <img src="assets/delete.svg" alt="Delete" width="16" height="16" />
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+               }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      }
     </div>
     <!-- Step 6: Summary -->
     <div class="step-content" *ngIf="currentStep === 7">

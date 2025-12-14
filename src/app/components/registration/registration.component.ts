@@ -30,7 +30,7 @@ export class RegistrationComponent implements OnInit {
   personalInfoForm: FormGroup;
   areaOfFocusForm: FormGroup;
   contactPersonForm: FormGroup;
-  docuumentForm: FormGroup;
+  documentForm: FormGroup;
   SummaryForm: FormGroup;
   confirmForm: FormGroup;
   experienceForm: FormGroup;
@@ -57,7 +57,11 @@ export class RegistrationComponent implements OnInit {
   selectedAreaOfFocusValues: any[] = [];
   selectedGeoValues: any[] = [];
   currency_code_list:any;
+  document_list:any
   status:any;
+  selectedFile: File | null = null;
+  maxFileSize = 20 * 1024 * 1024;
+  uploaded_document_list:any
 
   constructor(
     private router: Router,
@@ -94,6 +98,8 @@ export class RegistrationComponent implements OnInit {
     this.getPatnerExperience()
     this.getGeoLocation()
     this.getPartnersProfile()
+    this.getPartnerRegistrationMandatoryDocuments()
+    this.getUploadedPortalAttachments();
   }
 
   private initializeForms() {
@@ -156,6 +162,11 @@ export class RegistrationComponent implements OnInit {
       names:[''],
       action:['']
     })
+   this.documentForm=this.fb.group({
+     documentCode:[''],
+     File :[],
+     documentNo:[]
+   })
   this.confirmForm = this.fb.group({
     isConfirmed: [false],
     documentNo:[''],
@@ -508,30 +519,70 @@ onGeoSelect(item: any){
     }
   }
 
-  triggerFileUpload() {
-    const fileInput = document.createElement('input');
-    fileInput.type = 'file';
-    fileInput.accept = '.pdf,.jpg,.jpeg,.png';
-    fileInput.onchange = (event: any) => {
-      const file = event.target.files[0];
-      if (file) {
-        this.handleFileUpload(file);
+  onFileSelected(event: Event) {
+  const input = event.target as HTMLInputElement;
+
+  if (!input.files || input.files.length === 0) {
+    return;
+  }
+
+  const file = input.files[0];
+  if (file.type !== 'application/pdf') {
+    alert('Only PDF files are allowed');
+    input.value = '';
+    return;
+  }
+  if (file.size > this.maxFileSize) {
+    alert('File size must not exceed 5MB');
+    input.value = '';
+    return;
+  }
+
+  this.selectedFile = file;
+
+  this.documentForm.patchValue({
+    File: file
+  });
+
+  this.documentForm.get('File')?.updateValueAndValidity();
+}
+
+
+submitDocument() {
+    if (!this.documentForm.get('File')!.value) {
+      alert('Please select a valid PDF file');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append(
+      'documentCode',
+      this.documentForm.get('documentCode')!.value
+    );
+    formData.append(
+      'file',
+      this.documentForm.get('File')!.value
+    );
+    formData.append(
+      'documentNo',
+      this.documentNo
+    );
+    this.registrationService.uploadDocument(formData).subscribe({
+      next:(res) => {
+        this.notificationService.success('', res['responseDescription']);
+        this.documentForm.reset();
+        this.getUploadedPortalAttachments();
+        this.selectedFile = null;
+      },
+      error: err => {
+        console.error(err);
+        alert('Upload failed');
       }
-    };
-    fileInput.click();
-  }
+    });
+}
 
-  private handleFileUpload(file: File) {
-    const newDocument: UploadedDocument = {
-      id: Date.now().toString(),
-      name: file.name,
-      type: file.type.includes('pdf') ? 'PDF' : 'Image',
-      size: file.size,
-      uploadDate: new Date().toISOString().split('T')[0]
-    };
 
-    this.uploadedDocuments.push(newDocument);
-  }
+
 
   viewDocument(document: UploadedDocument) {
     console.log('Viewing document:', document.name);
@@ -597,6 +648,11 @@ onGeoSelect(item: any){
       this.area_of_focus_items = data;
     });
   }
+ getPartnerRegistrationMandatoryDocuments(){
+   this.registrationService.getPartnerRegistrationMandatoryDocuments().subscribe(data => {
+      this.document_list = data;
+    });
+  }
 
   getGeoLocation(){
    this.registrationService.getGeoLocation().subscribe(data => {
@@ -645,6 +701,11 @@ onGeoSelect(item: any){
   getPatnerExperience(){
     this.registrationService.getPatnerExperience(this.documentNo).subscribe(data=>{
       this.experience=data
+    })
+   }
+ getUploadedPortalAttachments(){
+    this.registrationService.getUploadedPortalAttachments(this.documentNo).subscribe(data=>{
+      this.uploaded_document_list=data
     })
    }
   onSubmitProfile() {
