@@ -86,7 +86,7 @@ export class NewPaymentSurrenderComponent implements OnInit, OnDestroy {
     this.cashSurrenderService.getSingleCashSurrender(this.no).subscribe(data=>{
         // this.surrenderForm.patchValue(data);
       });
-    this.paymentService.getProjectCodes().subscribe(data=>{
+    this.paymentService.getProjectCodes(this.subgranteeNo).subscribe(data=>{
         this.project_code_list=data;
       });
     this.paymentService.getcurrencyCodes().subscribe(data=>{

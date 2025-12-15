@@ -84,6 +84,25 @@
             <input type="text" formControlName="subAwardTitle">
           </div>
         </div>
+        <div class="form-group">
+          <label>Document Code</label>
+          <select formControlName="documentCode">
+            <option value="" disabled selected>Select</option>
+            @for (doc of document_list; track doc.code) {
+              <option [value]="doc.code">{{ doc.description }}</option>
+            }
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Upload PDF (Max 5MB)</label>
+          <div class="file-upload-row">
+            <input type="text" readonly [value]="selectedFile?.name || ''" placeholder="Choose a PDF file">
+            <input type="file" hidden #fileInput accept=".pdf" (change)="onFileSelected($event)">
+            <button type="button" class="choose-file-btn" (click)="fileInput.click()">
+              Choose File
+            </button>
+          </div>
+        </div>
         </div>
      </form>
     </div>

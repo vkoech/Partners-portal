@@ -41,6 +41,8 @@ export class NewPaymentRequestComponent implements OnInit, OnDestroy {
   reporting_cycle_list:any;
   category_list:any
   isConfirmed = false;
+document_list: any;
+selectedFile: any;
 
 
   constructor(
@@ -73,7 +75,7 @@ export class NewPaymentRequestComponent implements OnInit, OnDestroy {
         }
         this.paymentRequestForm.patchValue(data);
       });
-    this.paymentService.getProjectCodes().subscribe(data=>{
+    this.paymentService.getProjectCodes(this.subgranteeNo).subscribe(data=>{
         this.project_code_list=data;
       });
     this.paymentService.getcurrencyCodes().subscribe(data=>{
@@ -179,7 +181,7 @@ export class NewPaymentRequestComponent implements OnInit, OnDestroy {
   openCustomModal() {
     this.showModal = true;
     this.isEditMode = false;
-  }  
+  }
   editRequest(row: any) {
       this.showModal = true;
       this.isEditMode = true;
@@ -250,7 +252,14 @@ getProjectCode() {
 
 }
 
-
+onFileSelected(event: Event) {
+  const input = event.target as HTMLInputElement;
+  if (input.files && input.files.length > 0) {
+    this.paymentRequestForm.patchValue({
+      File: input.files[0]
+    });
+  }
+}
 
 closeCustomModal() {
   this.showModal = false;

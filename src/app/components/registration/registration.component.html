@@ -99,7 +99,13 @@
           <div class="form-row">
             <div class="form-group">
               <label>Governing Body: <span class="required">*</span></label>
-              <input type="text" formControlName="governingBody">
+                <select formControlName="governingBody">
+                  <option value="" [selected]=true disabled>Select</option>
+                  @for (g_body of governing_body_list; track g_body.code) {
+                  <option [value]="g_body.code">
+                    {{ g_body.description}}
+                  </option>}
+                </select>
             </div>
             <div class="form-group">
               <label>Email Address: <span class="required">*</span></label>
@@ -409,7 +415,7 @@
           <div class="form-row">
             <div class="form-group">
               <label>Role: <span class="required">*</span></label>
-                <select formControlName="roleType">
+                <select formControlName="type">
                   <option value="" [selected]=true disabled>Select</option>
                   @for (contact_type of contact_type_list; track contact_type.code) {
                   <option [value]="contact_type.code">

@@ -28,7 +28,7 @@ export class Payment {
 
   getProjectDetails(documentNo: string): Observable<any>{
       return this.httpClient.get<any>(this.baseUrl+'FundingApplication/GetProjectDetails/'+documentNo);
-    }  
+    }
   getSingleFundingApplicationLine(lineNo: string, documentNo: string): Observable<any>{
    return this.httpClient.get<any>(this.baseUrl+'FundingApplication/GetSingleFundingApplicationLine/'+ lineNo+'/'+documentNo);
   }
@@ -42,13 +42,14 @@ export class Payment {
   createUpdateFundingApplicationLine(applicationBody: any): Observable<any> {
     return this.httpClient.post<any>(this.baseUrl + 'FundingApplication/CreateUpdateFundingApplicationLine', applicationBody);
   }
-  getProjectCodes(): Observable<any>{
-   return this.httpClient.get<any>(this.baseUrl+'OData/getProjectCodes');
+  getProjectCodes(partnerNo: string): Observable<any>{
+   return this.httpClient.get<any>(this.baseUrl+'OData/getProjectCodes/'+ partnerNo);
   }
 
   getcurrencyCodes(): Observable<any>{
    return this.httpClient.get<any>(this.baseUrl+'OData/getCurrencies');
   }
+
  getReportingCycles(): Observable<any>{
    return this.httpClient.get<any>(this.baseUrl+'OData/getReportingCycles');
   }

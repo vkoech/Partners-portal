@@ -62,6 +62,7 @@ export class RegistrationComponent implements OnInit {
   selectedFile: File | null = null;
   maxFileSize = 20 * 1024 * 1024;
   uploaded_document_list:any
+  governing_body_list: any
 
   constructor(
     private router: Router,
@@ -156,7 +157,7 @@ export class RegistrationComponent implements OnInit {
       lineNo:0,
       documentNo:[''],
       contactType:[''],
-      roleType:[''],
+      type:[''],
       emailAddress:[''],
       phoneNo:[''],
       names:[''],
@@ -175,8 +176,11 @@ export class RegistrationComponent implements OnInit {
    this.paymentService.getcurrencyCodes().subscribe(data=>{
         this.currency_code_list=data;
       });
-  }
+   this.registrationService.getGoverningBodies().subscribe(data=>{
+        this.governing_body_list=data;
+      });
 
+  }
 
   dateRangeValidator(form: FormGroup) {
   const start = form.get('startDate')?.value;

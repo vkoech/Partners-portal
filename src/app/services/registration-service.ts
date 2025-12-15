@@ -91,6 +91,10 @@ export class RegistrationService {
     return this.httpClient.get<Array<any>>(this.baseUrl+'Document/GetUploadedPortalAttachments/'+ documentNo);
   }
 
+  getGoverningBodies(): Observable<any>{
+   return this.httpClient.get<any>(this.baseUrl+'OData/partner-governing-bodies');
+  }
+
 
 
 

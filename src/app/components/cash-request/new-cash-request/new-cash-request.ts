@@ -75,7 +75,7 @@ export class NewCashRequest {
       // this.paymentRequestForm.patchValue(data);
     });
 
-    this.paymentService.getProjectCodes().subscribe(data=>{
+    this.paymentService.getProjectCodes(this.subgranteeNo).subscribe(data=>{
         this.project_code_list=data;
       });
     this.paymentService.getcurrencyCodes().subscribe(data=>{
