@@ -29,6 +29,10 @@ export class Payment {
   getProjectDetails(documentNo: string): Observable<any>{
       return this.httpClient.get<any>(this.baseUrl+'FundingApplication/GetProjectDetails/'+documentNo);
     }
+  getFundingApplicationDocuments(): Observable<any>{
+      return this.httpClient.get<any>(this.baseUrl+'Document/getFundingApplicationDocuments');
+    }
+
   getSingleFundingApplicationLine(lineNo: string, documentNo: string): Observable<any>{
    return this.httpClient.get<any>(this.baseUrl+'FundingApplication/GetSingleFundingApplicationLine/'+ lineNo+'/'+documentNo);
   }
@@ -61,5 +65,8 @@ export class Payment {
   }
  getFundingApplicationDetailsByNo(approvedFundingApplicationNo : string): Observable<any>{
    return this.httpClient.get<any>(this.baseUrl+'CashRequest/GetFundingApplicationDetailsByNo/'+ approvedFundingApplicationNo);
+  }
+ uploadDocument(applicationBody: any): Observable<any> {
+    return this.httpClient.post<any>(this.baseUrl + 'Document/upload', applicationBody);
   }
 }

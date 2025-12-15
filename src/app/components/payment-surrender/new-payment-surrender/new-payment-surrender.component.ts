@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { SidebarComponent } from '../../shared/sidebar/sidebar.component';
@@ -56,8 +56,12 @@ export class NewPaymentSurrenderComponent implements OnInit, OnDestroy {
   cash_list:any
   email: any;
   user: AuthUser | null = null;
-
-
+  document_list: any;
+  doc_list:any
+  selectedFile: File | null = null;
+  uploading = false;
+  documentCodeControl = new FormControl('', Validators.required);
+  fileControl = new FormControl<File | null>(null, Validators.required);
 
   constructor(
     private router: Router,
@@ -102,7 +106,7 @@ export class NewPaymentSurrenderComponent implements OnInit, OnDestroy {
       this.area_of_focus_items = data;
     });
 
-    // this.getAllCashSurrenderLines()
+    this.getUploadedPortalAttachments()
   }
 
   ngOnDestroy() {
@@ -175,6 +179,9 @@ export class NewPaymentSurrenderComponent implements OnInit, OnDestroy {
     if (!selected) return;
     this.cashSurrenderService.getCashRequestDetailsByNo(selected).subscribe(data => {
       this.surrenderForm.patchValue(data);
+    });
+    this.cashSurrenderService.getCashSurrenderDocuments().subscribe(data=>{
+     this.doc_list=data;
     });
   }
 
@@ -252,5 +259,59 @@ export class NewPaymentSurrenderComponent implements OnInit, OnDestroy {
     saveModal() {
       console.log(this.surrenderForm.value);
       this.closeCustomModal();
+    }
+
+onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (!input.files || input.files.length === 0) return;
+    const file = input.files[0];
+    if (file.type !== 'application/pdf') {
+      alert('Only PDF files are allowed');
+      input.value = '';
+      return;
+    }
+    if (file.size > 20 * 1024 * 1024) {
+      alert('File size must not exceed 5MB');
+      input.value = '';
+      return;
+    }
+    this.selectedFile = file;
+    this.fileControl.setValue(file);
+    this.fileControl.updateValueAndValidity();
+  }
+
+uploadDocument() {
+    if (this.documentCodeControl.invalid || this.fileControl.invalid) {
+      alert('Please select a document code and PDF file');
+      return;
+    }
+    const formData = new FormData();
+    formData.append('documentCode', this.documentCodeControl.value!);
+    formData.append('file', this.fileControl.value!);
+    formData.append('documentNo', this.no);
+    this.uploading = true;
+      this.paymentService.uploadDocument(formData).subscribe({
+      next:(res) => {
+        this.notificationService.success('', res['responseDescription']);
+        this.getUploadedPortalAttachments();
+        this.selectedFile = null;
+        this.uploading = false;
+      },
+      error: err => {
+        console.error(err);
+        alert('Upload failed');
+      }
+    });
+  }
+ getUploadedPortalAttachments(){
+    this.registrationService.getUploadedPortalAttachments(this.no).subscribe(data=>{
+      this.doc_list=data
+    })
+   }
+ patchDocumentCode(event: Event) {
+      const select = event.target as HTMLSelectElement | null;
+      if (!select) return;
+      const value = select.value;
+      this.documentCodeControl.setValue(value);
     }
 }

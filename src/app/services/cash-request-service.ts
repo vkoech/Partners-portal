@@ -31,5 +31,8 @@ export class CashRequestService {
   }
  deleteLine(lineNo: string, documentNo: string): Observable<any>{
     return this.httpClient.get<any>(this.baseUrl+'CashRequest/DeleteCashRequestLine/'+ lineNo+'/'+documentNo);
-    }  
+    }
+ getCashRequestDocuments(): Observable<any>{
+      return this.httpClient.get<any>(this.baseUrl+'Document/getCashRequestDocuments');
+    }
 }

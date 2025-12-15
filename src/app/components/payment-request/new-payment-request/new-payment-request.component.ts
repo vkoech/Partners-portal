@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { SidebarComponent } from '../../shared/sidebar/sidebar.component';
@@ -41,8 +41,13 @@ export class NewPaymentRequestComponent implements OnInit, OnDestroy {
   reporting_cycle_list:any;
   category_list:any
   isConfirmed = false;
-document_list: any;
-selectedFile: any;
+  document_list: any;
+  funding_doc_list:any
+  selectedFile: File | null = null;
+  uploading = false;
+  uploaded_document_list:any
+  documentCodeControl = new FormControl('', Validators.required);
+  fileControl = new FormControl<File | null>(null, Validators.required);
 
 
   constructor(
@@ -87,6 +92,9 @@ selectedFile: any;
       this.paymentService.getReportingCycles().subscribe(data=>{
         this.reporting_cycle_list=data;
       });
+     this.paymentService.getFundingApplicationDocuments().subscribe(data=>{
+        this.funding_doc_list=data;
+      });
     this.registrationService.getAreaOfFocus().subscribe(data => {
       this.area_of_focus_items = data;
     });
@@ -95,6 +103,7 @@ selectedFile: any;
     });
     this.getFundsApplicationLines()
     this.initializeForms()
+    this.getUploadedPortalAttachments();
   }
 
   ngOnDestroy() {
@@ -197,19 +206,6 @@ selectedFile: any;
     });
   }
 
-  triggerFileUpload() {
-    const fileInput = document.createElement('input');
-    fileInput.type = 'file';
-    fileInput.accept = '.pdf,.jpg,.jpeg,.png';
-    fileInput.onchange = (event: any) => {
-      const file = event.target.files[0];
-    };
-    fileInput.click();
-  }
-
-  deleteDocument(documentId: string) {
-  }
-
   onCheckboxChange(event: Event) {
       const input = event.target as HTMLInputElement;
       this.isConfirmed = input.checked;
@@ -252,14 +248,60 @@ getProjectCode() {
 
 }
 
+
 onFileSelected(event: Event) {
-  const input = event.target as HTMLInputElement;
-  if (input.files && input.files.length > 0) {
-    this.paymentRequestForm.patchValue({
-      File: input.files[0]
+    const input = event.target as HTMLInputElement;
+    if (!input.files || input.files.length === 0) return;
+    const file = input.files[0];
+    if (file.type !== 'application/pdf') {
+      alert('Only PDF files are allowed');
+      input.value = '';
+      return;
+    }
+    if (file.size > 20 * 1024 * 1024) {
+      alert('File size must not exceed 5MB');
+      input.value = '';
+      return;
+    }
+    this.selectedFile = file;
+    this.fileControl.setValue(file);
+    this.fileControl.updateValueAndValidity();
+  }
+
+uploadDocument() {
+    if (this.documentCodeControl.invalid || this.fileControl.invalid) {
+      alert('Please select a document code and PDF file');
+      return;
+    }
+    const formData = new FormData();
+    formData.append('documentCode', this.documentCodeControl.value!);
+    formData.append('file', this.fileControl.value!);
+    formData.append('documentNo', this.no);
+    this.uploading = true;
+      this.paymentService.uploadDocument(formData).subscribe({
+      next:(res) => {
+        this.notificationService.success('', res['responseDescription']);
+        this.getUploadedPortalAttachments();
+        this.selectedFile = null;
+        this.uploading = false;
+      },
+      error: err => {
+        console.error(err);
+        alert('Upload failed');
+      }
     });
   }
-}
+ getUploadedPortalAttachments(){
+    this.registrationService.getUploadedPortalAttachments(this.no).subscribe(data=>{
+      this.uploaded_document_list=data
+    })
+   }
+ patchDocumentCode(event: Event) {
+      const select = event.target as HTMLSelectElement | null;
+      if (!select) return;
+      const value = select.value;
+      this.documentCodeControl.setValue(value);
+    }
 
 closeCustomModal() {
   this.showModal = false;

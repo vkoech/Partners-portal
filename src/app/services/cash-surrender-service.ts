@@ -40,4 +40,8 @@ export class CashSurrenderService {
    return this.httpClient.get<any>(this.baseUrl+'CashSurrender/DeleteCashSurrenderLine/'+ lineNo+'/'+documentNo);
   }
 
+   getCashSurrenderDocuments(): Observable<any>{
+      return this.httpClient.get<any>(this.baseUrl+'Document/getCashSurrenderDocuments');
+    }
+
 }
