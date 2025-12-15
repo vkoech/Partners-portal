@@ -106,6 +106,7 @@
         </div>
         </div>
         <button type="button" class="upload-btn" (click)="uploadDocument()"
+          [hidden]="!documentCodeControl.value || !fileControl.value"
           [disabled]="!documentCodeControl.value || !fileControl.value || uploading">
           {{ uploading ? 'Uploading...' : 'Upload Document' }}
         </button>
