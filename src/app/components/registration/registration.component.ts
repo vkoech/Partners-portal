@@ -233,6 +233,7 @@ export class RegistrationComponent implements OnInit {
         this.areaOfFocusForm.reset()
         this.isEditMode = true;
         this.areaOfFocusForm.reset()
+        this.loading = false;
         },
           error: (err) => {
               this.loading = false;
@@ -256,8 +257,9 @@ export class RegistrationComponent implements OnInit {
         formValues.country=this.selectedGeoValues;
         this.registrationService.createGeoLocationInfo(formValues).subscribe({next:(res) => {
         this.notificationService.success('', res['responseDescription']);
-        this.getGeoCoverageByDocumentNo()
-        this.geographicCoverageForm.reset()
+        this.getGeoCoverageByDocumentNo();
+        this.geographicCoverageForm.reset();
+        this.loading = false;
         },
           error: (err) => {
               this.loading = false;
@@ -282,7 +284,9 @@ export class RegistrationComponent implements OnInit {
         formValues.action=actionType
         this.registrationService.createContactPersonInfo(formValues).subscribe({next:(res) => {
         this.notificationService.success('', res['responseDescription']);
-        this.getContactsPersonByDocumentNo()
+        this.getContactsPersonByDocumentNo();
+        this.contactPersonForm.reset();
+         this.loading = false;
         },
           error: (err) => {
               this.loading = false;
@@ -310,7 +314,8 @@ export class RegistrationComponent implements OnInit {
     formValues.documentNo=this.documentNo,
       this.registrationService.createContactPersonInfo(formValues).subscribe({next:(res) => {
         this.notificationService.success('', res['responseDescription']);
-        this.getContactsPersonByDocumentNo()
+        this.getContactsPersonByDocumentNo();
+        this.loading = false;
         },
           error: (err) => {
               this.loading = false;
@@ -330,7 +335,9 @@ export class RegistrationComponent implements OnInit {
         formValues.action=actionType;
         this.registrationService.createExperience(formValues).subscribe({next:(res) => {
         this.notificationService.success('', res['responseDescription']);
+        this.experienceForm.reset();
         this.getPatnerExperience();
+        this.loading = false;
         },
           error: (err) => {
               this.loading = false;
@@ -573,7 +580,9 @@ submitDocument() {
     );
     this.registrationService.uploadDocument(formData).subscribe({
       next:(res) => {
+        this.loading = true;
         this.notificationService.success('', res['responseDescription']);
+        this.loading = false;
         this.documentForm.reset();
         this.getUploadedPortalAttachments();
         this.selectedFile = null;
@@ -717,10 +726,12 @@ submitDocument() {
       let formValues = this.confirmForm.value;
       formValues.documentNo = this.documentNo;
       formValues.emailAddress=this.email;
+      this.loading= true
       this.registrationService.submitPartnerProfile(formValues).subscribe({next:(res) => {
         this.notificationService.success('', res['responseDescription']);
         this.confirmForm.reset();
         this.router.navigate(['payment-request']);
+        this.loading= false
         },
           error: (err) => {
               this.loading = false;

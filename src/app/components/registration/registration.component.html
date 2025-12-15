@@ -139,7 +139,9 @@
               <input type="text" formControlName="registrationCertificateNo">
             </div>
           </div>
-           <button type="submit" class="submit">Save</button>
+           <button type="submit" class="submit">             
+            {{ loading ? 'Saving ...' : 'Save'}}         
+           </button>
         </div>
       </form>
 
@@ -174,7 +176,9 @@
             </div>
           </div>
         </div>
-       <button type="submit" class="submit">Save</button>
+       <button type="submit" class="submit"> 
+        {{ loading ? 'Saving ...' : 'Save'}}         
+       </button>
        </form>
         <!-- Area of focus Table -->
         @if(areaOfFocusList.length>0){
@@ -240,7 +244,9 @@
             </div>
           </div>
         </div>
-         <button type="submit" class="submit">Save</button>
+         <button type="submit" class="submit">
+          {{ loading ? 'Saving ...' : 'Save'}}         
+         </button>
         </form>
         <!-- Geo Coverage Table -->
         @if(geoCoverageList.length>0){
@@ -339,7 +345,7 @@
           </div>
         </div>
          <button type="submit" class="submit" [disabled]="experienceForm.invalid">
-            {{ isEditMode ? 'Update' : 'Save' }}
+          {{ loading ? 'Saving...' : (isEditMode ? 'Update' : 'Save') }}
           </button>
       </form>
 
@@ -438,8 +444,8 @@
               <input type="text" formControlName="names">
             </div>
           </div>
-          <button type="submit" class="submit">
-            {{ isEditMode ? 'Update' : 'Save' }}
+          <button type="submit" class="submit" [disabled]="loading">
+            {{ loading ? 'Saving...' : (isEditMode ? 'Update' : 'Save') }}
           </button>
         </div>
        </form>
@@ -522,7 +528,7 @@
         </div>
         </div>
         <button type="submit" class="upload-btn" [disabled]="!documentForm.get('File')!.value">
-          UPLOAD
+         {{ loading ? 'Uploading...' : 'Upload' }}
         </button>
       </div>
       </div>
@@ -558,6 +564,16 @@
           </div>
         </div>
       }
+      <div class="step-actions">
+        <button type="button" class="back-to-top-btn" (click)="backToTop()">
+          <img src="assets/arrow-up.svg" alt="Back to top" width="16" height="16" />
+          Back to top
+        </button>
+        <div class="action-buttons">
+          <button type="button" class="back" (click)="previousStep()">Previous</button>
+          <button type="button" class="next" (click)="nextStep()">Next</button>
+        </div>
+      </div>
     </div>
     <!-- Step 6: Summary -->
     <div class="step-content" *ngIf="currentStep === 7">

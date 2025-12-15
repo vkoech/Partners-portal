@@ -53,7 +53,8 @@ export class ViewPaymentSurrender {
       endDate: [{ value: '', disabled: true }],
       surrenderDate: [{ value: '', disabled: true }],
       paymentRequestNo:[{ value: '', disabled: true }],
-      description:[{ value: '', disabled: true }]
+      description:[{ value: '', disabled: true }],
+      status:[{ value: '', disabled: true }]
     });
 
       this.cashSurrenderService.getSingleCashSurrender(this.no).subscribe(data=>{

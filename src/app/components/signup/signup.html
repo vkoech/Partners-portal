@@ -32,7 +32,8 @@
               <option value="Kenya">inSupply Health-Kenya</option>
             </select>
         </div>
-        <button type="submit" class="login-button">CREATE ACCOUNT</button>
+        <button type="submit" class="login-button"  [disabled]="loading">
+         {{ loading ? 'Creating account...' : 'CREATE ACCOUNT' }}</button>
         <div class="forgot-password">
           Already have an account?
           <span class="separator">|</span>

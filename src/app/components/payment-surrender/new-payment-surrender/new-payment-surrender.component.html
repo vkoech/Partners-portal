@@ -148,7 +148,9 @@
             </div>
           </div>
           <div class="modal-actions">
-            <button type="button"  class="submit" (click)="submitLine()">Update</button>
+            <button type="button"  class="submit" (click)="submitLine()">
+             {{ loading ? 'Updating ...' : 'Update'}}         
+            </button>
             <button type="button" class="submit" (click)="closeCustomModal()">Cancel</button>
           </div>
         </form>
@@ -189,11 +191,9 @@
             <input type="checkbox" (change)="onCheckboxChange($event)" />
             <span>I confirm that the provided information is accurate.</span>
             <button class="submit"
-                    (click)="onSubmitPaymentHeader()"
-                    [disabled]="!isConfirmed">
-              @if(loading)
-              {
-                <span class="spinner"></span>}
+             (click)="onSubmitPaymentHeader()"
+             [disabled]="!isConfirmed">
+             {{ loading ? 'Submitting...' : 'Submit'}}         
               Submit
             </button>
             <button class="submit" (click)="onCancel()">Close</button>

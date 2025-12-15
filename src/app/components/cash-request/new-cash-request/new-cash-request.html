@@ -23,12 +23,12 @@
              <input type="text" formControlName="no">
           </div>
            <div class="form-group">
-            <label>Approved Application Number</label>
+            <label>Approved Funds Application Number</label>
              <select formControlName="approvedApplicationNo"  (change)="getApplicationNo()">
               <option value="" [selected]=true disabled>Select</option>
-               @for (approved of activity_code_list; track approved.code) {
-                <option [value]="approved.no">
-                  {{ approved.description}}
+               @for (approved of activity_code_list; track approved.approvedApplicationNo) {
+                <option [value]="approved.approvedApplicationNo">
+                  {{ approved.approvedApplicationNo}}
                 </option>}
               </select>
           </div>

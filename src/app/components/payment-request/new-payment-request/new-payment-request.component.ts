@@ -165,6 +165,7 @@ export class NewPaymentRequestComponent implements OnInit, OnDestroy {
       this.notificationService.success('', res['responseDescription']);
         this.getFundsApplicationLines();
         this.closeCustomModal();
+          this.loading=false;
         this.isEditMode = true;
         },
           error: (err) => {
@@ -221,6 +222,7 @@ export class NewPaymentRequestComponent implements OnInit, OnDestroy {
       this.notificationService.success('', res['responseDescription']);
       this.router.navigate(['/funding-request']);
         this.isEditMode = true;
+        this.loading = false;
         },
           error: (err) => {
               this.loading = false;

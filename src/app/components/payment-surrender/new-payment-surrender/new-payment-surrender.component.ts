@@ -212,6 +212,7 @@ export class NewPaymentSurrenderComponent implements OnInit, OnDestroy {
       this.cashSurrenderService.createUpdateCashSurrender(formValues).subscribe({next:(res) => {
       this.router.navigate(['/payment-surrender']);
       this.notificationService.success('', res['responseDescription']);
+      this.loading = false;
         this.isEditMode = true;
         },
           error: (err) => {

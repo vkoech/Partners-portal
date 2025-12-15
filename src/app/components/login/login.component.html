@@ -22,7 +22,8 @@
           <label for="password" class="form-label">Password</label>
            <input type="password" class="form-input" formControlName="password" placeholder="Your Password">
         </div>
-        <button type="submit" class="login-button">LOG IN</button>
+        <button type="submit" class="login-button">
+          {{ loading ? 'Logging In...' : 'LOG IN' }}</button>
         <div class="forgot-password">
           Forgot Password?
           <a (click)="goToReset()" class="reset-link">Reset</a>

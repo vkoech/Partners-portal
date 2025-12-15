@@ -78,7 +78,7 @@ approvedApplicationNo: string;
         indirectCost: [{ value: '', disabled: true }],
         indirectCostLCY: [{ value: '', disabled: true }],
         responseDescription: [''],
-        status: ['']
+        status: [{ value: '', disabled: true }]
     });
     this.cashRequestService.getSingleCashRequest(this.no).subscribe(data=>{
       this.paymentRequestForm.patchValue(data);

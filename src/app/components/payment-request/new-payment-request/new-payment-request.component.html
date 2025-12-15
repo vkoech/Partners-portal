@@ -18,7 +18,7 @@
     <form [formGroup]="paymentRequestForm">
       <div class="form-section">
         <div class="form-row">
-           <div class="form-group">
+           <!-- <div class="form-group">
             <label>Area of Focus</label>
             <select formControlName="areaOfFocus">
               <option value="" [selected]=true disabled>Select</option>
@@ -27,7 +27,7 @@
                   {{ area.description}}
                 </option>}
             </select>
-          </div>
+          </div> -->
           <div class="form-group">
             <label>Project Code</label>
              <select formControlName="projectCode" (change)="getProjectCode()">
@@ -176,8 +176,8 @@
             </div>
           </div>
           <div class="modal-actions">
-            <button type="button" class="submit" (click)="submitLine()">
-               {{ isEditMode ? 'Update' : 'Save' }}
+            <button type="button" class="submit" (click)="submitLine()" [disabled]="loading">
+              {{ loading ? 'Loading...' : (isEditMode ? 'Update' : 'Save') }}
             </button>
             <button type="button" class="submit" (click)="closeCustomModal()">Close</button>
           </div>
@@ -222,13 +222,9 @@
          <div class="section-footer">
             <input type="checkbox" (change)="onCheckboxChange($event)" />
             <span>I confirm that the provided information is accurate.</span>
-            <button class="submit"
-                    (click)="onSubmitPaymentHeader()"
-                    [disabled]="!isConfirmed">
-              @if(loading)
-              {
-                <span class="spinner"></span>}
-              Submit
+            <button class="submit" (click)="onSubmitPaymentHeader()"
+            [disabled]="!isConfirmed">
+             {{ loading ? 'Submitting ...' : 'Submit'}}         
             </button>
             <button class="submit" (click)="onCancel()">Close</button>
           </div>

@@ -91,6 +91,7 @@ export class NewCashRequest {
       });
     this.cashRequestService.getApprovedFundingRequests(this.email).subscribe(data=>{
         this.activity_code_list=data;
+        console.log(data)
       });
     this.cashRequestService.getCashRequestDocuments().subscribe(data=>{
         this.doc_list=data;
