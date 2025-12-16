@@ -46,10 +46,23 @@
         <div class="form-row">
           <div class="form-group">
             <label>Project Start Date</label>
-            <input type="text" formControlName="subAwardStartDate">
+            <input type="date" formControlName="projectStartDate">
           </div>
            <div class="form-group">
             <label>Project End Date</label>
+            <input type="date" formControlName="projectEndDate">
+          </div>
+           <div *ngIf="paymentRequestForm.hasError('dateRangeInvalid')" style="color:red;">
+              Award end date cannot be earlier than award start date.
+            </div>
+        </div>
+           <div class="form-row">
+          <div class="form-group">
+            <label>Sub-award Start Date</label>
+            <input type="text" formControlName="subAwardStartDate">
+          </div>
+           <div class="form-group">
+            <label>Sub-award End Date</label>
             <input type="text" formControlName="subAwardEndDate">
           </div>
            <div *ngIf="paymentRequestForm.hasError('dateRangeInvalid')" style="color:red;">

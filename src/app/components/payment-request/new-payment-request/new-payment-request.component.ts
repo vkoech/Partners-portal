@@ -120,6 +120,8 @@ export class NewPaymentRequestComponent implements OnInit, OnDestroy {
       subAwardStartDate: [{ value: '', disabled: true }],
       subAwardEndDate: [{ value: '', disabled: true }],
       projectCode: [''],
+      projectStartDate: [''],
+      projectEndDate: [''],
       currencyCode: [''],
       reportingCycle: [''],
       budgetAmount: [''],

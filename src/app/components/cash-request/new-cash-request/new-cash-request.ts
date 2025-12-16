@@ -44,6 +44,8 @@ export class NewCashRequest {
   uploading = false;
   documentCodeControl = new FormControl('', Validators.required);
   fileControl = new FormControl<File | null>(null, Validators.required);
+  totalAmount = 0;
+  totalAmountLCY = 0;
 
   constructor(
     private router: Router,
@@ -91,7 +93,6 @@ export class NewCashRequest {
       });
     this.cashRequestService.getApprovedFundingRequests(this.email).subscribe(data=>{
         this.activity_code_list=data;
-        console.log(data)
       });
     this.cashRequestService.getCashRequestDocuments().subscribe(data=>{
         this.doc_list=data;
@@ -202,6 +203,7 @@ export class NewCashRequest {
   getAllCashRequestLines(){
      this.cashRequestService.getAllCashRequestLines(this.no).subscribe(data=>{
       this.paymentApplicationLines=data
+      this.calculateTotals();
     });
   }
 
@@ -253,6 +255,7 @@ getApplicationNo(){
   if (!selected) return;
   this.paymentService.getFundingApplicationDetailsByNo(selected).subscribe(data => {
     this.paymentRequestForm.patchValue(data);
+    this.calculateTotals()
   });
 }
 onFileSelected(event: Event) {
@@ -308,4 +311,19 @@ uploadDocument() {
       const value = select.value;
       this.documentCodeControl.setValue(value);
     }
+calculateTotals(): void {
+  let totalAmount = 0;
+  let totalAmountLCY = 0;
+  for (const row of this.paymentApplicationLines ?? []) {
+    totalAmount += Number(row.amount) || 0;
+    totalAmountLCY += Number(row.amountLCY) || 0;
+  }
+  this.totalAmount = totalAmount;
+  this.totalAmountLCY = totalAmountLCY;
+  this.paymentRequestForm.patchValue({
+    requestedAmount: this.totalAmount,
+    requestedAmountLCY: this.totalAmountLCY
+  });
 }
+
+} 
