@@ -113,6 +113,7 @@ export class RegistrationComponent implements OnInit {
       tradingName: ['',Validators.required],
       dateRegistered:['',Validators.required],
       governingBody:['',Validators.required],
+      otherGoverningBody:[''],
       acronym: [''],
       emailAddress: ['',Validators.required],
       postalAddress: ['',Validators.required],
@@ -203,6 +204,7 @@ export class RegistrationComponent implements OnInit {
         this.notificationService.success('', res['responseDescription']);
         this.getPartnersProfile();
         this.isEditMode = true;
+        this.loading = false;
         },
           error: (err) => {
               this.loading = false;
@@ -721,6 +723,11 @@ submitDocument() {
       this.uploaded_document_list=data
     })
    }
+
+  onCheckboxChange(event: Event) {
+      const input = event.target as HTMLInputElement;
+      this.isConfirmed = input.checked;
+    }
   onSubmitProfile() {
     if (this.confirmForm.valid) {
       let formValues = this.confirmForm.value;
@@ -730,7 +737,9 @@ submitDocument() {
       this.registrationService.submitPartnerProfile(formValues).subscribe({next:(res) => {
         this.notificationService.success('', res['responseDescription']);
         this.confirmForm.reset();
-        this.router.navigate(['payment-request']);
+        this.getPartnersProfile();
+        // this.router.navigate(['payment-request']);
+        this
         this.loading= false
         },
           error: (err) => {

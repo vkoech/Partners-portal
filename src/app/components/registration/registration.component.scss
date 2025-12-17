@@ -467,6 +467,18 @@
   background-color: #E73846;
 }
 
+button[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+button.submit:not([disabled]) {
+  opacity: 1;
+  cursor: pointer;
+  background-color: #E73846;
+  color: white;
+}
+
 
 /* Responsive Design */
 @media (max-width: 768px) {

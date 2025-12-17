@@ -158,6 +158,7 @@ export class NewPaymentSurrenderComponent implements OnInit, OnDestroy {
       this.closeCustomModal();
         this.getAllCashSurrenderLines();
         this.isEditMode = true;
+          this.loading=false;
         },
           error: (err) => {
               this.loading = false;
@@ -188,6 +189,7 @@ export class NewPaymentSurrenderComponent implements OnInit, OnDestroy {
   getAllCashSurrenderLines(){
      this.cashSurrenderService.getAllCashSurrenderLines(this.no).subscribe(data=>{
       this.paymentApplicationLines=data
+       this.calculateTotals()
     });
   }
 
@@ -195,6 +197,7 @@ export class NewPaymentSurrenderComponent implements OnInit, OnDestroy {
      const disbursementNo = this.surrenderForm.get('paymentRequestNo')?.value;
      this.cashSurrenderService.validateCashSurrenderLines(this.no, disbursementNo).subscribe(data=>{
       this.getAllCashSurrenderLines()
+      this.calculateTotals()
     });
   }
 
@@ -315,4 +318,13 @@ uploadDocument() {
       const value = select.value;
       this.documentCodeControl.setValue(value);
     }
+  calculateTotals(): void {
+    let totalAmount = 0;
+    for (const row of this.paymentApplicationLines ?? []) {
+      totalAmount += Number(row.actualSpent) || 0;
+    }
+    this.surrenderForm.patchValue({
+      surrenderedAmount: totalAmount,
+    });
+}  
 }
