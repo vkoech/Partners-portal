@@ -18,6 +18,7 @@ export class ResetPassword {
   loading =false
   emailAddress: string
   passwordResetToken: any
+  hide = true;
 
   constructor(private router: Router,private fb: FormBuilder,private activatedRoutes: ActivatedRoute,
     private authService: AuthService, private notificationService: NotificationService){
@@ -43,6 +44,11 @@ export class ResetPassword {
     const password = form.get('password')?.value;
     const confirm = form.get('confirmPassword')?.value;
     return password === confirm ? null : { passwordMismatch: true };
+  }
+
+
+  togglePassword(): void {
+    this.hide = !this.hide;
   }
 
   onReset(){

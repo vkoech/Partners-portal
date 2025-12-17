@@ -19,6 +19,8 @@ export class LoginComponent {
   rememberMe = false;
   LoginForm: FormGroup;
   loading = false;
+  hide = true;
+
 
   constructor(private router: Router, private fb: FormBuilder,
      private notificationService: NotificationService, private authService: AuthService) {
@@ -30,6 +32,9 @@ export class LoginComponent {
       })
      }
 
+  togglePassword(): void {
+    this.hide = !this.hide;
+  }
   onLogin() {
     this.loading=true;
     this.authService.login(this.LoginForm.value).subscribe({

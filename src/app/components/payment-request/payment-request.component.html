@@ -25,7 +25,7 @@
         </button>
         <div class="search-box">
           <img src="assets/search.svg" alt="Search here" width="10" height="10" class="search-icon" />
-          <input type="text" placeholder="Search here" [(ngModel)]="searchTerm">
+          <input type="text" placeholder="Search here" [(ngModel)]="searchTerm" (input)="search()">
         </div>
       </div>
       <div class="table-container">
@@ -70,16 +70,17 @@
           </tbody>
         </table>
       </div>
+    @if(totalPages > 1){
       <div class="pagination">
-        <button class="page-btn" [disabled]="currentPage === 1" (click)="previousPage()">Prev</button>
-        <button *ngFor="let page of getVisiblePages()"
-                class="page-btn"
-                [class.active]="page === currentPage"
-                (click)="goToPage(page)">
-          {{ page }}
+        <button (click)="setPage(currentPage - 1)" [disabled]="currentPage === 1">Prev</button>
+         <button *ngFor="let page of [].constructor(totalPages); let i = index"
+          (click)="setPage(i + 1)"
+           [class.active]="currentPage === i + 1">
+             {{ i + 1 }}
         </button>
-        <button class="page-btn" [disabled]="currentPage === totalPages" (click)="nextPage()">Next</button>
+       <button (click)="setPage(currentPage + 1)" [disabled]="currentPage === totalPages">Next</button>
       </div>
+    }
     </div>
     <app-footer></app-footer>
   </div>

@@ -20,26 +20,19 @@ export class PaymentRequestComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   sidebarOpen = false;
-  searchTerm = '';
-  currentPage = 1;
-  itemsPerPage = 5;
-
   paymentRequestList: any[] = [];
   email: any
   user: AuthUser | null = null;
   subgranteeNo: any;
   loading=false;
   payment_request:  any[] = [];
+  pageSize = 10;
+  totalPages = 0;
+  pagedList: any[] = [];
+  filteredList:any;
+  currentPage = 1;
+  searchTerm: string = '';
 
-  get totalPages(): number {
-    return Math.ceil(this.paymentRequestList.length / this.itemsPerPage);
-  }
-
-  get paginatedData(): PaymentRequest[] {
-    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-    const endIndex = startIndex + this.itemsPerPage;
-    return this.paymentRequestList.slice(startIndex, endIndex);
-  }
 
   private router = inject(Router);
   private paymentService = inject(Payment);
@@ -52,6 +45,11 @@ export class PaymentRequestComponent implements OnInit, OnDestroy {
     this.email=this.user?.emailAddress;
     this.paymentService.getAllFundingApplications(this.email).subscribe(data=>{
      this.paymentRequestList=data;
+     this.filteredList = [...this.paymentRequestList=data];
+     this.filteredList = [...this.paymentRequestList];
+        this.totalPages = Math.ceil(this.filteredList.length / this.pageSize);
+        this.setPage(1)
+
     });
   }
 
@@ -141,5 +139,29 @@ export class PaymentRequestComponent implements OnInit, OnDestroy {
 
     return pages;
   }
+
+   setPage(page: number): void {
+     if (page < 1 || page > this.totalPages) return;
+      this.currentPage = page;
+      const startIndex = (page - 1) * this.pageSize;
+      const endIndex = startIndex + this.pageSize;
+      this.pagedList = this.paymentRequestList.slice(startIndex, endIndex);
+      }
+   search(): void {
+      const q = this.searchTerm.toLowerCase().trim();
+      if (!q) {
+        this.paymentRequestList = [...this.filteredList];
+        return;
+      }
+      this.paymentRequestList = this.filteredList.filter((list: any) =>
+        list.no?.toLowerCase().includes(q) ||
+        list.applicationDate?.toString().toLowerCase().includes(q) ||
+        list.projectCode?.toLowerCase().includes(q) ||
+        String(list.amount).toLowerCase().includes(q) ||
+        list.amountLCY?.toLowerCase().includes(q) ||
+        list.obligatedAmountLCY?.toLowerCase().includes(q) ||
+        list.status?.toLowerCase().includes(q)
+      );
+}
 
 }
