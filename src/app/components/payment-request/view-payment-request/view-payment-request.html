@@ -36,9 +36,6 @@
             <label>Project End Date</label>
             <input type="text" formControlName="subAwardEndDate">
           </div>
-           <div *ngIf="paymentRequestForm.hasError('dateRangeInvalid')" style="color:red;">
-              Award end date cannot be earlier than award start date.
-            </div>
         </div>
         <div class="form-row">
           <div class="form-group">

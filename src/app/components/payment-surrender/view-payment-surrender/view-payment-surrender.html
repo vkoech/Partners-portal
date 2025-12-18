@@ -17,12 +17,12 @@
     <div class="new-payment-request-content">
     <form [formGroup]="surrenderForm">
       <div class="form-section">
-         <div class="form-row">
          <div class="form-group">
-           <label>No</label>
+           <label>No.</label>
             <input type="text" formControlName="no" readonly>
           </div>
-          </div>
+          <div class="form-row">
+            </div>
         <div class="form-row">
           <div class="form-group">
            <label>Select Cash Request: *</label>
@@ -43,12 +43,10 @@
              <input type="text" formControlName="surrenderedAmount">
           </div>
           </div>
-        <div class="form-row">
           <div class="form-group">
             <label>Description:</label>
               <textarea formControlName="description"></textarea>
           </div>
-        </div>
          <div class="form-row">
           <div class="form-group">
             <label>Status:</label>

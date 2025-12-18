@@ -17,12 +17,13 @@
     <div class="new-payment-request-content">
     <form [formGroup]="surrenderForm">
       <div class="form-section">
-         <div class="form-row">
          <div class="form-group">
-           <label>No</label>
+           <label>No.</label>
             <input type="text" formControlName="no" readonly>
           </div>
-          </div>
+         <div class="form-row">
+
+         </div>
         <div class="form-row">
           <div class="form-group">
            <label>Select Cash Request: *</label>
@@ -50,13 +51,11 @@
              <input type="text" formControlName="surrenderedAmount">
           </div>
           </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>Description:</label>
-              <textarea formControlName="description"></textarea>
+         <div class="form-group">
+           <label>Description</label>
+            <textarea rows="2" formControlName="description"></textarea>
           </div>
-        </div>
-          <div class="form-row">
+       <div class="form-row">
         <div class="form-group">
           <label>Document Code</label>
           <select [formControl]="documentCodeControl" (change)="patchDocumentCode($event)">
@@ -149,7 +148,7 @@
           </div>
           <div class="modal-actions">
             <button type="button"  class="submit" (click)="submitLine()">
-             {{ loading ? 'Updating ...' : 'Update'}}         
+             {{ loading ? 'Updating ...' : 'Update'}}
             </button>
             <button type="button" class="submit" (click)="closeCustomModal()">Cancel</button>
           </div>
@@ -193,7 +192,7 @@
             <button class="submit"
              (click)="onSubmitPaymentHeader()"
              [disabled]="!isConfirmed">
-             {{ loading ? 'Submitting...' : 'Submit'}}         
+             {{ loading ? 'Submitting...' : 'Submit'}}
               Submit
             </button>
             <button class="submit" (click)="onCancel()">Close</button>
