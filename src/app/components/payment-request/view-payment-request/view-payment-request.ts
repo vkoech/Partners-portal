@@ -7,6 +7,7 @@ import { SidebarComponent } from '../../shared/sidebar/sidebar.component';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService, AuthUser } from '../../../services/auth.service';
 import { Payment } from '../../../services/payment';
+import { RegistrationService } from '../../../services/registration-service';
 
 @Component({
   selector: 'app-view-payment-request',
@@ -23,12 +24,14 @@ no: string;
 email: any;
 user: AuthUser | null = null;
 subgranteeNo: any;
+uploaded_document_list:any
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private fb: FormBuilder,
     private paymentService: Payment,
-    private authService:AuthService
+    private authService:AuthService,
+    private registrationService: RegistrationService
   ) {
     this.user = this.authService.getLoggedInUser();
     this.subgranteeNo = this.user?.partnerAccountNo;
@@ -73,8 +76,11 @@ subgranteeNo: any;
       });
      this.paymentService.getAllFundingApplicationLines(this.no).subscribe(data=>{
       this.paymentApplicationLines=data
-      console.log(data)
     });
+
+    this.registrationService.getUploadedPortalAttachments(this.no).subscribe(data=>{
+      this.uploaded_document_list=data
+    })
 
   }
   onCancel() {

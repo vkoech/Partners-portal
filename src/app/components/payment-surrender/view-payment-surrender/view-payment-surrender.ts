@@ -7,6 +7,7 @@ import { SidebarComponent } from '../../shared/sidebar/sidebar.component';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AuthUser, AuthService } from '../../../services/auth.service';
 import { CashSurrenderService } from '../../../services/cash-surrender-service';
+import { RegistrationService } from '../../../services/registration-service';
 
 @Component({
   selector: 'app-view-payment-surrender',
@@ -21,7 +22,8 @@ export class ViewPaymentSurrender {
     email: any;
     no: string;
     user: AuthUser | null = null;
-    subgranteeNo:any
+    subgranteeNo:any;
+    uploaded_document_list:any;
 
    constructor(
     private router: Router,
@@ -29,6 +31,7 @@ export class ViewPaymentSurrender {
     private fb: FormBuilder,
     private authService:AuthService,
     private cashSurrenderService: CashSurrenderService,
+    private registrationService: RegistrationService
   ) {
     const encodedNo = this.route.snapshot.paramMap.get('id');
       if (encodedNo) {
@@ -64,6 +67,9 @@ export class ViewPaymentSurrender {
       this.cashSurrenderService.getAllCashSurrenderLines(this.no).subscribe(data=>{
       this.paymentApplicationLines=data
     });
+     this.registrationService.getUploadedPortalAttachments(this.no).subscribe(data=>{
+      this.uploaded_document_list=data
+    })
     }
   onCancel() {
     this.router.navigate(['/payment-surrender']);

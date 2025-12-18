@@ -57,6 +57,27 @@
             <input type="text" formControlName="status">
           </div>
         </div>
+          @if(uploaded_document_list.length>0){
+         <h3>Uploaded Document(s)</h3>
+          <div class="table-container">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Document Type</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+              @for (contact of uploaded_document_list; track contact.lineNo){
+                  <tr>
+                  <td>{{ contact.documentCode }}</td>
+                  <td>{{ contact.documentDescription }}</td>
+                </tr>
+               }
+              </tbody>
+            </table>
+          </div>
+        }
         </div>
      </form>
     </div>
