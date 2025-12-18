@@ -23,9 +23,10 @@ export class ViewCashRequest {
    email: any;
    user: AuthUser | null = null;
    subgranteeNo: any;
-sidebarOpen: any;
-paymentApplicationLines: any;
-approvedApplicationNo: string;
+   sidebarOpen: any;
+   paymentApplicationLines: any;
+   approvedApplicationNo: string;
+   uploaded_document_list: any
 
 
 
@@ -56,6 +57,9 @@ approvedApplicationNo: string;
 
 
   ngOnInit(): void {
+      this.registrationService.getUploadedPortalAttachments(this.no).subscribe(data=>{
+          this.uploaded_document_list=data
+        })
        this.paymentRequestForm = this.fb.group({
         no: [{ value: '', disabled: true }],
         emailAddress: [''],
