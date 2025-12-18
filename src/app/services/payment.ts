@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../environments/environment';
 import { Observable } from 'rxjs/internal/Observable';
@@ -26,8 +26,8 @@ export class Payment {
       return this.httpClient.get<any>(this.baseUrl+'FundingApplication/GetApprovedFundApplications/'+email);
     }
 
-  getProjectDetails(documentNo: string): Observable<any>{
-      return this.httpClient.get<any>(this.baseUrl+'FundingApplication/GetProjectDetails/'+documentNo);
+  getProjectDetails(documentNo: string, partnerNo: string): Observable<any>{
+      return this.httpClient.get<any>(this.baseUrl+'FundingApplication/GetProjectDetails/'+documentNo +'/'+ partnerNo);
     }
   getFundingApplicationDocuments(): Observable<any>{
       return this.httpClient.get<any>(this.baseUrl+'Document/getFundingApplicationDocuments');
@@ -69,4 +69,15 @@ export class Payment {
  uploadDocument(applicationBody: any): Observable<any> {
     return this.httpClient.post<any>(this.baseUrl + 'Document/upload', applicationBody);
   }
+getCustomerStatement(
+  customerNo: string, startDate: string, endDate: string) {
+    return this.httpClient.get(
+        `${this.baseUrl}Customer/GetCustomerStatement`,
+        {
+          params: { customerNo, startDate, endDate },
+          responseType: 'blob',
+          observe: 'response'
+        }
+      );
+    }
 }

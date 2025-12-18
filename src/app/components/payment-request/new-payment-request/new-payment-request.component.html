@@ -56,7 +56,7 @@
               Award end date cannot be earlier than award start date.
             </div>
         </div>
-           <div class="form-row">
+        <div class="form-row">
           <div class="form-group">
             <label>Sub-award Start Date</label>
             <input type="text" formControlName="subAwardStartDate">
@@ -237,7 +237,7 @@
             <span>I confirm that the provided information is accurate.</span>
             <button class="submit" (click)="onSubmitPaymentHeader()"
             [disabled]="!isConfirmed">
-             {{ loading ? 'Submitting ...' : 'Submit'}}         
+             {{ loading ? 'Submitting ...' : 'Submit'}}
             </button>
             <button class="submit" (click)="onCancel()">Close</button>
           </div>

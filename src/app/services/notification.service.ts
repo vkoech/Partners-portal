@@ -17,7 +17,7 @@ export class NotificationService {
   private notificationsSubject = new BehaviorSubject<Notification[]>([]);
   public notifications$ = this.notificationsSubject.asObservable();
 
-  private defaultDuration = 5000; // 5 seconds
+  private defaultDuration = 10000; //ten seconds
 
   show(notification: Omit<Notification, 'id'>): void {
     const id = Date.now().toString();

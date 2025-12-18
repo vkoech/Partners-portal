@@ -246,7 +246,7 @@ onCancel() {
 getProjectCode() {
   const selected = this.paymentRequestForm.get('projectCode')?.value;
   if (!selected) return;
-  this.paymentService.getProjectDetails(selected).subscribe(data => {
+  this.paymentService.getProjectDetails(selected, this.subgranteeNo).subscribe(data => {
     this.paymentRequestForm.patchValue(data);
   });
 

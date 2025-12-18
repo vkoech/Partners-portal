@@ -35,3 +35,24 @@ body {
   width: 120px;
   height: auto;
 }
+.notification {
+  padding: 12px 16px;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+.notification.success {
+  color: #2f855a;   // green
+}
+
+.notification.error {
+  color: #c53030;   // red
+}
+
+.notification.warning {
+  color: #d69e2e;   // yellow
+}
+
+.notification.info {
+  color: #2b6cb0;   // blue
+}

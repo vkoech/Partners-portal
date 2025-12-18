@@ -19,6 +19,7 @@ import { ViewCashRequest } from './components/cash-request/view-cash-request/vie
 import { ViewApprovedFunding } from './components/approved-funding/view-approved-funding/view-approved-funding';
 import { ViewPaymentSurrender } from './components/payment-surrender/view-payment-surrender/view-payment-surrender';
 import { Profile } from './components/registration/profile/profile';
+import { Report } from './components/report/report';
 
 export const routes: Routes = [
   { path: '', component: LoginComponent },
@@ -47,4 +48,5 @@ export const routes: Routes = [
   { path: 'reimbursements', component: ReimbursementsComponent },
   { path: 'new-reimbursement', component: NewReimbursementComponent },
   { path: 'new-reimbursement/:id', component: NewReimbursementComponent },
+   { path: 'report', component: Report },
 ];
