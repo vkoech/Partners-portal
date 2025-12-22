@@ -145,8 +145,8 @@
               <input type="text" formControlName="registrationCertificateNo">
             </div>
           </div>
-           <button type="submit" class="submit">             
-            {{ loading ? 'Saving ...' : 'Save'}}         
+           <button type="submit" class="submit">
+            {{ loading ? 'Saving ...' : 'Save'}}
            </button>
         </div>
       </form>
@@ -182,8 +182,8 @@
             </div>
           </div>
         </div>
-       <button type="submit" class="submit"> 
-        {{ loading ? 'Saving ...' : 'Save'}}         
+       <button type="submit" class="submit">
+        {{ loading ? 'Saving ...' : 'Save'}}
        </button>
        </form>
         <!-- Area of focus Table -->
@@ -251,7 +251,7 @@
           </div>
         </div>
          <button type="submit" class="submit">
-          {{ loading ? 'Saving ...' : 'Save'}}         
+          {{ loading ? 'Saving ...' : 'Save'}}
          </button>
         </form>
         <!-- Geo Coverage Table -->
@@ -558,10 +558,9 @@
                   <td>{{ contact.documentCode }}</td>
                   <td>{{ contact.documentDescription }}</td>
                   <td>
-                    <button type="button" class="delete-btn" (click)="deleteConatacPerson(contact,'delete')">
-                      <img src="assets/delete.svg" alt="Delete" width="16" height="16" />
-                      Delete
-                    </button>
+                  <ng-container *ngIf="contact.localFileURL;">
+                    <a [href]="contact.localFileURL" target="_blank" rel="noopener noreferrer">View Document</a>
+                  </ng-container>
                   </td>
                 </tr>
                }
@@ -754,18 +753,8 @@
                   <button class="submit"
                   (click)="onSubmitProfile()"
                   [disabled]="!isConfirmed">
-                  {{ loading ? 'Submitting...' : 'Submit'}}         
+                  {{ loading ? 'Submitting...' : 'Submit'}}
                 </button>
-              <!-- <label class="confirmation-label">
-                <input type="checkbox" formControlName="isConfirmed" />
-                <span>I confirm that the provided information is accurate.</span>
-              </label>
-              <button type="submit" class="submit"
-                      [class.active]="confirmForm.get('isConfirmed')?.value"
-                      [class.inactive]="!confirmForm.get('isConfirmed')?.value"
-                      [disabled]="!confirmForm.get('isConfirmed')?.value">
-                Submit
-              </button> -->
             </div>
 
       <div class="action-buttons">

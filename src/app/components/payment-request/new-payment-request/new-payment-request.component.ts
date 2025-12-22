@@ -45,7 +45,7 @@ export class NewPaymentRequestComponent implements OnInit, OnDestroy {
   funding_doc_list:any
   selectedFile: File | null = null;
   uploading = false;
-  uploaded_document_list:any
+  uploaded_document_list:any = {}
   documentCodeControl = new FormControl('', Validators.required);
   fileControl = new FormControl<File | null>(null, Validators.required);
 
@@ -298,6 +298,7 @@ uploadDocument() {
  getUploadedPortalAttachments(){
     this.registrationService.getUploadedPortalAttachments(this.no).subscribe(data=>{
       this.uploaded_document_list=data
+      console.log(data)
     })
    }
  patchDocumentCode(event: Event) {

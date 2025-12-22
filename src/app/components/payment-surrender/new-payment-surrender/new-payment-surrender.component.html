@@ -98,10 +98,9 @@
                   <td>{{ contact.documentCode }}</td>
                   <td>{{ contact.documentDescription }}</td>
                   <td>
-                    <button type="button" class="delete-btn">
-                      <img src="assets/delete.svg" alt="Delete" width="16" height="16" />
-                      Delete
-                    </button>
+                    <ng-container *ngIf="contact.localFileURL;">
+                      <a [href]="contact.localFileURL" target="_blank" rel="noopener noreferrer">View Document</a>
+                    </ng-container>
                   </td>
                 </tr>
                }
