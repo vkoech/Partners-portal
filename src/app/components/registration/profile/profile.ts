@@ -33,6 +33,9 @@ export class Profile {
   geoCoverageListLine:any
   experience:any[] = []
   uploadedDocuments: any[] = [];
+  showModal = false;
+  loading=false;
+  isEditMode = false;
 
     constructor(
     private router: Router,
@@ -127,6 +130,19 @@ ngOnInit(): void {
      this.geoCoverageList=data
     })
   }
+
+ openCustomModal() {
+    this.showModal = true;
+    this.isEditMode = false;
+  }
+  editRequest(row: any) {
+    this.showModal = true;
+    this.isEditMode = true;
+    this.experienceForm.patchValue({
+        ...row,
+        action: 'update'
+      });
+    }
 
   onCancel() {
     this.router.navigate(['/funding-request']);

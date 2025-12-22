@@ -198,9 +198,9 @@ export class NewPaymentRequestComponent implements OnInit, OnDestroy {
       this.showModal = true;
       this.isEditMode = true;
         this.paymentRequestLineForm.patchValue({
-    ...row,
-    action: 'update'
-  });
+      ...row,
+      action: 'update'
+    });
     }
 
   getFundsApplicationLines(){

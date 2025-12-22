@@ -107,6 +107,72 @@
         </div>
       }
 
+      <div class="form-section">
+        <div class="modal-btn-container">
+          <button class="open-modal-btn" (click)="openCustomModal()">Add Experience</button>
+        </div>
+         @if(showModal)
+           {
+            <form [formGroup]="experienceForm">
+            <div class="form-section">
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Major Donor/Partner: <span class="required">*</span></label>
+                  <input type="text" formControlName="majorDonorOrPartner">
+                </div>
+                <div class="form-group">
+                  <label>Project Type: <span class="required">*</span></label>
+                    <select formControlName="projectType" class="form-input">
+                      <option value="">Select</option>
+                      <option value="Prime">Prime</option>
+                      <option value="Sub-Prime">Sub-Prime</option>
+                    </select>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Start Date: <span class="required">*</span></label>
+                  <input type="date" formControlName="startDate">
+                </div>
+                <div class="form-group">
+                  <label>End Date:</label>
+                  <input type="date" formControlName="endDate">
+                </div>
+                <div *ngIf="experienceForm.hasError('dateRangeInvalid')" style="color:red;">
+                  End date cannot be earlier than start date.
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Currency: <span class="required">*</span></label>
+                    <select formControlName="currencyCode">
+                      <!-- <option value="" [selected]=true disabled>Select</option>
+                      @for (currency_type of currency_code_list; track currency_type.code) {
+                      <option [value]="currency_type.code">
+                        {{ currency_type.description}}
+                      </option>} -->
+                    </select>
+                </div>
+                <div class="form-group">
+                  <label>Project Value: <span class="required">*</span></label>
+                  <input type="text" formControlName="projectValue">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Project Implementation Experience: <span class="required">*</span></label>
+                    <textarea formControlName="description" rows="4" cols="40"
+                    placeholder="Enter your description here..."></textarea>
+                </div>
+              </div>
+            </div>
+            <button type="submit" class="submit" [disabled]="experienceForm.invalid">
+              {{ loading ? 'Saving...' : (isEditMode ? 'Update' : 'Save') }}
+              </button>
+            </form>
+
+           }
+
         @if(experience.length>0)
         {
           <div class="form-section">
