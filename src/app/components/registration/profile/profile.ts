@@ -5,6 +5,8 @@ import { Router } from '@angular/router';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { AuthService, AuthUser } from '../../../services/auth.service';
 import { RegistrationService } from '../../../services/registration-service';
+import { NotificationService } from '../../../services/notification.service';
+import { Payment } from '../../../services/payment';
 
 @Component({
   selector: 'app-profile',
@@ -27,13 +29,16 @@ export class Profile {
    email: any;
   contact_person_details_list:any[] = []
   contact_person_details_list_line:any
+  communication_details_list: any
   areaOfFocusList: any[] = []
   areaOfFocusListLine:any
   geoCoverageList:any[] = []
   geoCoverageListLine:any
+  currency_code_list: any
   experience:any[] = []
   uploadedDocuments: any[] = [];
   showModal = false;
+  showcontactModal = false;
   loading=false;
   isEditMode = false;
 
@@ -42,7 +47,13 @@ export class Profile {
     private fb: FormBuilder,
     private registrationService: RegistrationService,
     private authService: AuthService,
-  ) {}
+    private notificationService: NotificationService,
+     private paymentService: Payment
+  ) {
+       this.paymentService.getcurrencyCodes().subscribe(data=>{
+        this.currency_code_list=data;
+      });
+  }
 
 
 
@@ -143,6 +154,57 @@ ngOnInit(): void {
         action: 'update'
       });
     }
+ openContactCustomModal() {
+    this.showcontactModal = true;
+    this.isEditMode = false;
+  }
+  editContactRequest(experience: any) {
+    this.showModal = true;
+    this.isEditMode = true;
+    this.experienceForm.patchValue({
+        ...experience,
+        action: 'update'
+      });
+    }
+
+    onSubmitExperienceInfo(){
+    const actionType = this.isEditMode ? 'update' : 'create';
+     this.loading=true
+        if( this.experienceForm.valid){
+        let formValues = this.experienceForm.value;
+        formValues.documentNo = this.documentNo;
+        formValues.action=actionType;
+        this.registrationService.createExperience(formValues).subscribe({next:(res) => {
+        this.notificationService.success('', res['responseDescription']);
+        this.experienceForm.reset();
+        //this.getPatnerExperience();
+        this.experienceForm.reset();
+        this.loading = false;
+        },
+          error: (err) => {
+              this.loading = false;
+              const message = err.error?.responseDescription || 'Failed to update request.';
+              this.notificationService.error('', message);
+            }
+        });
+      }
+      else {
+        this.notificationService.warning('', 'Please fill all required fields correctly.');
+        this.loading = false;
+        this.experienceForm.markAllAsTouched();
+      }
+  }
+
+  contactPersonInfo(){
+
+  }
+
+  closeCustomModal() {
+    this.showModal = false;
+  }
+   closeContactModal() {
+    this.showcontactModal = false;
+  }
 
   onCancel() {
     this.router.navigate(['/funding-request']);
