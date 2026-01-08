@@ -48,6 +48,7 @@ export class NewPaymentRequestComponent implements OnInit, OnDestroy {
   uploaded_document_list:any = {}
   documentCodeControl = new FormControl('', Validators.required);
   fileControl = new FormControl<File | null>(null, Validators.required);
+  currencyCode: any
 
 
   constructor(
@@ -248,6 +249,7 @@ getProjectCode() {
   if (!selected) return;
   this.paymentService.getProjectDetails(selected, this.subgranteeNo).subscribe(data => {
     this.paymentRequestForm.patchValue(data);
+    this.currencyCode=data.currencyCode
   });
 
 }

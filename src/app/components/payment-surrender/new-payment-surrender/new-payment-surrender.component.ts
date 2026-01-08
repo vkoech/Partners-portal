@@ -326,5 +326,5 @@ uploadDocument() {
     this.surrenderForm.patchValue({
       surrenderedAmount: totalAmount,
     });
-}  
+}
 }

@@ -17,18 +17,25 @@
 
 .notification-success {
   border-left-color: #4caf50;
+  color: #4caf50;
+  background-color: antiquewhite;
 }
 
 .notification-error {
-  border-left-color: #f44336;
+  border-left-color: #f11b0b;
+  color: #f11b0b;
+  background-color: antiquewhite;
 }
 
 .notification-warning {
   border-left-color: #ff9800;
+  color: #ff9800;
+  background-color: antiquewhite;
 }
 
 .notification-info {
   border-left-color: #2196f3;
+  background-color: antiquewhite;
 }
 
 .notification-content {
@@ -46,16 +53,16 @@
   align-items: center;
   justify-content: center;
   font-weight: bold;
-  color: var(--white);
+  color:#9dcf9f;
   flex-shrink: 0;
 }
 
 .notification-success .notification-icon {
-  background: #4caf50;
+  background: #12da18;
 }
 
 .notification-error .notification-icon {
-  background: #f44336;
+  background: #f11b0b;
 }
 
 .notification-warning .notification-icon {
@@ -112,4 +119,4 @@
     transform: translateX(0);
     opacity: 1;
   }
-} 
+}

@@ -1,9 +1,8 @@
 <div class="notifications-container">
-  <div 
-    *ngFor="let notification of notifications" 
+  <div
+    *ngFor="let notification of notifications"
     class="notification"
-    [class]="'notification-' + notification.type"
-    [@slideIn]>
+    [class]="'notification-' + notification.type">
     <div class="notification-content">
       <div class="notification-icon">
         <span *ngIf="notification.type === 'success'">✓</span>
@@ -18,4 +17,4 @@
       <button class="close-btn" (click)="remove(notification.id)">×</button>
     </div>
   </div>
-</div> 
+</div>

@@ -128,7 +128,7 @@ export class NewCashRequest {
         currencyCode: [{ value: '', disabled: true }],
         requestedAmount: [{ value: '', disabled: true }],
         requestedAmountLCY: [{ value: '', disabled: true }],
-        description: [''],
+        description: ['',Validators.required],
         projectCode: [{ value: '', disabled: true }],
         declarationDone: [''],
         declarationDate: [''],
@@ -326,4 +326,4 @@ calculateTotals(): void {
   });
 }
 
-} 
+}

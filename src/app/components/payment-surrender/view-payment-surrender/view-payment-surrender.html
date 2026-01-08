@@ -35,7 +35,7 @@
         </div>
         <div class="form-row">
           <div class="form-group">
-            <label>Disbursed Amount:</label>
+            <label>Approved Amount:</label>
               <input type="text" formControlName="disbursedAmount" readonly>
             </div>
           <div class="form-group">
@@ -87,7 +87,8 @@
               <thead>
                 <tr>
                   <th>Category</th>
-                  <th>Amount Received</th>
+                  <th>Approved Amount</th>
+                   <th>Approved Amount(LCY)</th>
                   <th>Amount Spent</th>
                   <th>Description</th>
                 </tr>
@@ -99,6 +100,7 @@
                  <tr>
                   <td>{{row.category}}</td>
                   <td>{{row.amountAdvanced}}</td>
+                  <td>{{row.amountAdvancedLCY}}</td>
                   <td>{{row.actualSpent}}</td>
                   <td>{{row.description}}</td>
                 </tr>

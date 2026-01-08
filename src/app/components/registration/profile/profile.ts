@@ -41,6 +41,8 @@ export class Profile {
   showcontactModal = false;
   loading=false;
   isEditMode = false;
+  contact_type_list: any;
+
 
     constructor(
     private router: Router,
@@ -142,6 +144,12 @@ ngOnInit(): void {
     })
   }
 
+  getContactType(){
+   this.registrationService.getContactType().subscribe(data => {
+      this.contact_type_list = data;
+    });
+    }
+
  openCustomModal() {
     this.showModal = true;
     this.isEditMode = false;
@@ -156,18 +164,20 @@ ngOnInit(): void {
     }
  openContactCustomModal() {
     this.showcontactModal = true;
+    this.getContactType()
     this.isEditMode = false;
   }
-  editContactRequest(experience: any) {
-    this.showModal = true;
+  editContactRequest(contact: any) {
+    this.showcontactModal = true;
+    this.getContactType()
     this.isEditMode = true;
-    this.experienceForm.patchValue({
-        ...experience,
+    this.contactPersonForm.patchValue({
+        ...contact,
         action: 'update'
       });
     }
 
-    onSubmitExperienceInfo(){
+  onSubmitExperienceInfo(){
     const actionType = this.isEditMode ? 'update' : 'create';
      this.loading=true
         if( this.experienceForm.valid){
