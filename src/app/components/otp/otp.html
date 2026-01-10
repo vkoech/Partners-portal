@@ -5,7 +5,7 @@
       <form [formGroup]="OTPForm" (submit)="onVerifyOTP()" class="login-form">
         <div class="form-group">
           <label class="form-label">Enter OTP sent to {{ maskedEmail }}</label>
-          <input type="password" formControlName="OTP"  placeholder="Enter OTP" class="form-input" required>
+          <input type="password" formControlName="otp"  placeholder="Enter OTP" class="form-input" required>
         </div>
         <button type="submit" class="login-button">NEXT</button>
         <div class="forgot-password">

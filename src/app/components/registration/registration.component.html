@@ -330,7 +330,7 @@
              <div class="form-group">
               <label>Currency: <span class="required">*</span></label>
                 <select formControlName="currencyCode">
-                  <option value="" [selected]=true disabled>Select</option>
+                  <option value="">Select</option>
                   @for (currency_type of currency_code_list; track currency_type.code) {
                   <option [value]="currency_type.code">
                     {{ currency_type.description}}

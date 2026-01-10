@@ -127,7 +127,7 @@ export class RegistrationComponent implements OnInit {
       lineNo:0,
       documentNo:[''],
       code:[[]],
-      description:[''],
+      description:['', Validators.required],
       action:['']
     });
 
@@ -141,13 +141,13 @@ export class RegistrationComponent implements OnInit {
     this.experienceForm =this.fb.group({
       lineNo:0,
       documentNo:[''],
-      majorDonorOrPartner:[''],
-      projectType:[''],
-      currencyCode:[''],
-      startDate:[''],
+      majorDonorOrPartner:['', Validators.required],
+      projectType:['', Validators.required],
+      currencyCode:['', Validators.required],
+      startDate:['', Validators.required],
       endDate:[''],
-      projectValue:[''],
-      description:[''],
+      projectValue:['', Validators.required],
+      description:['', Validators.required],
       action:['']
     },
     {
@@ -157,11 +157,11 @@ export class RegistrationComponent implements OnInit {
   this.contactPersonForm= this.fb.group({
       lineNo:0,
       documentNo:[''],
-      contactType:[''],
-      type:[''],
-      emailAddress:[''],
-      phoneNo:[''],
-      names:[''],
+      contactType:['', Validators.required],
+      type:['', Validators.required],
+      emailAddress:['', Validators.required],
+      phoneNo:['', Validators.required],
+      names:['', Validators.required],
       action:['']
     })
    this.documentForm=this.fb.group({

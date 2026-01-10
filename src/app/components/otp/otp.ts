@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
 @Component({
@@ -17,6 +17,7 @@ export class Otp {
 
   constructor(private fb: FormBuilder, private router: Router){
     this.OTPForm=this.fb.group({
+       otp:['',Validators.required]
     })
 
   }
