@@ -43,6 +43,7 @@ export class Profile {
   experience:any[] = []
   uploadedDocuments: any[] = [];
   showModal = false;
+  showCommunicationModal = false;
   showcontactModal = false;
   showBoardMembersModal = false;
   showStaffMembersModal = false;
@@ -222,6 +223,11 @@ ngOnInit(): void {
     this.showBoardMembersModal = true;
     this.isEditMode = false;
   }
+
+  openCommunicationModal(){
+    this.showCommunicationModal=true
+    this.isEditMode = false;
+  }
   editContactRequest(contact: any) {
     this.showcontactModal = true;
     this.getContactType()
@@ -231,6 +237,38 @@ ngOnInit(): void {
         action: 'update'
       });
     }
+
+
+  onSubmitCommunicationInfo(){
+    const actionType = this.isEditMode ? 'update' : 'create';
+     this.loading=true
+        if( this.personalInfoForm.valid){
+        let formValues = this.personalInfoForm.value;
+        formValues.documentNo = this.documentNo;
+        formValues.action=actionType;
+        this.registrationService.createPartnerInfo(formValues).subscribe({next:(res) => {
+        this.notificationService.success('', res['responseDescription']);
+        this.personalInfoForm.reset();
+        this.closeCommunicationModal();
+        this.registrationService.getPartnersProfile(this.email).subscribe(data => {
+           this.personalInfoForm.patchValue(data);
+        })
+        this.personalInfoForm.reset();
+        this.loading = false;
+        },
+          error: (err) => {
+              this.loading = false;
+              const message = err.error?.responseDescription || 'Failed to update request.';
+              this.notificationService.error('', message);
+            }
+        });
+      }
+      else {
+        this.notificationService.warning('', 'Please fill all required fields correctly.');
+        this.loading = false;
+        this.personalInfoForm.markAllAsTouched();
+      }
+  }
 
   onSubmitExperienceInfo(){
     const actionType = this.isEditMode ? 'update' : 'create';
@@ -305,6 +343,9 @@ ngOnInit(): void {
   }
  closeContactModal() {
     this.showcontactModal = false;
+  }
+ closeCommunicationModal() {
+    this.showCommunicationModal = false;
   }
 
 boardInfo(){

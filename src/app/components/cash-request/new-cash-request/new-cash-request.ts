@@ -106,7 +106,8 @@ export class NewCashRequest {
         this.approvedApplicationNo !== ''
       )
     this.paymentService.getFundingApplicationDetailsByNo(this.approvedApplicationNo).subscribe(data => {
-    this.paymentRequestForm.patchValue(data);
+      const { no, ...formDataWithoutNo } = data;
+      this.paymentRequestForm.patchValue(formDataWithoutNo);
     });
   }
 
