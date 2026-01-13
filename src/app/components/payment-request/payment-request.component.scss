@@ -428,3 +428,35 @@
     display: none !important;
   }
 }
+
+/* pagination*/
+ .pagination {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: right;
+  gap: 0.5rem;
+  margin-right: 5px;
+  color: #E53E3E;
+}
+
+.pagination button {
+  border: 1px solid #ccc;
+  color: #FFFFFF;
+  background: #1C3557;
+  padding: 0.4rem 0.8rem;
+  cursor: pointer;
+  border-radius: 4px;
+  border-style: none;
+}
+
+.pagination button.active {
+  background: #E53E3E;
+  color: #FFFFFF;
+  font-weight: bold;
+}
+
+.pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  color: #E53E3E;
+}

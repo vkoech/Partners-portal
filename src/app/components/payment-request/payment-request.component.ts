@@ -26,7 +26,7 @@ export class PaymentRequestComponent implements OnInit, OnDestroy {
   subgranteeNo: any;
   loading=false;
   payment_request:  any[] = [];
-  pageSize = 10;
+  pageSize = 8;
   totalPages = 0;
   pagedList: any[] = [];
   filteredList:any;
@@ -39,18 +39,25 @@ export class PaymentRequestComponent implements OnInit, OnDestroy {
   private authService = inject(AuthService);
   private notificationService=inject(NotificationService)
 
+
+
   ngOnInit(): void {
+
     this.user = this.authService.getLoggedInUser();
     this.subgranteeNo = this.user?.partnerAccountNo;
     this.email=this.user?.emailAddress;
     this.paymentService.getAllFundingApplications(this.email).subscribe(data=>{
-     this.paymentRequestList=data;
-     this.filteredList = [...this.paymentRequestList=data];
-     this.filteredList = [...this.paymentRequestList];
-        this.totalPages = Math.ceil(this.filteredList.length / this.pageSize);
-        this.setPage(1)
-
+    this.paymentRequestList=data;
+    this.paymentRequestList.sort((a, b) => {
+    const numA = parseInt(a.no.split('-')[2], 10);
+    const numB = parseInt(b.no.split('-')[2], 10);
+    return numB - numA; // descending
+     });
+      this.filteredList = [...this.paymentRequestList];
+      this.totalPages = Math.ceil(this.filteredList.length / this.pageSize);
+      this.setPage(1)
     });
+
   }
 
   ngOnDestroy() {
@@ -102,52 +109,19 @@ export class PaymentRequestComponent implements OnInit, OnDestroy {
   ViewRequest(no: string){
      this.router.navigate(['/view-funding-request',btoa(no)]);
   }
-  previousPage() {
-    if (this.currentPage > 1) {
-      this.currentPage--;
-    }
-  }
 
-  nextPage() {
-    if (this.currentPage < this.totalPages) {
-      this.currentPage++;
-    }
-  }
-
-  goToPage(page: number) {
-    if (page >= 1 && page <= this.totalPages) {
-      this.currentPage = page;
-    }
-  }
-
-  getVisiblePages(): number[] {
-    const pages: number[] = [];
-    const maxVisible = 5;
-
-    if (this.totalPages <= maxVisible) {
-      for (let i = 1; i <= this.totalPages; i++) {
-        pages.push(i);
-      }
-    } else {
-      const start = Math.max(1, this.currentPage - 2);
-      const end = Math.min(this.totalPages, start + maxVisible - 1);
-
-      for (let i = start; i <= end; i++) {
-        pages.push(i);
-      }
-    }
-
-    return pages;
-  }
-
-   setPage(page: number): void {
-     if (page < 1 || page > this.totalPages) return;
+setPage(page: number) {
+      if (page < 1) page = 1;
+      if (page > this.totalPages) page = this.totalPages;
       this.currentPage = page;
       const startIndex = (page - 1) * this.pageSize;
       const endIndex = startIndex + this.pageSize;
-      this.pagedList = this.paymentRequestList.slice(startIndex, endIndex);
-      }
-   search(): void {
+      this.pagedList = this.filteredList.slice(startIndex, endIndex);
+    }
+    get pages(): number[] {
+      return Array(this.totalPages).fill(0).map((x, i) => i + 1);
+    }
+search(): void {
       const q = this.searchTerm.toLowerCase().trim();
       if (!q) {
         this.paymentRequestList = [...this.filteredList];
