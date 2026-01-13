@@ -22,9 +22,12 @@ export class CashRequest {
   private destroy$ = new Subject<void>();
 
     sidebarOpen = false;
-    searchTerm = '';
+    pageSize = 8;
+    totalPages = 0;
+    pagedList: any[] = [];
+    filteredList:any;
     currentPage = 1;
-    itemsPerPage = 5;
+    searchTerm: string = '';
 
     cash_request_list: any[] = [];
     email: any
@@ -45,6 +48,14 @@ export class CashRequest {
 
       this.cashRequestService.getAllCashRequests(this.email).subscribe(data=>{
        this.cash_request_list=data;
+       this.cash_request_list.sort((a, b) => {
+       const numA = parseInt(a.no.split('-')[2], 10);
+       const numB = parseInt(b.no.split('-')[2], 10);
+       return numB - numA;
+         });
+      this.filteredList = [...this.cash_request_list];
+      this.totalPages = Math.ceil(this.filteredList.length / this.pageSize);
+      this.setPage(1)
       });
     }
 
@@ -99,10 +110,34 @@ export class CashRequest {
       this.router.navigate(['/view-cash-request',btoa(no)]);
     }
 
-    previousPage() {
-      if (this.currentPage > 1) {
-        this.currentPage--;
-      }
+  setPage(page: number) {
+    if (page < 1) page = 1;
+      if (page > this.totalPages) page = this.totalPages;
+      this.currentPage = page;
+      const startIndex = (page - 1) * this.pageSize;
+      const endIndex = startIndex + this.pageSize;
+      this.pagedList = this.filteredList.slice(startIndex, endIndex);
     }
+  get pages(): number[] {
+      return Array(this.totalPages).fill(0).map((x, i) => i + 1);
+    }
+  search(): void {
+    const q = this.searchTerm.toLowerCase().trim();
+      if (!q) {
+          this.cash_request_list = [...this.filteredList];
+      return;
+      }
+    this.cash_request_list = this.filteredList.filter((list: any) =>
+      list.no?.toLowerCase().includes(q) ||
+          list.applicationDate?.toString().toLowerCase().includes(q) ||
+          list.projectCode?.toLowerCase().includes(q) ||
+          String(list.amount).toLowerCase().includes(q) ||
+          list.amountLCY?.toLowerCase().includes(q) ||
+          list.obligatedAmountLCY?.toLowerCase().includes(q) ||
+          list.status?.toLowerCase().includes(q)
+        );
+    }
+
+
 
 }
