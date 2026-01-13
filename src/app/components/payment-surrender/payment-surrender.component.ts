@@ -22,9 +22,12 @@ export class PaymentSurrenderComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   sidebarOpen = false;
-  searchTerm = '';
+  pageSize = 8;
+  totalPages = 0;
+  pagedList: any[] = [];
+  filteredList:any;
   currentPage = 1;
-  itemsPerPage = 10;
+  searchTerm: string = '';
 
 
   email: any
@@ -32,18 +35,8 @@ export class PaymentSurrenderComponent implements OnInit, OnDestroy {
   subgranteeNo: any;
   loading=false;
   payment_request:  any[] = [];
-
   paymentSurrenderList: any[] = [];
 
-  get totalPages(): number {
-    return Math.ceil(this.paymentSurrenderList.length / this.itemsPerPage);
-  }
-
-  get paginatedData(): any[] {
-    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-    const endIndex = startIndex + this.itemsPerPage;
-    return this.paymentSurrenderList.slice(startIndex, endIndex);
-  }
   private router = inject(Router);
   private cashRequestService = inject(CashRequestService);
   private authService = inject(AuthService);
@@ -58,6 +51,14 @@ export class PaymentSurrenderComponent implements OnInit, OnDestroy {
 
       this.cashSurrenderService.getAllCashSurrenders(this.email).subscribe(data=>{
        this.paymentSurrenderList=data;
+       this.paymentSurrenderList.sort((a, b) => {
+       const numA = parseInt(a.no.split('-')[2], 10);
+       const numB = parseInt(b.no.split('-')[2], 10);
+        return numB - numA; // descending
+        });
+      this.filteredList = [...this.paymentSurrenderList];
+      this.totalPages = Math.ceil(this.filteredList.length / this.pageSize);
+      this.setPage(1)
       });
   }
 
@@ -104,46 +105,29 @@ createNewSurrender(){
         btoa(no)
       ]);
     }
-
-  previousPage() {
-    if (this.currentPage > 1) {
-      this.currentPage--;
-    }
-  }
-
-  nextPage() {
-    if (this.currentPage < this.totalPages) {
-      this.currentPage++;
-    }
-  }
-
-  goToPage(page: number) {
-    if (page >= 1 && page <= this.totalPages) {
+  setPage(page: number) {
+      if (page < 1) page = 1;
+      if (page > this.totalPages) page = this.totalPages;
       this.currentPage = page;
+      const startIndex = (page - 1) * this.pageSize;
+      const endIndex = startIndex + this.pageSize;
+      this.pagedList = this.filteredList.slice(startIndex, endIndex);
     }
-  }
-
-  lastPage() {
-    this.currentPage = this.totalPages;
-  }
-
-  getVisiblePages(): number[] {
-    const pages: number[] = [];
-    const maxVisible = 5;
-
-    if (this.totalPages <= maxVisible) {
-      for (let i = 1; i <= this.totalPages; i++) {
-        pages.push(i);
-      }
-    } else {
-      const start = Math.max(1, this.currentPage - 2);
-      const end = Math.min(this.totalPages, start + maxVisible - 1);
-
-      for (let i = start; i <= end; i++) {
-        pages.push(i);
-      }
+    get pages(): number[] {
+      return Array(this.totalPages).fill(0).map((x, i) => i + 1);
     }
-
-    return pages;
-  }
+search(): void {
+  const q = this.searchTerm.toLowerCase().trim();
+      if (!q) {
+        this.paymentSurrenderList = [...this.filteredList];
+        return;
+      }
+      this.paymentSurrenderList = this.filteredList.filter((list: any) =>
+        list.no?.toLowerCase().includes(q) ||
+        list.requestedDate?.toString().toLowerCase().includes(q) ||
+        list.projectCode?.toLowerCase().includes(q) ||
+        String(list.actualSpentLCY).toLowerCase().includes(q) ||
+        list.status?.toLowerCase().includes(q)
+  );
+}
 }
