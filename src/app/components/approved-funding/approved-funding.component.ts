@@ -77,8 +77,8 @@ export class ApprovedFundingComponent implements OnInit, OnDestroy {
       return Array(this.totalPages).fill(0).map((x, i) => i + 1);
     }
 search(): void {
-      const q = this.searchTerm.toLowerCase().trim();
-      if (!q) {
+  const q = this.searchTerm.toLowerCase().trim();
+    if (!q) {
         this.paymentRequestList = [...this.filteredList];
         return;
       }

@@ -21,7 +21,7 @@
         </button>
         <div class="search-box">
           <img src="assets/search.svg" alt="Search here" width="10" height="10" class="search-icon" />
-          <input type="text" placeholder="Search here" [(ngModel)]="searchTerm">
+          <input type="text" placeholder="Search here" [(ngModel)]="searchTerm" (input)="search()">
         </div>
       </div>
       <div class="table-container">
