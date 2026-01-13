@@ -23,22 +23,14 @@ export class ApprovedFundingComponent implements OnInit, OnDestroy {
   sidebarOpen = false;
   searchTerm = '';
   currentPage = 1;
-  itemsPerPage = 5;
-
-  paymentRequestList: any
+  pageSize = 8;
+  filteredList:any;
+  pagedList: any[] = [];
+  paymentRequestList: any[] = [];
   email: any
   user: AuthUser | null = null;
   subgranteeNo: any;
-
-  get totalPages(): number {
-    return Math.ceil(this.paymentRequestList.length / this.itemsPerPage);
-  }
-
-  get paginatedData(): any[] {
-    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-    const endIndex = startIndex + this.itemsPerPage;
-    return this.paymentRequestList.slice(startIndex, endIndex);
-  }
+  totalPages = 0;
 
   constructor(private router: Router,
    private paymentService: Payment,
@@ -51,8 +43,16 @@ export class ApprovedFundingComponent implements OnInit, OnDestroy {
     this.subgranteeNo = this.user?.partnerAccountNo;
     this.email=this.user?.emailAddress;
     this.paymentService.getApprovedFundApplications(this.email).subscribe(data=>{
-     this.paymentRequestList=data;
+    this.paymentRequestList=data;
+    this.paymentRequestList.sort((a, b) => {
+    const numA = parseInt(a.no.split('-')[2], 10);
+    const numB = parseInt(b.no.split('-')[2], 10);
+    return numB - numA;
     });
+      this.filteredList = [...this.paymentRequestList];
+      this.totalPages = Math.ceil(this.filteredList.length / this.pageSize);
+      this.setPage(1)
+     })
   }
 
   ngOnDestroy() {
@@ -60,49 +60,37 @@ export class ApprovedFundingComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  previousPage() {
-    if (this.currentPage > 1) {
-      this.currentPage--;
-    }
-  }
-
-  nextPage() {
-    if (this.currentPage < this.totalPages) {
-      this.currentPage++;
-    }
-  }
-
-  goToPage(page: number) {
-    if (page >= 1 && page <= this.totalPages) {
-      this.currentPage = page;
-    }
-  }
-
-  lastPage() {
-    this.currentPage = this.totalPages;
-  }
 
   ViewRequest(no: string){
       this.router.navigate(['/view-approved-funds-application',btoa(no)]);
     }
 
-  getVisiblePages(): number[] {
-    const pages: number[] = [];
-    const maxVisible = 5;
-
-    if (this.totalPages <= maxVisible) {
-      for (let i = 1; i <= this.totalPages; i++) {
-        pages.push(i);
-      }
-    } else {
-      const start = Math.max(1, this.currentPage - 2);
-      const end = Math.min(this.totalPages, start + maxVisible - 1);
-
-      for (let i = start; i <= end; i++) {
-        pages.push(i);
-      }
+  setPage(page: number) {
+      if (page < 1) page = 1;
+      if (page > this.totalPages) page = this.totalPages;
+      this.currentPage = page;
+      const startIndex = (page - 1) * this.pageSize;
+      const endIndex = startIndex + this.pageSize;
+      this.pagedList = this.filteredList.slice(startIndex, endIndex);
     }
+    get pages(): number[] {
+      return Array(this.totalPages).fill(0).map((x, i) => i + 1);
+    }
+search(): void {
+      const q = this.searchTerm.toLowerCase().trim();
+      if (!q) {
+        this.paymentRequestList = [...this.filteredList];
+        return;
+      }
+      this.paymentRequestList = this.filteredList.filter((list: any) =>
+        list.no?.toLowerCase().includes(q) ||
+        list.applicationDate?.toString().toLowerCase().includes(q) ||
+        list.projectCode?.toLowerCase().includes(q) ||
+        String(list.amount).toLowerCase().includes(q) ||
+        list.amountLCY?.toLowerCase().includes(q) ||
+        list.obligatedAmountLCY?.toLowerCase().includes(q) ||
+        list.status?.toLowerCase().includes(q)
+      );
+}
 
-    return pages;
-  }
 }
