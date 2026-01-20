@@ -255,7 +255,9 @@ getApplicationNo(){
  const selected = this.paymentRequestForm.get('approvedApplicationNo')?.value;
   if (!selected) return;
   this.paymentService.getFundingApplicationDetailsByNo(selected).subscribe(data => {
-    this.paymentRequestForm.patchValue(data);
+    const patchedData = { ...data };
+    delete patchedData.no;
+    this.paymentRequestForm.patchValue(patchedData);
     this.calculateTotals()
   });
 }

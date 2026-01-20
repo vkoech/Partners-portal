@@ -181,7 +181,9 @@ export class NewPaymentSurrenderComponent implements OnInit, OnDestroy {
     const selected = this.surrenderForm.get('paymentRequestNo')?.value;
     if (!selected) return;
     this.cashSurrenderService.getCashRequestDetailsByNo(selected).subscribe(data => {
-      this.surrenderForm.patchValue(data);
+      const patchedData = { ...data };
+      delete patchedData.no;
+      this.surrenderForm.patchValue(patchedData);
     });
     this.cashSurrenderService.getCashSurrenderDocuments().subscribe(data=>{
      this.doc_list=data;
