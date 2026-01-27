@@ -127,7 +127,7 @@ export class RegistrationComponent implements OnInit {
       lineNo:0,
       documentNo:[''],
       code:[[]],
-      description:['', Validators.required],
+      description:[''],
       action:['']
     });
 

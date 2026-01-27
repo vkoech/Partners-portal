@@ -130,7 +130,7 @@ export class NewCashRequest {
         requestedAmount: [{ value: '', disabled: true }],
         requestedAmountLCY: [{ value: '', disabled: true }],
         description: ['',Validators.required],
-        projectCode: [{ value: '', disabled: true }],
+        projectCode: [''],
         declarationDone: [''],
         declarationDate: [''],
         indirectCostPercentage: [{ value: '', disabled: true }],
@@ -139,7 +139,6 @@ export class NewCashRequest {
         responseDescription: [''],
         status: ['']
     });
-
 
 
     this.paymentRequestLineForm = this.fb.group({
@@ -178,6 +177,8 @@ export class NewCashRequest {
   submitLine() {
     this.loading=true
       if( this.paymentRequestLineForm.valid){
+      const projectCodeControl = this.paymentRequestForm.get('projectCode');
+      projectCodeControl?.enable({ emitEvent: false });
       let formValues = this.paymentRequestLineForm.value;
        formValues.projectCode=this.paymentRequestForm.get('projectCode')?.value;
       formValues.documentNo = this.no;
