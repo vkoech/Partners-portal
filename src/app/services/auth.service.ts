@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { Router } from '@angular/router';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../environments/environment.prod';
 import { jwtDecode } from 'jwt-decode';
 
@@ -28,8 +28,9 @@ export interface AuthUser {
   dateOfBirth: string;
   bankName: string;
   companyName: string;
-  partnerAccountNo: string
-  customerNo:string
+  partnerAccountNo: string;
+  customerNo:string;
+  status: string;
 
 }
 
@@ -53,6 +54,16 @@ constructor(private router: Router,private http: HttpClient) {}
 
  login(body: any): Observable<any>{
     return this.http.post<any>(this.baseUrl+'PartnerAccount/Login', body);
+  }
+
+  generateOTP(email: string): Observable<any> {
+    const params = new HttpParams().set('emailAddress', email); return this.http.post<any>(
+      this.baseUrl + 'PartnerAccount/GenerateOTP',{}, { params }
+    );
+  }
+
+  verifyOTP(body: any): Observable<any>{
+    return this.http.post<any>(this.baseUrl+'PartnerAccount/VerifyOTP', body);
   }
 
   resetPasswordLink(emailAddress: string, passwordResetToken: any) {
@@ -135,8 +146,6 @@ constructor(private router: Router,private http: HttpClient) {}
       return null;
     }
   }
-
-
 
   isLoggedIn(): boolean {
     return !!this.getToken();

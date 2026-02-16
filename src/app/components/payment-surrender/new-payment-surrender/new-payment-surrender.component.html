@@ -42,10 +42,10 @@
           </div>
         </div>
         <div class="form-row">
-          <!-- <div class="form-group">
+          <div class="form-group">
             <label>Approved Amount:</label>
-              <input type="text" formControlName="disbursedAmount" readonly>
-            </div> -->
+              <input type="text" formControlName="amountAdvanced" readonly>
+            </div>
             <div class="form-group">
             <label>Amount Spent:</label>
              <input type="text" formControlName="surrenderedAmount">
@@ -94,15 +94,19 @@
               </thead>
               <tbody>
               @for (contact of doc_list; track contact.lineNo){
-                  <tr>
+              @if(contact.localFileURL && contact.localFileURL.trim().length > 0){
+                <tr>
                   <td>{{ contact.documentCode }}</td>
                   <td>{{ contact.documentDescription }}</td>
                   <td>
-                    <ng-container *ngIf="contact.localFileURL;">
+                  @if(contact.localFileURL){
+                      <ng-container>
                       <a [href]="contact.localFileURL" target="_blank" rel="noopener noreferrer">View Document</a>
                     </ng-container>
+                   }
                   </td>
                 </tr>
+                }
                }
               </tbody>
             </table>

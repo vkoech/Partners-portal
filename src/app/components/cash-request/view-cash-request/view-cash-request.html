@@ -99,11 +99,16 @@
                   <tr>
                   <td>{{ contact.documentCode }}</td>
                   <td>{{ contact.documentDescription }}</td>
-                  <td>
-                  <ng-container *ngIf="contact.localFileURL;">
+                  @if (contact.localFileURL && contact.localFileURL.trim().length > 0)
+                  {<td>
+                  @if(contact.localFileURL)
+                  {
+                  <ng-container>
                     <a [href]="contact.localFileURL" target="_blank" rel="noopener noreferrer">View Document</a>
                   </ng-container>
+                  }
                   </td>
+                }
                 </tr>
                }
               </tbody>

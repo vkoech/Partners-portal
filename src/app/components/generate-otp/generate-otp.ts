@@ -1,47 +1,39 @@
-import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AuthService, AuthUser } from '../../services/auth.service';
+import { AuthService } from '../../services/auth.service';
 import { NotificationService } from '../../services/notification.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-otp',
+  selector: 'app-generate-otp',
   imports: [ReactiveFormsModule, CommonModule, FormsModule],
-  templateUrl: './otp.html',
-  styleUrl: './otp.scss'
+  templateUrl: './generate-otp.html',
+  styleUrl: './generate-otp.scss'
 })
-export class Otp {
+export class GenerateOtp {
 
-  OTPForm: FormGroup
-  maskedEmail: string = '';
-  user: AuthUser | null = null;
+  generateOTPForm: FormGroup
   email:any;
+  maskedEmail: string = '';
   loading = false;
-  status: any;
 
   constructor(private fb: FormBuilder, private router: Router,
      private authService: AuthService,private notificationService: NotificationService){
   }
 
+
   ngOnInit(): void {
-    this.user = this.authService.getLoggedInUser();
-   this.status=this.user?.status;
     this.email=localStorage.getItem('emailAddress')
-    this.OTPForm=this.fb.group({
-       otpCode:['',Validators.required]
+    this.generateOTPForm=this.fb.group({
+       emailAddress:['',Validators.required]
     })
     if (this.email) {
       this.maskedEmail = this.maskEmail(this.email);
     }
   }
 
-
-  goToLogin(){
-    this.router.navigate(['/login']);
-  }
-
-  private maskEmail(email: string): string {
+    private maskEmail(email: string): string {
      const [username, domain] = email.split('@');
       if (username.length <= 2) {
         return username[0] + '*' + '@' + domain;
@@ -54,29 +46,8 @@ export class Otp {
       return firstChar + maskedMiddle + lastChar + '@' + domain;
       }
 
-  onVerifyOTP() {
-    this.loading=true;
-    let formValues = this.OTPForm.value;
-    formValues.emailAddress = this.email;
-    this.authService.verifyOTP(this.OTPForm.value).subscribe({
-    next: (res) => {
-    this.loading = false;
-    this.notificationService.success('', res.responseDescription);
-        if (this.status === 'Approved') {
-          this.router.navigate(['/funding-request']);
-        } else {
-          this.router.navigate(['/register']);
-        }
-  },
-  error: (err) => {
-    this.loading = false;
-    const message = err.error?.responseDescription;
-    this.notificationService.warning('', message);
-  }
-  });
-}
 
-  resendOtp(){
+  generateOTP(){
      this.loading=true;
       this.authService.generateOTP(this.email).subscribe({
         next: (res) => {
@@ -91,6 +62,10 @@ export class Otp {
       }
       });
 
+  }
+
+  goToLogin(){
+    this.router.navigate(['/login']);
   }
 
 }

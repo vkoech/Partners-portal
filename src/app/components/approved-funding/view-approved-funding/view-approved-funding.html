@@ -36,11 +36,16 @@
             <label>Project End Date</label>
             <input type="text" formControlName="subAwardEndDate">
           </div>
-         @if (paymentRequestForm.hasError('dateRangeInvalid')) {
-            <div style="color:red;">
-              Award end date cannot be earlier than award start date.
-            </div>
-             }
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Sub-award Start Date</label>
+            <input type="text" formControlName="subAwardStartDate">
+          </div>
+           <div class="form-group">
+            <label>Sub-award End Date</label>
+            <input type="text" formControlName="subAwardEndDate">
+          </div>
         </div>
         <div class="form-row">
           <div class="form-group">

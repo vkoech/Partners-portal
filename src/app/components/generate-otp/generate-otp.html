@@ -1,0 +1,19 @@
+<div class="login-container">
+  <div class="form-section">
+    <div class="form-container">
+      <h1 class="welcome-title">Generate OTP</h1>
+      <form [formGroup]="generateOTPForm" (submit)="generateOTP()" class="login-form">
+        <div class="form-group">
+          <input type="text" class="form-input" [placeholder]="maskedEmail"disabled>
+        </div>
+        <button type="submit" class="login-button">NEXT</button>
+        <div class="forgot-password">
+          <a (click)="goToLogin()" class="register-link">Back to Login</a>
+        </div>
+        <div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+

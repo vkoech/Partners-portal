@@ -20,7 +20,7 @@ export class Signup {
   constructor(private fb: FormBuilder,  private authService: AuthService,
     private router: Router,
      private notificationService: NotificationService){
-     
+
     // this.getCompany()
 
      this.SignUpForm = this.fb.group({
@@ -43,6 +43,8 @@ export class Signup {
     next: (res) => {
     this.loading = false;
     this.notificationService.success('', res.responseDescription);
+    this.SignUpForm.reset();
+    this.router.navigate(['/login']);
   },
   error: (err) => {
     this.loading = false;

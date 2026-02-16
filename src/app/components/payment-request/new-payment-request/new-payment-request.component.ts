@@ -162,6 +162,7 @@ export class NewPaymentRequestComponent implements OnInit, OnDestroy {
   submitLine() {
     this.loading=true
       if( this.paymentRequestLineForm.valid){
+      this.paymentRequestForm.enable();
       let formValues = this.paymentRequestLineForm.value;
       formValues.documentNo = this.no;
       this.paymentService.createUpdateFundingApplicationLine(formValues).subscribe({next:(res) => {

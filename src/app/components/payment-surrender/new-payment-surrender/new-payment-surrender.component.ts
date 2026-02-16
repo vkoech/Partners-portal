@@ -100,7 +100,12 @@ export class NewPaymentSurrenderComponent implements OnInit, OnDestroy {
         this.category_list=data;
       });
     this.cashSurrenderService.getPostedCashRequests(this.email).subscribe(data=>{
-        this.cash_list=data;
+       this.cash_list = data.map((item: { no: string; description: any; }) => {
+        return {
+          ...item,
+          description: item.no + ' - ' + (item.description ?? '')
+        };
+      });
       });
     this.registrationService.getAreaOfFocus().subscribe(data => {
       this.area_of_focus_items = data;
@@ -122,7 +127,7 @@ export class NewPaymentSurrenderComponent implements OnInit, OnDestroy {
       documentDate: [''],
       paymentRequest: [''],
       currencyCode: [''],
-      disbursedAmount: [{ value: '', disabled: true }],
+      amountAdvanced: [{ value: '', disabled: true }],
       disbursedAmountLCY:[{value: '', disabled: true}],
       surrenderedAmount: [{ value: '', disabled: true }],
       surrenderedAmountLCY:[{ value: '', disabled: true }],
@@ -213,6 +218,7 @@ export class NewPaymentSurrenderComponent implements OnInit, OnDestroy {
   onSubmitPaymentHeader() {
       this.loading=true
       if( this.surrenderForm.valid){
+      this.surrenderForm.enable();
       let formValues = this.surrenderForm.value;
       formValues.subgranteeNo = this.subgranteeNo;
       formValues.no = this.no;

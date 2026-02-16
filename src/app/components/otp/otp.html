@@ -5,7 +5,7 @@
       <form [formGroup]="OTPForm" (submit)="onVerifyOTP()" class="login-form">
         <div class="form-group">
           <label class="form-label">Enter OTP sent to {{ maskedEmail }}</label>
-          <input type="password" formControlName="otp"  placeholder="Enter OTP" class="form-input" required>
+          <input type="password" formControlName="otpCode"  placeholder="Enter OTP" class="form-input" required>
         </div>
         <button type="submit" class="login-button">NEXT</button>
         <div class="forgot-password">
@@ -13,7 +13,7 @@
         </div>
         <div>
         <span class="separator">Did you receive OTP?|</span>
-        <a (click)="goToLogin()" class="register-link">Resend in</a>
+        <a (click)="resendOtp()" class="register-link">Resend in</a>
         </div>
       </form>
     </div>

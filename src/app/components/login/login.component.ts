@@ -40,20 +40,16 @@ export class LoginComponent {
     this.authService.login(this.LoginForm.value).subscribe({
     next: (res) => {
     this.loading = false;
-
+    if(!this.email){
+    this.generateOTP();
+    }
     localStorage.setItem('auth_token', res.jwt);
     localStorage.setItem('refreshToken', res.refreshToken || '');
-    localStorage.setItem('userName', this.LoginForm.value.username);
+    localStorage.setItem('emailAddress', this.LoginForm.value.emailAddress);
+    localStorage.setItem('emailAddress', this.LoginForm.value.emailAddress);
     this.notificationService.success('', res.responseDescription);
+    this.router.navigate(['/otp-verification'])
       const decoded = this.decodeToken(res.jwt);
-      if (decoded) {
-        const status = decoded.status;
-        if (status === 'Approved') {
-          this.router.navigate(['/funding-request']);
-        } else {
-          this.router.navigate(['/register']);
-        }
-      }
   },
   error: (err) => {
     this.loading = false;
@@ -62,6 +58,23 @@ export class LoginComponent {
   }
   });
 }
+
+  generateOTP(){
+     this.loading=true;
+      this.authService.generateOTP(this.LoginForm.value.emailAddress).subscribe({
+        next: (res) => {
+        // this.loading = false;
+        // this.notificationService.success('', res.responseDescription);
+        // this.router.navigate(['/otp-verification'])
+      },
+      error: (err) => {
+        this.loading = false;
+        const message = err.error?.responseDescription;
+        this.notificationService.warning('', message);
+      }
+      });
+
+  }
 
 decodeToken(token: string): any {
   try {
@@ -73,8 +86,6 @@ decodeToken(token: string): any {
     return null;
   }
 }
-
-
 
 goToReset(event?: Event) {
        this.router.navigate(['/forgot-password']);

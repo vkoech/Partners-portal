@@ -20,6 +20,7 @@ import { ViewApprovedFunding } from './components/approved-funding/view-approved
 import { ViewPaymentSurrender } from './components/payment-surrender/view-payment-surrender/view-payment-surrender';
 import { Profile } from './components/registration/profile/profile';
 import { Report } from './components/report/report';
+import { GenerateOtp } from './components/generate-otp/generate-otp';
 
 export const routes: Routes = [
   { path: '', component: LoginComponent },
@@ -29,6 +30,7 @@ export const routes: Routes = [
   { path: 'signup', component: Signup },
   { path: 'forgot-password', component: ForgotPassword },
   { path: 'otp-verification', component: Otp },
+   { path: 'generate-otp', component: GenerateOtp },
   { path: 'reset-password', component: ResetPassword },
   //renamed to funding
   { path: 'approved-funding', component: ApprovedFundingComponent },

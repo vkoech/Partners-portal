@@ -126,15 +126,19 @@
               </thead>
               <tbody>
               @for (contact of uploaded_document_list; track contact.lineNo){
+                 @if (contact.localFileURL && contact.localFileURL.trim().length > 0){
                   <tr>
                   <td>{{ contact.documentCode }}</td>
                   <td>{{ contact.documentDescription }}</td>
                   <td>
-                  <ng-container *ngIf="contact.localFileURL;">
+                  @if(contact.localFileURL)
+                  {
+                    <ng-container>
                     <a [href]="contact.localFileURL" target="_blank" rel="noopener noreferrer">View Document</a>
-                  </ng-container>
+                    </ng-container>}
                   </td>
-                </tr>
+                  </tr>
+                  }
                }
               </tbody>
             </table>

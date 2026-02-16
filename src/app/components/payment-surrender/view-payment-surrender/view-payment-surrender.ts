@@ -50,7 +50,7 @@ export class ViewPaymentSurrender {
       documentDate: [{ value: '', disabled: true }],
       paymentRequest: [{ value: '', disabled: true }],
       currencyCode: [{ value: '', disabled: true }],
-      disbursedAmount: [{ value: '', disabled: true }],
+      amountAdvanced: [{ value: '', disabled: true }],
       surrenderedAmount: [{ value: '', disabled: true }],
       startDate: [{ value: '', disabled: true }],
       endDate: [{ value: '', disabled: true }],

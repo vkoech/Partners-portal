@@ -212,6 +212,7 @@ export class NewCashRequest {
   onSubmitPaymentHeader() {
       this.loading=true
       if( this.paymentRequestForm.valid){
+       this.paymentRequestForm.enable();
       let formValues = this.paymentRequestForm.value;
       formValues.subgranteeNo = this.subgranteeNo;
       formValues.no = this.no;
