@@ -17,6 +17,14 @@
           <label for="email" class="form-label">Email Address</label>
           <input type="email" formControlName="emailAddress" placeholder="Your email address" class="form-input" required>
         </div>
+        <div class="form-group">
+          <label class="form-label">Country of Registration: <span class="required">*</span></label>
+            <select formControlName="company" class="form-input">
+              <option value="">...</option>
+              <option value="TZ">inSupply Health-Tanzania</option>
+              <option value="KE">inSupply Health-Kenya</option>
+            </select>
+        </div>
           <div class="password-wrapper">
            <div class="form-group">
             <label class="form-label">Password</label>

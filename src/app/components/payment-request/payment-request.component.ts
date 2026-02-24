@@ -38,6 +38,7 @@ export class PaymentRequestComponent implements OnInit, OnDestroy {
   private paymentService = inject(Payment);
   private authService = inject(AuthService);
   private notificationService=inject(NotificationService)
+  cash_list: any;
 
 
 
@@ -66,6 +67,13 @@ export class PaymentRequestComponent implements OnInit, OnDestroy {
   }
 
  createNewPaymentRequest (){
+      const hasOpenRequest = this.pagedList.some(
+        (request: { status: string; }) => request.status?.toLowerCase() === 'open'
+        );
+        if (hasOpenRequest) {
+          this.notificationService.error('', 'You already have an Open payment request. Please complete it before creating a new one.');
+          return;
+        }
        const formValues = {
           subgranteeNo: this.subgranteeNo,
           emailAddress: this.email,

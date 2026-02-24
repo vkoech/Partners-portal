@@ -19,6 +19,8 @@ export class ResetPassword {
   emailAddress: string
   passwordResetToken: any
   hide = true;
+  status: string | null = null;
+  company: string;
 
   constructor(private router: Router,private fb: FormBuilder,private activatedRoutes: ActivatedRoute,
     private authService: AuthService, private notificationService: NotificationService){
@@ -26,13 +28,15 @@ export class ResetPassword {
 
     ngOnInit(): void {
     this.emailAddress = this.activatedRoutes.snapshot.queryParams['emailAddress'];
+    this.status = this.activatedRoutes.snapshot.queryParams['status'];
     this.passwordResetToken = this.activatedRoutes.snapshot.queryParams['passwordResetToken'];
+    this.company = this.activatedRoutes.snapshot.queryParams['company'];
 
      this.ResetPasswordForm=this.fb.group({
       password: ['', [Validators.required, Validators.pattern('(?=.*[$@$!%*?&#<>{}()])(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,}')]],
       confirmPassword: ['', Validators.required],
       emailAddress:[''],
-      // passwordResetToken:['']
+      company:[''],
     },
       {
       validators: this.passwordsMatchValidator
@@ -52,9 +56,15 @@ export class ResetPassword {
   }
 
   onReset(){
+     if (this.status !== 'success') {
+      this.notificationService.warning('','This reset link has expired. Please request a new one.');
+      return;
+    }
+
     this.loading=true;
     let formValues = this.ResetPasswordForm.value;
     formValues.emailAddress=this.emailAddress;
+    formValues.company=this.company;
     this.authService.resetPassword(formValues).subscribe({
     next: (res) => {
     this.loading = false;

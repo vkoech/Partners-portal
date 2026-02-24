@@ -129,7 +129,7 @@ export class NewPaymentSurrenderComponent implements OnInit, OnDestroy {
       currencyCode: [''],
       amountAdvanced: [{ value: '', disabled: true }],
       disbursedAmountLCY:[{value: '', disabled: true}],
-      surrenderedAmount: [{ value: '', disabled: true }],
+      actualSpent: [{ value: '', disabled: true }],
       surrenderedAmountLCY:[{ value: '', disabled: true }],
       startDate: [''],
       endDate: [''],

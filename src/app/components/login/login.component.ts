@@ -28,6 +28,7 @@ export class LoginComponent {
       this.LoginForm = this.fb.group({
         emailAddress: ['', Validators.required],
         password: ['', Validators.required],
+        company:[''],
         rememberMe: Boolean
       })
      }
