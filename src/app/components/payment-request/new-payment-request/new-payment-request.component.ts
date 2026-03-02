@@ -133,6 +133,7 @@ export class NewPaymentRequestComponent implements OnInit, OnDestroy {
       declarationDone:[''],
       declarationDate:[''],
       status:[''],
+      company:[''],
       responseDescription:[''],
       responseCode:true
     },

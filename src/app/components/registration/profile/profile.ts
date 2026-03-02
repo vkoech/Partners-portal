@@ -30,6 +30,7 @@ export class Profile {
   user: AuthUser | null = null;
   documentNo: any;
    email: any;
+   company:any
   contact_person_details_list:any[] = []
   contact_person_details_list_line:any
   communication_details_list: any
@@ -72,6 +73,7 @@ ngOnInit(): void {
   this.user = this.authService.getLoggedInUser();
   this.documentNo = this.user?.partnerAccountNo;
   this.email=this.user?.emailAddress;
+  this.company=this.user?.companyKey;
   this.personalInfoForm = this.fb.group({
       documentNo:[''],
       taxRegistrationNumber: ['',Validators.required],
@@ -148,7 +150,7 @@ ngOnInit(): void {
       position:[,Validators.required],
     })
 
-      this.registrationService.getPartnersProfile(this.email).subscribe(data => {
+      this.registrationService.getPartnersProfile(this.email, this.company).subscribe(data => {
         if (data.dateRegistered) {
           const parts = data.dateRegistered.split('/');
           data.dateRegistered = `${parts[2]}-${parts[1].padStart(2,'0')}-${parts[0].padStart(2,'0')}`;
@@ -250,7 +252,7 @@ ngOnInit(): void {
         this.notificationService.success('', res['responseDescription']);
         this.personalInfoForm.reset();
         this.closeCommunicationModal();
-        this.registrationService.getPartnersProfile(this.email).subscribe(data => {
+        this.registrationService.getPartnersProfile(this.email, this.company).subscribe(data => {
            this.personalInfoForm.patchValue(data);
         })
         this.personalInfoForm.reset();

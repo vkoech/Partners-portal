@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../environments/environment.prod';
 import { Observable } from 'rxjs';
@@ -11,9 +11,14 @@ export class CashSurrenderService {
   private httpClient = inject(HttpClient)
   private baseUrl = environment.apiUrl;
 
-   getAllCashSurrenders(email: string): Observable<any>{
-          return this.httpClient.get<any>(this.baseUrl+'CashSurrender/GetAllCashSurrenders/'+email);
-        }
+
+    getAllCashSurrenders(email: string, company: string): Observable<any> {
+      const params = new HttpParams().set('company', company);
+      return this.httpClient.get<any>(
+        `${this.baseUrl}CashSurrender/GetAllCashSurrenders/${encodeURIComponent(email)}`,
+        { params }
+      );
+    }
    getSingleCashSurrender(documentNo: string): Observable<any>{
           return this.httpClient.get<any>(this.baseUrl+'CashSurrender/GetSingleCashSurrender/'+documentNo);
         }

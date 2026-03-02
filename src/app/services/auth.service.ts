@@ -31,7 +31,7 @@ export interface AuthUser {
   partnerAccountNo: string;
   customerNo:string;
   status: string;
-
+  companyKey: string;
 }
 
 export interface AuthResponse {
@@ -56,9 +56,12 @@ constructor(private router: Router,private http: HttpClient) {}
     return this.http.post<any>(this.baseUrl+'PartnerAccount/Login', body);
   }
 
-  generateOTP(email: string): Observable<any> {
-    const params = new HttpParams().set('emailAddress', email); return this.http.post<any>(
-      this.baseUrl + 'PartnerAccount/GenerateOTP',{}, { params }
+  generateOTP(email: string, company: string): Observable<any> {
+    const params = new HttpParams()
+      .set('emailAddress', email)
+      .set('company', company);
+    return this.http.post<any>(this.baseUrl + 'PartnerAccount/GenerateOTP',{},
+      { params }
     );
   }
 

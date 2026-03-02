@@ -37,6 +37,7 @@ export class RegistrationComponent implements OnInit {
   geographicCoverageForm: FormGroup;
   user: AuthUser | null = null;
   documentNo: any;
+  company: any;
   stepCompleted: boolean[] = Array(this.totalSteps + 1).fill(false);
   area_of_focus_items: any
   geolocatio_Items:any
@@ -91,6 +92,7 @@ export class RegistrationComponent implements OnInit {
     this.user = this.authService.getLoggedInUser();
     this.documentNo = this.user?.partnerAccountNo;
     this.email=this.user?.emailAddress;
+    this.company=this.user?.companyKey;
     this.getAreaOfFocus()
     this.getContactType()
     this.getContactsPersonByDocumentNo()
@@ -120,22 +122,25 @@ export class RegistrationComponent implements OnInit {
       website: ['',Validators.required],
       country:['',Validators.required],
       registrationCertificateNo:['',Validators.required],
-      status:['']
+      status:[''],
+      company:[''],
     });
 
     this.areaOfFocusForm = this.fb.group({
-      lineNo:0,
+      lineNo:[0],
       documentNo:[''],
       code:[[]],
       description:[''],
-      action:['']
+      action:[''],
+      company:['']
     });
 
    this.geographicCoverageForm = this.fb.group({
       lineNo:0,
       documentNo:[''],
       country:[[]],
-      action:['']
+      action:[''],
+      company:['']
     });
 
     this.experienceForm =this.fb.group({
@@ -148,7 +153,8 @@ export class RegistrationComponent implements OnInit {
       endDate:[''],
       projectValue:['', Validators.required],
       description:['', Validators.required],
-      action:['']
+      action:[''],
+      company:['']
     },
     {
     validators: this.dateRangeValidator
@@ -162,17 +168,19 @@ export class RegistrationComponent implements OnInit {
       emailAddress:['', Validators.required],
       phoneNo:['', Validators.required],
       names:['', Validators.required],
-      action:['']
+      action:[''],
+       company:['']
     })
    this.documentForm=this.fb.group({
      documentCode:[''],
      File :[],
-     documentNo:[]
+     documentNo:[],
    })
   this.confirmForm = this.fb.group({
     isConfirmed: [false],
     documentNo:[''],
-    emailAddress:['']
+    emailAddress:[''],
+    company:[''],
   });
    this.paymentService.getcurrencyCodes().subscribe(data=>{
         this.currency_code_list=data;
@@ -200,6 +208,7 @@ export class RegistrationComponent implements OnInit {
         if( this.personalInfoForm.valid){
         let formValues = this.personalInfoForm.value;
         formValues.documentNo = this.documentNo;
+        formValues.company = this.company;
         this.registrationService.createPartnerInfo(formValues).subscribe({next:(res) => {
         this.notificationService.success('', res['responseDescription']);
         this.getPartnersProfile();
@@ -227,6 +236,7 @@ export class RegistrationComponent implements OnInit {
         let formValues = this.areaOfFocusForm.value;
         const actionType = this.isEditMode ? 'update' : 'create';
         formValues.documentNo=this.documentNo,
+        formValues.company = this.company;
         formValues.code=this.selectedAreaOfFocusValues,
         formValues.action=actionType
         this.registrationService.createAreaOfFocusInfo(formValues).subscribe({next:(res) => {
@@ -256,6 +266,7 @@ export class RegistrationComponent implements OnInit {
         if( this.geographicCoverageForm.valid){
         let formValues = this.geographicCoverageForm.value;
         formValues.documentNo = this.documentNo;
+        formValues.company = this.company;
         formValues.country=this.selectedGeoValues;
         this.registrationService.createGeoLocationInfo(formValues).subscribe({next:(res) => {
         this.notificationService.success('', res['responseDescription']);
@@ -283,6 +294,7 @@ export class RegistrationComponent implements OnInit {
         if( this.contactPersonForm.valid){
         let formValues = this.contactPersonForm.value;
         formValues.documentNo = this.documentNo;
+        formValues.company = this.company;
         formValues.action=actionType
         this.registrationService.createContactPersonInfo(formValues).subscribe({next:(res) => {
         this.notificationService.success('', res['responseDescription']);
@@ -334,6 +346,7 @@ export class RegistrationComponent implements OnInit {
         if( this.experienceForm.valid){
         let formValues = this.experienceForm.value;
         formValues.documentNo = this.documentNo;
+        formValues.company = this.company;
         formValues.action=actionType;
         this.registrationService.createExperience(formValues).subscribe({next:(res) => {
         this.notificationService.success('', res['responseDescription']);
@@ -647,7 +660,8 @@ submitDocument() {
   }
 
  getPartnersProfile() {
-      this.registrationService.getPartnersProfile(this.email).subscribe(data => {
+      this.registrationService.getPartnersProfile(this.email, this.company).subscribe(data => {
+      console.log(data)
       this.status=data;
         if (data.dateRegistered) {
           const parts = data.dateRegistered.split('/');

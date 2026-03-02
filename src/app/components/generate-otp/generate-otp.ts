@@ -46,23 +46,25 @@ export class GenerateOtp {
       return firstChar + maskedMiddle + lastChar + '@' + domain;
       }
 
-
   generateOTP(){
-     this.loading=true;
-      this.authService.generateOTP(this.email).subscribe({
-        next: (res) => {
-        this.loading = false;
-        this.notificationService.success('', res.responseDescription);
-        this.router.navigate(['/otp-verification'])
-      },
-      error: (err) => {
-        this.loading = false;
-        const message = err.error?.responseDescription;
-        this.notificationService.warning('', message);
-      }
-      });
 
   }
+  // generateOTP(){
+  //    this.loading=true;
+  //     this.authService.generateOTP(this.email).subscribe({
+  //       next: (res) => {
+  //       this.loading = false;
+  //       this.notificationService.success('', res.responseDescription);
+  //       this.router.navigate(['/otp-verification'])
+  //     },
+  //     error: (err) => {
+  //       this.loading = false;
+  //       const message = err.error?.responseDescription;
+  //       this.notificationService.warning('', message);
+  //     }
+  //     });
+
+  // }
 
   goToLogin(){
     this.router.navigate(['/login']);

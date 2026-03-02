@@ -19,6 +19,7 @@ export class Otp {
   email:any;
   loading = false;
   status: any;
+  company:any;
 
   constructor(private fb: FormBuilder, private router: Router,
      private authService: AuthService,private notificationService: NotificationService){
@@ -28,8 +29,10 @@ export class Otp {
     this.user = this.authService.getLoggedInUser();
    this.status=this.user?.status;
     this.email=localStorage.getItem('emailAddress')
+    this.company=localStorage.getItem('company')
     this.OTPForm=this.fb.group({
-       otpCode:['',Validators.required]
+       otpCode:['',Validators.required],
+       company:['',Validators.required],
     })
     if (this.email) {
       this.maskedEmail = this.maskEmail(this.email);
@@ -58,6 +61,7 @@ export class Otp {
     this.loading=true;
     let formValues = this.OTPForm.value;
     formValues.emailAddress = this.email;
+    formValues.company = this.company;
     this.authService.verifyOTP(this.OTPForm.value).subscribe({
     next: (res) => {
     this.loading = false;
@@ -76,9 +80,10 @@ export class Otp {
   });
 }
 
-  resendOtp(){
+
+resendOtp(){
      this.loading=true;
-      this.authService.generateOTP(this.email).subscribe({
+      this.authService.generateOTP(this.email, this.company).subscribe({
         next: (res) => {
         this.loading = false;
         this.notificationService.success('', res.responseDescription);

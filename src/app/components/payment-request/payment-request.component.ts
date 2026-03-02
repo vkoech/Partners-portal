@@ -22,6 +22,7 @@ export class PaymentRequestComponent implements OnInit, OnDestroy {
   sidebarOpen = false;
   paymentRequestList: any[] = [];
   email: any
+  company: any
   user: AuthUser | null = null;
   subgranteeNo: any;
   loading=false;
@@ -46,8 +47,9 @@ export class PaymentRequestComponent implements OnInit, OnDestroy {
 
     this.user = this.authService.getLoggedInUser();
     this.subgranteeNo = this.user?.partnerAccountNo;
+    this.company=this.user?.companyKey;
     this.email=this.user?.emailAddress;
-    this.paymentService.getAllFundingApplications(this.email).subscribe(data=>{
+    this.paymentService.getAllFundingApplications(this.email, this.company).subscribe(data=>{
     this.paymentRequestList=data;
     this.paymentRequestList.sort((a, b) => {
     const numA = parseInt(a.no.split('-')[2], 10);
@@ -77,6 +79,7 @@ export class PaymentRequestComponent implements OnInit, OnDestroy {
        const formValues = {
           subgranteeNo: this.subgranteeNo,
           emailAddress: this.email,
+          company:this.company,
           no:'',
           status: '',
           areaOfFocus: '',
@@ -106,7 +109,7 @@ export class PaymentRequestComponent implements OnInit, OnDestroy {
         });
       }
    getSingleFundingApplication(){
-      this.paymentService.getAllFundingApplications(this.email).subscribe(data=>{
+      this.paymentService.getAllFundingApplications(this.email, this.company).subscribe(data=>{
       this.paymentRequestList=data;
       });
     }

@@ -31,6 +31,7 @@ export class CashRequest {
 
     cash_request_list: any[] = [];
     email: any
+    company: any
     user: AuthUser | null = null;
     subgranteeNo: any;
     loading=false;
@@ -45,8 +46,9 @@ export class CashRequest {
       this.user = this.authService.getLoggedInUser();
       this.subgranteeNo = this.user?.partnerAccountNo;
       this.email=this.user?.emailAddress;
+      this.company=this.user?.companyKey;
 
-      this.cashRequestService.getAllCashRequests(this.email).subscribe(data=>{
+      this.cashRequestService.getAllCashRequests(this.email,this.company).subscribe(data=>{
        this.cash_request_list=data;
        this.cash_request_list.sort((a, b) => {
        const numA = parseInt(a.no.split('-')[2], 10);
@@ -68,6 +70,7 @@ export class CashRequest {
          const formValues = {
             subgranteeNo: this.subgranteeNo,
             emailAddress: this.email,
+            company:this.company,
             no: '',
             status: '',
             areaOfFocus: '',

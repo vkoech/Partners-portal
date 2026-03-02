@@ -28,7 +28,7 @@ export class LoginComponent {
       this.LoginForm = this.fb.group({
         emailAddress: ['', Validators.required],
         password: ['', Validators.required],
-        company:[''],
+        company:['', Validators.required],
         rememberMe: Boolean
       })
      }
@@ -47,7 +47,7 @@ export class LoginComponent {
     localStorage.setItem('auth_token', res.jwt);
     localStorage.setItem('refreshToken', res.refreshToken || '');
     localStorage.setItem('emailAddress', this.LoginForm.value.emailAddress);
-    localStorage.setItem('emailAddress', this.LoginForm.value.emailAddress);
+    localStorage.setItem('company',this.LoginForm.get('company')?.value);
     this.notificationService.success('', res.responseDescription);
     this.router.navigate(['/otp-verification'])
       const decoded = this.decodeToken(res.jwt);
@@ -62,7 +62,7 @@ export class LoginComponent {
 
   generateOTP(){
      this.loading=true;
-      this.authService.generateOTP(this.LoginForm.value.emailAddress).subscribe({
+      this.authService.generateOTP(this.LoginForm.value.emailAddress, this.LoginForm.value.company).subscribe({
         next: (res) => {
         // this.loading = false;
         // this.notificationService.success('', res.responseDescription);

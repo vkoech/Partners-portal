@@ -135,7 +135,8 @@ export class NewPaymentSurrenderComponent implements OnInit, OnDestroy {
       endDate: [''],
       surrenderDate: [''],
       paymentRequestNo:[''],
-      description:['']
+      description:[''],
+      company:[''],
     });
 
     this.surrenderLineForm = this.fb.group({

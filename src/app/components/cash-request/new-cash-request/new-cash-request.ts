@@ -137,7 +137,8 @@ export class NewCashRequest {
         indirectCost: [{ value: '', disabled: true }],
         indirectCostLCY: [{ value: '', disabled: true }],
         responseDescription: [''],
-        status: ['']
+        status: [''],
+        company:[''],
     });
 
 

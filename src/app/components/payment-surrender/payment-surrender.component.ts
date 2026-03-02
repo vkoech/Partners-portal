@@ -31,6 +31,7 @@ export class PaymentSurrenderComponent implements OnInit, OnDestroy {
 
 
   email: any
+  company: any
   user: AuthUser | null = null;
   subgranteeNo: any;
   loading=false;
@@ -48,8 +49,9 @@ export class PaymentSurrenderComponent implements OnInit, OnDestroy {
       this.user = this.authService.getLoggedInUser();
       this.subgranteeNo = this.user?.partnerAccountNo;
       this.email=this.user?.emailAddress;
+      this.company=this.user?.companyKey;
 
-      this.cashSurrenderService.getAllCashSurrenders(this.email).subscribe(data=>{
+      this.cashSurrenderService.getAllCashSurrenders(this.email, this.company).subscribe(data=>{
        this.paymentSurrenderList=data;
        this.paymentSurrenderList.sort((a, b) => {
        const numA = parseInt(a.no.split('-')[2], 10);
@@ -71,6 +73,7 @@ createNewSurrender(){
     const formValues = {
       subgranteeNo: this.subgranteeNo,
       emailAddress: this.email,
+      company:this.company,
       no: '',
       status: '',
       actualSpent: '',

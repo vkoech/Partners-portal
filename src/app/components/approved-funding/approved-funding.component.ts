@@ -28,6 +28,7 @@ export class ApprovedFundingComponent implements OnInit, OnDestroy {
   pagedList: any[] = [];
   paymentRequestList: any[] = [];
   email: any
+  company: any
   user: AuthUser | null = null;
   subgranteeNo: any;
   totalPages = 0;
@@ -42,7 +43,8 @@ export class ApprovedFundingComponent implements OnInit, OnDestroy {
     this.user = this.authService.getLoggedInUser();
     this.subgranteeNo = this.user?.partnerAccountNo;
     this.email=this.user?.emailAddress;
-    this.paymentService.getApprovedFundApplications(this.email).subscribe(data=>{
+    this.company=this.user?.companyKey;
+    this.paymentService.getApprovedFundApplications(this.email,this.company).subscribe(data=>{
     this.paymentRequestList=data;
     this.paymentRequestList.sort((a, b) => {
     const numA = parseInt(a.no.split('-')[2], 10);

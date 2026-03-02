@@ -12,8 +12,12 @@ export class Payment {
 
   private baseUrl = environment.apiUrl;
 
-  getAllFundingApplications(email: string): Observable<any>{
-      return this.httpClient.get<any>(this.baseUrl+'FundingApplication/GetAllFundingApplications/'+email);
+  getAllFundingApplications(email: string, company: string): Observable<any> {
+      const params = new HttpParams().set('company', company);
+      return this.httpClient.get<any>(
+        `${this.baseUrl}FundingApplication/GetAllFundingApplications/${encodeURIComponent(email)}`,
+        { params }
+      );
     }
   getSingleFundingApplication(documentNo: string): Observable<any>{
       return this.httpClient.get<any>(this.baseUrl+'FundingApplication/GetSingleFundingApplication/'+documentNo);
@@ -22,8 +26,12 @@ export class Payment {
    return this.httpClient.get<any>(this.baseUrl+'FundingApplication/GetAllFundingApplicationLines/'+documentNo);
   }
 
-  getApprovedFundApplications(email: string): Observable<any>{
-      return this.httpClient.get<any>(this.baseUrl+'FundingApplication/GetApprovedFundApplications/'+email);
+   getApprovedFundApplications(email: string, company: string): Observable<any> {
+      const params = new HttpParams().set('company', company);
+      return this.httpClient.get<any>(
+        `${this.baseUrl}FundingApplication/GetApprovedFundApplications/${encodeURIComponent(email)}`,
+        { params }
+      );
     }
 
   getProjectDetails(documentNo: string, partnerNo: string): Observable<any>{

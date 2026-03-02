@@ -44,8 +44,8 @@ export class RegistrationService {
       return this.httpClient.post<any>(this.baseUrl + 'PartnerProfile/SubmitPartnerProfile', applicationBody);
     }
 
-  getPartnersProfile(email: string): Observable<Profile>{
-    return this.httpClient.get<Profile>(this.baseUrl+'PartnerProfile/profile?email='+email);
+  getPartnersProfile(email: string, company: string): Observable<Profile>{
+    return this.httpClient.get<Profile>(this.baseUrl+'PartnerProfile/profile?email='+email +'&company='+company);
   }
 
   getAreaOfFocus(): Observable<Array<any>>{

@@ -13,4 +13,5 @@ export interface Profile {
   website: string;
   country: string;
   governingBody: string;
+  company:string
 }
