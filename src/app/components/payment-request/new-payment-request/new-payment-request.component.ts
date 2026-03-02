@@ -147,7 +147,8 @@ export class NewPaymentRequestComponent implements OnInit, OnDestroy {
         category: [''],
         appliedAmount: [''],
         appliedAmountLCY: [''],
-        description: ['']
+        description: [''],
+        company:[''],
     });
 
   }

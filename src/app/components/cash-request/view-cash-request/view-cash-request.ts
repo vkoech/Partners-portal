@@ -27,6 +27,7 @@ export class ViewCashRequest {
    paymentApplicationLines: any;
    approvedApplicationNo: string;
    uploaded_document_list: any
+   company: any
 
 
 
@@ -45,6 +46,7 @@ export class ViewCashRequest {
     this.user = this.authService.getLoggedInUser();
     this.subgranteeNo = this.user?.partnerAccountNo;
     this.email=this.user?.emailAddress;
+    this.company=this.user?.companyKey;
     const encodedNo = this.route.snapshot.paramMap.get('id');
     const encodedNo2 = this.route.snapshot.paramMap.get('id2');
       if (encodedNo) {
@@ -84,10 +86,10 @@ export class ViewCashRequest {
         responseDescription: [''],
         status: [{ value: '', disabled: true }]
     });
-    this.cashRequestService.getSingleCashRequest(this.no).subscribe(data=>{
+    this.cashRequestService.getSingleCashRequest(this.no, this.company).subscribe(data=>{
       this.paymentRequestForm.patchValue(data);
     });
-    this.cashRequestService.getAllCashRequestLines(this.no).subscribe(data=>{
+    this.cashRequestService.getAllCashRequestLines(this.no, this.company).subscribe(data=>{
       this.paymentApplicationLines=data
     });
   }

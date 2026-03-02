@@ -35,7 +35,8 @@ export class NewCashRequest {
   activity_code_list:any;
   approvedFundingNo:any;
   category_list:any
-  email: any
+  email: any;
+  company: any;
   user: AuthUser | null = null;
   isConfirmed = false;
   document_list: any;
@@ -62,6 +63,7 @@ export class NewCashRequest {
   this.user = this.authService.getLoggedInUser();
       this.subgranteeNo = this.user?.partnerAccountNo;
       this.email=this.user?.emailAddress;
+      this.company=this.user?.companyKey;
     this.initializeForms();
     const encodedNo = this.route.snapshot.paramMap.get('id');
     const encodedNo2 = this.route.snapshot.paramMap.get('id2');
@@ -78,7 +80,7 @@ export class NewCashRequest {
   }
 
   ngOnInit(): void {
-    this.cashRequestService.getSingleCashRequest(this.no).subscribe(data=>{
+    this.cashRequestService.getSingleCashRequest(this.no, this.company).subscribe(data=>{
       // this.paymentRequestForm.patchValue(data);
     });
 
@@ -91,7 +93,7 @@ export class NewCashRequest {
     this.paymentService.getCategories().subscribe(data=>{
         this.category_list=data;
       });
-    this.cashRequestService.getApprovedFundingRequests(this.email).subscribe(data=>{
+    this.cashRequestService.getApprovedFundingRequests(this.email, this.company).subscribe(data=>{
         this.activity_code_list=data;
       });
     this.cashRequestService.getCashRequestDocuments().subscribe(data=>{
@@ -149,7 +151,8 @@ export class NewCashRequest {
         amount: [''],
         amountLCY: [''],
         projectCode:[''],
-        description: ['']
+        description: [''],
+        company:[''],
     });
     this.getAllCashRequestLines()
   }
@@ -169,7 +172,7 @@ export class NewCashRequest {
      });
     }
    deleteRequest(lineNo: string) {
-     this.cashRequestService.deleteLine(lineNo, this.no,).subscribe(res=>{
+     this.cashRequestService.deleteLine(lineNo, this.no, this.company).subscribe(res=>{
       this.notificationService.success('', res['responseDescription']);
       this.getAllCashRequestLines();
     });
@@ -183,6 +186,7 @@ export class NewCashRequest {
       let formValues = this.paymentRequestLineForm.value;
        formValues.projectCode=this.paymentRequestForm.get('projectCode')?.value;
       formValues.documentNo = this.no;
+      formValues.company = this.company;
       this.cashRequestService.createUpdateCashRequestLine(formValues).subscribe({next:(res) => {
       this.notificationService.success('', res['responseDescription']);
       this.getAllCashRequestLines();
@@ -204,7 +208,7 @@ export class NewCashRequest {
   }
 
   getAllCashRequestLines(){
-     this.cashRequestService.getAllCashRequestLines(this.no).subscribe(data=>{
+     this.cashRequestService.getAllCashRequestLines(this.no, this.company).subscribe(data=>{
       this.paymentApplicationLines=data
       this.calculateTotals();
     });
@@ -217,6 +221,7 @@ export class NewCashRequest {
       let formValues = this.paymentRequestForm.value;
       formValues.subgranteeNo = this.subgranteeNo;
       formValues.no = this.no;
+       formValues.company = this.company;
       this.cashRequestService.createUpdateCashRequest(formValues).subscribe({next:(res) => {
       this.notificationService.success('', res['responseDescription']);
       this.router.navigate(['/cash-request']);

@@ -146,7 +146,8 @@ export class NewPaymentSurrenderComponent implements OnInit, OnDestroy {
         actualSpent: [''],
         currencyCode: [{ value: '', disabled: true }],
         category: [{ value: '', disabled: true }],
-        description:['']
+        description:[''],
+        company:[''],
     });
   }
 

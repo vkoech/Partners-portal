@@ -96,11 +96,7 @@ export class CashRequest {
               }
           });
         }
-     getSingleFundingApplication(){
-        this.cashRequestService.getSingleCashRequest(this.email).subscribe(data=>{
-        // this=data;
-        });
-      }
+
 
    editRequest(no: string, approvedApplicationNo: string) {
       this.router.navigate([

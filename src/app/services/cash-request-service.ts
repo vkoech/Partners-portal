@@ -18,25 +18,43 @@ export class CashRequestService {
         { params }
       );
     }
- getSingleCashRequest(documentNo: string): Observable<any>{
-        return this.httpClient.get<any>(this.baseUrl+'CashRequest/GetSingleCashRequest/'+documentNo);
-      }
- getAllCashRequestLines(documentNo: string): Observable<any>{
-     return this.httpClient.get<any>(this.baseUrl+'CashRequest/GetAllCashRequestLines/'+documentNo);
+ getSingleCashRequest(documentNo: string, company: string): Observable<any> {
+    const params = new HttpParams().set('company', company);
+      return this.httpClient.get<any>(
+        `${this.baseUrl}CashRequest/GetSingleCashRequest/${encodeURIComponent(documentNo)}`,
+        { params }
+      );
+    }
+ getAllCashRequestLines(documentNo: string, company: string): Observable<any> {
+    const params = new HttpParams().set('company', company);
+      return this.httpClient.get<any>(
+        `${this.baseUrl}CashRequest/GetAllCashRequestLines/${encodeURIComponent(documentNo)}`,
+        { params }
+      );
     }
 
- getApprovedFundingRequests(emailAddress: string): Observable<any>{
-     return this.httpClient.get<any>(this.baseUrl+'CashRequest/GetApprovedFundingRequests/'+emailAddress);
+  getApprovedFundingRequests(emailAddress: string, company: string): Observable<any> {
+    const params = new HttpParams().set('company', company);
+      return this.httpClient.get<any>(
+        `${this.baseUrl}CashRequest/GetApprovedFundingRequests/${encodeURIComponent(emailAddress)}`,
+        { params }
+      );
     }
+
  createUpdateCashRequest(applicationBody: any): Observable<any> {
       return this.httpClient.post<any>(this.baseUrl + 'CashRequest/CreateUpdateCashRequest', applicationBody);
     }
  createUpdateCashRequestLine(applicationBody: any): Observable<any> {
     return this.httpClient.post<any>(this.baseUrl + 'CashRequest/CreateUpdateCashRequestLine', applicationBody);
   }
- deleteLine(lineNo: string, documentNo: string): Observable<any>{
-    return this.httpClient.get<any>(this.baseUrl+'CashRequest/DeleteCashRequestLine/'+ lineNo+'/'+documentNo);
-    }
+
+  deleteLine(lineNo: string, documentNo: string, company: string): Observable<any> {
+    const params = new HttpParams().set('company', company);
+    return this.httpClient.delete<any>(
+      `${this.baseUrl}CashRequest/DeleteCashRequestLine/${encodeURIComponent(lineNo)}/${encodeURIComponent(documentNo)}`,
+      { params }
+    );
+  }
  getCashRequestDocuments(): Observable<any>{
       return this.httpClient.get<any>(this.baseUrl+'Document/getCashRequestDocuments');
     }
