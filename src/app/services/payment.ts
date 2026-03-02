@@ -19,12 +19,21 @@ export class Payment {
         { params }
       );
     }
-  getSingleFundingApplication(documentNo: string): Observable<any>{
-      return this.httpClient.get<any>(this.baseUrl+'FundingApplication/GetSingleFundingApplication/'+documentNo);
+
+   getSingleFundingApplication(documentNo: string, company: string): Observable<any> {
+      const params = new HttpParams().set('company', company);
+      return this.httpClient.get<any>(
+        `${this.baseUrl}FundingApplication/GetSingleFundingApplication/${encodeURIComponent(documentNo)}`,
+        { params }
+      );
     }
-  getAllFundingApplicationLines(documentNo: string): Observable<any>{
-   return this.httpClient.get<any>(this.baseUrl+'FundingApplication/GetAllFundingApplicationLines/'+documentNo);
-  }
+     getAllFundingApplicationLines(documentNo: string, company: string): Observable<any> {
+      const params = new HttpParams().set('company', company);
+      return this.httpClient.get<any>(
+        `${this.baseUrl}FundingApplication/GetAllFundingApplicationLines/${encodeURIComponent(documentNo)}`,
+        { params }
+      );
+    }
 
    getApprovedFundApplications(email: string, company: string): Observable<any> {
       const params = new HttpParams().set('company', company);
@@ -34,9 +43,13 @@ export class Payment {
       );
     }
 
-  getProjectDetails(documentNo: string, partnerNo: string): Observable<any>{
-      return this.httpClient.get<any>(this.baseUrl+'FundingApplication/GetProjectDetails/'+documentNo +'/'+ partnerNo);
-    }
+  getProjectDetails(documentNo: string, partnerNo: string, company: string): Observable<any> {
+    const params = new HttpParams().set('company', company);
+    return this.httpClient.get<any>(
+      `${this.baseUrl}FundingApplication/GetProjectDetails/${encodeURIComponent(documentNo)}/${encodeURIComponent(partnerNo)}`,
+      { params }
+    );
+  }
   getFundingApplicationDocuments(): Observable<any>{
       return this.httpClient.get<any>(this.baseUrl+'Document/getFundingApplicationDocuments');
     }
@@ -58,9 +71,13 @@ export class Payment {
    return this.httpClient.get<any>(this.baseUrl+'OData/getProjectCodes/'+ partnerNo);
   }
 
-  getcurrencyCodes(): Observable<any>{
-   return this.httpClient.get<any>(this.baseUrl+'OData/getCurrencies');
-  }
+  getcurrencyCodes(company: string): Observable<any> {
+    const params = new HttpParams().set('company', company);
+    return this.httpClient.get<any>(
+      `${this.baseUrl}OData/getCurrencies`,
+      { params }
+    );
+  }  
 
  getReportingCycles(): Observable<any>{
    return this.httpClient.get<any>(this.baseUrl+'OData/getReportingCycles');

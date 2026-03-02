@@ -185,7 +185,7 @@
           </div>
           <div class="modal-actions">
             <button type="button" class="submit" (click)="submitLine()" [disabled]="loading">
-              {{ loading ? 'Loading...' : (isEditMode ? 'Update' : 'Save') }}
+              {{ loadingLines ? 'Loading...' : (isEditMode ? 'Update' : 'Save') }}
             </button>
             <button type="button" class="submit" (click)="closeCustomModal()">Close</button>
           </div>

@@ -62,7 +62,7 @@ export class Profile {
     private paymentService: Payment,
     private datePipe: DatePipe,
   ) {
-       this.paymentService.getcurrencyCodes().subscribe(data=>{
+       this.paymentService.getcurrencyCodes(this.company).subscribe(data=>{
         this.currency_code_list=data;
       });
   }

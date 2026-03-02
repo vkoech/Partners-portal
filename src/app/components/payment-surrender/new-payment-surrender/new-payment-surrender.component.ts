@@ -55,6 +55,7 @@ export class NewPaymentSurrenderComponent implements OnInit, OnDestroy {
   category_list: any;
   cash_list:any
   email: any;
+  company: any;
   user: AuthUser | null = null;
   document_list: any;
   doc_list:any
@@ -84,6 +85,7 @@ export class NewPaymentSurrenderComponent implements OnInit, OnDestroy {
     this.user = this.authService.getLoggedInUser();
     this.subgranteeNo = this.user?.partnerAccountNo;
     this.email=this.user?.emailAddress;
+    this.company=this.user?.companyKey;
   }
 
   ngOnInit(): void {
@@ -93,7 +95,7 @@ export class NewPaymentSurrenderComponent implements OnInit, OnDestroy {
     this.paymentService.getProjectCodes(this.subgranteeNo).subscribe(data=>{
         this.project_code_list=data;
       });
-    this.paymentService.getcurrencyCodes().subscribe(data=>{
+    this.paymentService.getcurrencyCodes(this.company).subscribe(data=>{
         this.currency_code_list=data;
       });
     this.paymentService.getCategories().subscribe(data=>{

@@ -87,7 +87,7 @@ export class NewCashRequest {
     this.paymentService.getProjectCodes(this.subgranteeNo).subscribe(data=>{
         this.project_code_list=data;
       });
-    this.paymentService.getcurrencyCodes().subscribe(data=>{
+    this.paymentService.getcurrencyCodes(this.company).subscribe(data=>{
         this.currency_code_list=data;
       });
     this.paymentService.getCategories().subscribe(data=>{

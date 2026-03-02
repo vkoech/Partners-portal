@@ -30,9 +30,11 @@ export class NewPaymentRequestComponent implements OnInit, OnDestroy {
   isEditMode = false;
   showModal = false;
   loading=false;
+  loadingLines=false;
   subgranteeNo: any;
   no: string;
   email: any;
+  company: any
   user: AuthUser | null = null;
   paymentApplicationLines: any;
   project_code_list: any;
@@ -63,6 +65,7 @@ export class NewPaymentRequestComponent implements OnInit, OnDestroy {
     this.user = this.authService.getLoggedInUser();
     this.subgranteeNo = this.user?.partnerAccountNo;
     this.email=this.user?.emailAddress;
+    this.company=this.user?.companyKey;
      const encodedNo = this.route.snapshot.paramMap.get('id');
       if (encodedNo) {
         this.no = atob(encodedNo);
@@ -70,7 +73,7 @@ export class NewPaymentRequestComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.paymentService.getSingleFundingApplication(this.no).subscribe(data=>{
+    this.paymentService.getSingleFundingApplication(this.no, this.company).subscribe(data=>{
       if (data.subAwardEndDate ) {
           const parts = data.subAwardEndDate.split('/');
           data.subAwardEndDate = `${parts[2]}-${parts[1].padStart(2,'0')}-${parts[0].padStart(2,'0')}`;
@@ -84,7 +87,7 @@ export class NewPaymentRequestComponent implements OnInit, OnDestroy {
     this.paymentService.getProjectCodes(this.subgranteeNo).subscribe(data=>{
         this.project_code_list=data;
       });
-    this.paymentService.getcurrencyCodes().subscribe(data=>{
+    this.paymentService.getcurrencyCodes(this.company).subscribe(data=>{
         this.currency_code_list=data;
       });
       this.paymentService.getCategories().subscribe(data=>{
@@ -162,20 +165,22 @@ export class NewPaymentRequestComponent implements OnInit, OnDestroy {
     return endDate < startDate ? { dateRangeInvalid: true } : null;
   }
   submitLine() {
-    this.loading=true
+    this.loadingLines=true
       if( this.paymentRequestLineForm.valid){
       this.paymentRequestForm.enable();
       let formValues = this.paymentRequestLineForm.value;
       formValues.documentNo = this.no;
+      formValues.company = this.company;
       this.paymentService.createUpdateFundingApplicationLine(formValues).subscribe({next:(res) => {
       this.notificationService.success('', res['responseDescription']);
+      this.paymentRequestForm.reset();
         this.getFundsApplicationLines();
         this.closeCustomModal();
-          this.loading=false;
+          this.loadingLines=false;
         this.isEditMode = true;
         },
           error: (err) => {
-              this.loading = false;
+              this.loadingLines = false;
               const message = err.error?.responseDescription || 'Failed to update request.';
               this.notificationService.error('', message);
             }
@@ -183,7 +188,7 @@ export class NewPaymentRequestComponent implements OnInit, OnDestroy {
       }
       else {
         this.notificationService.warning('', 'Please fill all required fields correctly.');
-        this.loading = false;
+        this.loadingLines = false;
         this.paymentRequestForm.markAllAsTouched();
       }
   }
@@ -208,7 +213,7 @@ export class NewPaymentRequestComponent implements OnInit, OnDestroy {
     }
 
   getFundsApplicationLines(){
-     this.paymentService.getAllFundingApplicationLines(this.no).subscribe(data=>{
+     this.paymentService.getAllFundingApplicationLines(this.no, this.company).subscribe(data=>{
       this.paymentApplicationLines=data
     });
   }
@@ -224,6 +229,7 @@ export class NewPaymentRequestComponent implements OnInit, OnDestroy {
       let formValues = this.paymentRequestForm.value;
       formValues.subgranteeNo = this.subgranteeNo;
       formValues.no = this.no;
+      formValues.company = this.company;
       this.paymentService.createUpdateFundingApplication(formValues).subscribe({next:(res) => {
       this.notificationService.success('', res['responseDescription']);
       this.router.navigate(['/funding-request']);
@@ -250,7 +256,7 @@ onCancel() {
 getProjectCode() {
   const selected = this.paymentRequestForm.get('projectCode')?.value;
   if (!selected) return;
-  this.paymentService.getProjectDetails(selected, this.subgranteeNo).subscribe(data => {
+  this.paymentService.getProjectDetails(selected, this.subgranteeNo, this.company).subscribe(data => {
     this.paymentRequestForm.patchValue(data);
     this.currencyCode=data.currencyCode
   });

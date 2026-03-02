@@ -22,6 +22,7 @@ paymentRequestLineForm: FormGroup<any>;
 paymentApplicationLines:any;
 no: string;
 email: any;
+company: any;
 user: AuthUser | null = null;
 subgranteeNo: any;
 uploaded_document_list:any
@@ -36,6 +37,7 @@ uploaded_document_list:any
     this.user = this.authService.getLoggedInUser();
     this.subgranteeNo = this.user?.partnerAccountNo;
     this.email=this.user?.emailAddress;
+    this.company=this.user?.companyKey;
      const encodedNo = this.route.snapshot.paramMap.get('id');
       if (encodedNo) {
         this.no = atob(encodedNo);
@@ -71,10 +73,10 @@ uploaded_document_list:any
         description: ['']
     });
 
-    this.paymentService.getSingleFundingApplication(this.no).subscribe(data=>{
+    this.paymentService.getSingleFundingApplication(this.no, this.company).subscribe(data=>{
         this.paymentRequestForm.patchValue(data);
       });
-     this.paymentService.getAllFundingApplicationLines(this.no).subscribe(data=>{
+     this.paymentService.getAllFundingApplicationLines(this.no, this.company).subscribe(data=>{
       this.paymentApplicationLines=data
     });
 

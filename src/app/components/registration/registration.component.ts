@@ -182,7 +182,7 @@ export class RegistrationComponent implements OnInit {
     emailAddress:[''],
     company:[''],
   });
-   this.paymentService.getcurrencyCodes().subscribe(data=>{
+   this.paymentService.getcurrencyCodes(this.company).subscribe(data=>{
         this.currency_code_list=data;
       });
    this.registrationService.getGoverningBodies().subscribe(data=>{
