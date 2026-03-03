@@ -20,6 +20,7 @@ export class ViewPaymentSurrender {
     surrenderForm!: FormGroup;
     sidebarOpen: any;
     email: any;
+    company:any
     no: string;
     user: AuthUser | null = null;
     subgranteeNo:any;
@@ -40,6 +41,7 @@ export class ViewPaymentSurrender {
     this.user = this.authService.getLoggedInUser();
     this.subgranteeNo = this.user?.partnerAccountNo;
     this.email=this.user?.emailAddress;
+    this.company=this.user?.companyKey;
   }
 
     ngOnInit(): void {
@@ -60,11 +62,11 @@ export class ViewPaymentSurrender {
       status:[{ value: '', disabled: true }]
     });
 
-      this.cashSurrenderService.getSingleCashSurrender(this.no).subscribe(data=>{
+      this.cashSurrenderService.getSingleCashSurrender(this.no, this.company).subscribe(data=>{
       this.surrenderForm.patchValue(data);
       });
 
-      this.cashSurrenderService.getAllCashSurrenderLines(this.no).subscribe(data=>{
+      this.cashSurrenderService.getAllCashSurrenderLines(this.no, this.company).subscribe(data=>{
       this.paymentApplicationLines=data
     });
      this.registrationService.getUploadedPortalAttachments(this.no).subscribe(data=>{

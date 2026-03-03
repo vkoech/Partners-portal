@@ -45,6 +45,7 @@ export class NewPaymentSurrenderComponent implements OnInit, OnDestroy {
   isEditMode = false;
   showModal = false;
   loading=false;
+  loadingLines=false;
   subgranteeNo: any;
   no: string;
   paymentApplicationLines: any;
@@ -89,7 +90,7 @@ export class NewPaymentSurrenderComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.cashSurrenderService.getSingleCashSurrender(this.no).subscribe(data=>{
+    this.cashSurrenderService.getSingleCashSurrender(this.no, this.company).subscribe(data=>{
         // this.surrenderForm.patchValue(data);
       });
     this.paymentService.getProjectCodes(this.subgranteeNo).subscribe(data=>{
@@ -101,7 +102,7 @@ export class NewPaymentSurrenderComponent implements OnInit, OnDestroy {
     this.paymentService.getCategories().subscribe(data=>{
         this.category_list=data;
       });
-    this.cashSurrenderService.getPostedCashRequests(this.email).subscribe(data=>{
+    this.cashSurrenderService.getPostedCashRequests(this.email, this.company).subscribe(data=>{
        this.cash_list = data.map((item: { no: string; description: any; }) => {
         return {
           ...item,
@@ -160,19 +161,20 @@ export class NewPaymentSurrenderComponent implements OnInit, OnDestroy {
   }
 
   submitLine() {
-    this.loading=true
+    this.loadingLines =true
       if( this.surrenderLineForm.valid){
       let formValues = this.surrenderLineForm.value;
       formValues.no = this.no;
+      formValues.company = this.company;
       this.cashSurrenderService.createUpdateCashSurrenderLine(formValues).subscribe({next:(res) => {
       this.notificationService.success('', res['responseDescription']);
       this.closeCustomModal();
         this.getAllCashSurrenderLines();
         this.isEditMode = true;
-          this.loading=false;
+          this.loadingLines=false;
         },
           error: (err) => {
-              this.loading = false;
+              this.loadingLines = false;
               const message = err.error?.responseDescription || 'Failed to update request.';
               this.notificationService.error('', message);
             }
@@ -180,7 +182,7 @@ export class NewPaymentSurrenderComponent implements OnInit, OnDestroy {
       }
       else {
         this.notificationService.warning('', 'Please fill all required fields correctly.');
-        this.loading = false;
+        this.loadingLines = false;
         this.surrenderForm.markAllAsTouched();
       }
   }
@@ -189,7 +191,7 @@ export class NewPaymentSurrenderComponent implements OnInit, OnDestroy {
     this.validateCashSurrenderLines()
     const selected = this.surrenderForm.get('paymentRequestNo')?.value;
     if (!selected) return;
-    this.cashSurrenderService.getCashRequestDetailsByNo(selected).subscribe(data => {
+    this.cashSurrenderService.getCashRequestDetailsByNo(selected, this.company).subscribe(data => {
       const patchedData = { ...data };
       delete patchedData.no;
       this.surrenderForm.patchValue(patchedData);
@@ -200,7 +202,7 @@ export class NewPaymentSurrenderComponent implements OnInit, OnDestroy {
   }
 
   getAllCashSurrenderLines(){
-     this.cashSurrenderService.getAllCashSurrenderLines(this.no).subscribe(data=>{
+     this.cashSurrenderService.getAllCashSurrenderLines(this.no, this.company).subscribe(data=>{
       this.paymentApplicationLines=data
        this.calculateTotals()
     });
@@ -208,7 +210,7 @@ export class NewPaymentSurrenderComponent implements OnInit, OnDestroy {
 
   validateCashSurrenderLines(){
      const disbursementNo = this.surrenderForm.get('paymentRequestNo')?.value;
-     this.cashSurrenderService.validateCashSurrenderLines(this.no, disbursementNo).subscribe(data=>{
+     this.cashSurrenderService.validateCashSurrenderLines(this.no, disbursementNo,this.company).subscribe(data=>{
       this.getAllCashSurrenderLines()
       this.calculateTotals()
     });
@@ -226,6 +228,7 @@ export class NewPaymentSurrenderComponent implements OnInit, OnDestroy {
       let formValues = this.surrenderForm.value;
       formValues.subgranteeNo = this.subgranteeNo;
       formValues.no = this.no;
+       formValues.company = this.company;
       this.cashSurrenderService.createUpdateCashSurrender(formValues).subscribe({next:(res) => {
       this.router.navigate(['/payment-surrender']);
       this.notificationService.success('', res['responseDescription']);

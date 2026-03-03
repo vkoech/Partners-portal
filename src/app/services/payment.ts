@@ -88,16 +88,21 @@ export class Payment {
  getActivityCodes(approvedFundingNo : string): Observable<any>{
    return this.httpClient.get<any>(this.baseUrl+'OData/getActivityCodes/'+ approvedFundingNo );
   }
- getFundingApplicationDetailsByNo(approvedFundingApplicationNo : string): Observable<any>{
-   return this.httpClient.get<any>(this.baseUrl+'CashRequest/GetFundingApplicationDetailsByNo/'+ approvedFundingApplicationNo);
-  }
+
+ getFundingApplicationDetailsByNo(approvedFundingApplicationNo: string, company: string): Observable<any> {
+      const params = new HttpParams().set('company', company);
+      return this.httpClient.get<any>(
+        `${this.baseUrl}CashRequest/GetFundingApplicationDetailsByNo/${encodeURIComponent(approvedFundingApplicationNo)}`,
+        { params }
+      );
+    }
+    
  uploadDocument(applicationBody: any): Observable<any> {
     return this.httpClient.post<any>(this.baseUrl + 'Document/upload', applicationBody);
   }
 getCustomerStatement(
   customerNo: string, startDate: string, endDate: string) {
-    return this.httpClient.get(
-        `${this.baseUrl}Customer/GetCustomerStatement`,
+    return this.httpClient.get(`${this.baseUrl}Customer/GetCustomerStatement`,
         {
           params: { customerNo, startDate, endDate },
           responseType: 'blob',

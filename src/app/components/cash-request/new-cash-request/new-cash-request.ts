@@ -25,6 +25,7 @@ export class NewCashRequest {
   isEditMode = false;
   showModal = false;
   loading=false;
+  loadingLine=false;
   subgranteeNo: any;
   no: string;
   approvedApplicationNo: string;
@@ -107,7 +108,7 @@ export class NewCashRequest {
         this.approvedApplicationNo &&
         this.approvedApplicationNo !== ''
       )
-    this.paymentService.getFundingApplicationDetailsByNo(this.approvedApplicationNo).subscribe(data => {
+    this.paymentService.getFundingApplicationDetailsByNo(this.approvedApplicationNo, this.company).subscribe(data => {
       const { no, ...formDataWithoutNo } = data;
       this.paymentRequestForm.patchValue(formDataWithoutNo);
     });
@@ -129,8 +130,8 @@ export class NewCashRequest {
         documentDate: [''],
         requestedDate: [''],
         currencyCode: [{ value: '', disabled: true }],
-        requestedAmount: [{ value: '', disabled: true }],
-        requestedAmountLCY: [{ value: '', disabled: true }],
+        requestedAmount: [{ value: '0', disabled: true }],
+        requestedAmountLCY: [{ value: '0', disabled: true }],
         description: ['',Validators.required],
         projectCode: [''],
         declarationDone: [''],
@@ -142,6 +143,7 @@ export class NewCashRequest {
         status: [''],
         company:[''],
     });
+
 
 
     this.paymentRequestLineForm = this.fb.group({
@@ -179,7 +181,7 @@ export class NewCashRequest {
    }
 
   submitLine() {
-    this.loading=true
+    this.loadingLine=true
       if( this.paymentRequestLineForm.valid){
       const projectCodeControl = this.paymentRequestForm.get('projectCode');
       projectCodeControl?.enable({ emitEvent: false });
@@ -188,13 +190,16 @@ export class NewCashRequest {
       formValues.documentNo = this.no;
       formValues.company = this.company;
       this.cashRequestService.createUpdateCashRequestLine(formValues).subscribe({next:(res) => {
+       this.paymentRequestLineForm.reset(); 
       this.notificationService.success('', res['responseDescription']);
+      this.loadingLine=false;
       this.getAllCashRequestLines();
       this.closeCustomModal();
         this.isEditMode = true;
+
         },
           error: (err) => {
-              this.loading = false;
+               this.loadingLine=false
               const message = err.error?.responseDescription || 'Failed to update request.';
               this.notificationService.error('', message);
             }
@@ -202,7 +207,7 @@ export class NewCashRequest {
       }
       else {
         this.notificationService.warning('', 'Please fill all required fields correctly.');
-        this.loading = false;
+         this.loadingLine=false
         this.paymentRequestForm.markAllAsTouched();
       }
   }
@@ -221,7 +226,9 @@ export class NewCashRequest {
       let formValues = this.paymentRequestForm.value;
       formValues.subgranteeNo = this.subgranteeNo;
       formValues.no = this.no;
-       formValues.company = this.company;
+      formValues.company = this.company;
+      formValues.requestedAmount = formValues.requestedAmount?.toString();
+      formValues.requestedAmountLCY = formValues.requestedAmountLCY?.toString()
       this.cashRequestService.createUpdateCashRequest(formValues).subscribe({next:(res) => {
       this.notificationService.success('', res['responseDescription']);
       this.router.navigate(['/cash-request']);
@@ -262,7 +269,7 @@ onCheckboxChange(event: Event) {
 getApplicationNo(){
  const selected = this.paymentRequestForm.get('approvedApplicationNo')?.value;
   if (!selected) return;
-  this.paymentService.getFundingApplicationDetailsByNo(selected).subscribe(data => {
+  this.paymentService.getFundingApplicationDetailsByNo(selected, this.company).subscribe(data => {
     const patchedData = { ...data };
     delete patchedData.no;
     this.paymentRequestForm.patchValue(patchedData);
