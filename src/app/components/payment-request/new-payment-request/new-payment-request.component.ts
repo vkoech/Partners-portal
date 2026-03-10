@@ -194,7 +194,7 @@ export class NewPaymentRequestComponent implements OnInit, OnDestroy {
   }
 
   deleteRequest(lineNo: string) {
-     this.paymentService.deleteFundingApplicationLine(lineNo, this.no,).subscribe(res=>{
+     this.paymentService.deleteFundingApplicationLine(lineNo, this.no, this.company).subscribe(res=>{
       this.notificationService.success('', res['responseDescription']);
       this.getFundsApplicationLines();
     });

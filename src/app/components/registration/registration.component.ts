@@ -454,38 +454,38 @@ nextStep() {
   if (this.currentStep === 1) {
     this.personalInfoForm.markAllAsTouched();
 
-    if (this.personalInfoForm.invalid) {
-      this.showRequiredAlert();
-      return;
-    }
+    // if (this.personalInfoForm.invalid) {
+    //   this.showRequiredAlert();
+    //   return;
+    // }
 
     }
 
   if (this.currentStep === 2) {
-    if (!this.areaOfFocusList || this.areaOfFocusList.length === 0) {
-      this.showRequiredAlert();
-      return;
-    }
+    // if (!this.areaOfFocusList || this.areaOfFocusList.length === 0) {
+    //   this.showRequiredAlert();
+    //   return;
+    // }
    }
    if (this.currentStep === 3) {
-    if (!this.geoCoverageList || this.geoCoverageList.length === 0) {
-      this.showRequiredAlert();
-      return;
-    }
+    // if (!this.geoCoverageList || this.geoCoverageList.length === 0) {
+    //   this.showRequiredAlert();
+    //   return;
+    // }
    }
 
     if (this.currentStep === 4) {
-      if (!this.experience || this.experience.length === 0) {
-        this.showRequiredAlert();
-        return;
-      }
+      // if (!this.experience || this.experience.length === 0) {
+      //   this.showRequiredAlert();
+      //   return;
+      // }
     }
 
     if (this.currentStep === 5) {
-      if (!this.contact_person_details_list || this.contact_person_details_list.length === 0) {
-        this.showRequiredAlert();
-        return;
-      }
+      // if (!this.contact_person_details_list || this.contact_person_details_list.length === 0) {
+      //   this.showRequiredAlert();
+      //   return;
+      // }
     }
 
     if (this.currentStep < this.totalSteps) {
@@ -747,6 +747,7 @@ submitDocument() {
       let formValues = this.confirmForm.value;
       formValues.documentNo = this.documentNo;
       formValues.emailAddress=this.email;
+      formValues.company = this.company;
       this.loading= true
       this.registrationService.submitPartnerProfile(formValues).subscribe({next:(res) => {
         this.notificationService.success('', res['responseDescription']);

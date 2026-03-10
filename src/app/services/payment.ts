@@ -58,8 +58,12 @@ export class Payment {
    return this.httpClient.get<any>(this.baseUrl+'FundingApplication/GetSingleFundingApplicationLine/'+ lineNo+'/'+documentNo);
   }
 
-  deleteFundingApplicationLine(lineNo: string, documentNo: string): Observable<any>{
-   return this.httpClient.get<any>(this.baseUrl+'FundingApplication/DeleteFundingApplicationLine/'+ lineNo+'/'+documentNo);
+  deleteFundingApplicationLine(lineNo: string, documentNo: string, company: string): Observable<any> {
+    const params = new HttpParams().set('company', company);
+    return this.httpClient.get<any>(
+      `${this.baseUrl}FundingApplication/DeleteFundingApplicationLine/${encodeURIComponent(lineNo)}/${encodeURIComponent(documentNo)}`,
+      { params }
+    );
   }
   createUpdateFundingApplication(applicationBody: any): Observable<any> {
     return this.httpClient.post<any>(this.baseUrl + 'FundingApplication/CreateUpdateFundingApplication', applicationBody);
@@ -77,7 +81,7 @@ export class Payment {
       `${this.baseUrl}OData/getCurrencies`,
       { params }
     );
-  }  
+  }
 
  getReportingCycles(): Observable<any>{
    return this.httpClient.get<any>(this.baseUrl+'OData/getReportingCycles');
@@ -96,7 +100,7 @@ export class Payment {
         { params }
       );
     }
-    
+
  uploadDocument(applicationBody: any): Observable<any> {
     return this.httpClient.post<any>(this.baseUrl + 'Document/upload', applicationBody);
   }
