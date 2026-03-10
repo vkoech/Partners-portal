@@ -59,7 +59,7 @@ export class ViewCashRequest {
 
 
   ngOnInit(): void {
-      this.registrationService.getUploadedPortalAttachments(this.no).subscribe(data=>{
+      this.registrationService.getUploadedPortalAttachments(this.company,this.no).subscribe(data=>{
           this.uploaded_document_list=data
         })
        this.paymentRequestForm = this.fb.group({

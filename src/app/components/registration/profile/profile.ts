@@ -158,13 +158,13 @@ ngOnInit(): void {
         this.personalInfoForm.patchValue(data);
       });
 
-       this.registrationService.getAreasOfFocusByDocumentNo(this.documentNo).subscribe(data=>{
+       this.registrationService.getAreasOfFocusByDocumentNo(this.company,this.documentNo).subscribe(data=>{
           this.areaOfFocusList=data
         })
-        this.registrationService.getAreasOfFocusByDocumentNo(this.documentNo).subscribe(data=>{
+        this.registrationService.getAreasOfFocusByDocumentNo(this.company,this.documentNo).subscribe(data=>{
             this.areaOfFocusList=data
           })
-    this.registrationService.getGeoCoverageByDocumentNo(this.documentNo).subscribe(data=>{
+    this.registrationService.getGeoCoverageByDocumentNo(this.company,this.documentNo).subscribe(data=>{
      this.geoCoverageList=data
     })
     this.getPatnerExperience();
@@ -172,7 +172,7 @@ ngOnInit(): void {
   }
 
   getContactType(){
-   this.registrationService.getContactType().subscribe(data => {
+   this.registrationService.getContactType(this.company).subscribe(data => {
       this.contact_type_list = data;
     });
     }
@@ -330,13 +330,13 @@ ngOnInit(): void {
   }
 
   getContactsPersonByDocumentNo(){
-    this.registrationService.getContactsPersonByDocumentNo(this.documentNo).subscribe(data=>{
+    this.registrationService.getContactsPersonByDocumentNo(this.documentNo, this.company).subscribe(data=>{
     this.contact_person_details_list=data
     })
   }
 
   getPatnerExperience(){
-     this.registrationService.getPatnerExperience(this.documentNo).subscribe(data=>{
+     this.registrationService.getPatnerExperience(this.company,this.documentNo,).subscribe(data=>{
      this.experience=data
     })
   }

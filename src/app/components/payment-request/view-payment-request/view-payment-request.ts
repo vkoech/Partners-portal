@@ -80,7 +80,7 @@ uploaded_document_list:any
       this.paymentApplicationLines=data
     });
 
-    this.registrationService.getUploadedPortalAttachments(this.no).subscribe(data=>{
+    this.registrationService.getUploadedPortalAttachments(this.company,this.no).subscribe(data=>{
       this.uploaded_document_list=data
     })
 

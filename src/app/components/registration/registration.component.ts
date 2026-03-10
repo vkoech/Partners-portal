@@ -58,7 +58,7 @@ export class RegistrationComponent implements OnInit {
   selectedAreaOfFocusValues: any[] = [];
   selectedGeoValues: any[] = [];
   currency_code_list:any;
-  document_list:any
+  document_list: any;
   status:any;
   selectedFile: File | null = null;
   maxFileSize = 20 * 1024 * 1024;
@@ -185,7 +185,7 @@ export class RegistrationComponent implements OnInit {
    this.paymentService.getcurrencyCodes(this.company).subscribe(data=>{
         this.currency_code_list=data;
       });
-   this.registrationService.getGoverningBodies().subscribe(data=>{
+   this.registrationService.getGoverningBodies(this.company).subscribe(data=>{
         this.governing_body_list=data;
       });
 
@@ -326,6 +326,7 @@ export class RegistrationComponent implements OnInit {
     formValues.names=row.names,
     formValues.majorDonorOrPartner=row.majorDonorOrPartner,
     formValues.documentNo=this.documentNo,
+    formValues.company=this.company,
       this.registrationService.createContactPersonInfo(formValues).subscribe({next:(res) => {
         this.notificationService.success('', res['responseDescription']);
         this.getContactsPersonByDocumentNo();
@@ -377,7 +378,7 @@ export class RegistrationComponent implements OnInit {
     formValues.projectValue=row.projectValue,
     formValues.description=row.description,
     formValues.majorDonorOrPartner=row.majorDonorOrPartner,
-
+    formValues.company=this.company,
     formValues.documentNo=this.documentNo,
       this.registrationService.createExperience(formValues).subscribe({next:(res) => {
         this.notificationService.success('', res['responseDescription']);
@@ -454,38 +455,38 @@ nextStep() {
   if (this.currentStep === 1) {
     this.personalInfoForm.markAllAsTouched();
 
-    // if (this.personalInfoForm.invalid) {
-    //   this.showRequiredAlert();
-    //   return;
-    // }
+    if (this.personalInfoForm.invalid) {
+      this.showRequiredAlert();
+      return;
+    }
 
     }
 
   if (this.currentStep === 2) {
-    // if (!this.areaOfFocusList || this.areaOfFocusList.length === 0) {
-    //   this.showRequiredAlert();
-    //   return;
-    // }
+    if (!this.areaOfFocusList || this.areaOfFocusList.length === 0) {
+      this.showRequiredAlert();
+      return;
+    }
    }
    if (this.currentStep === 3) {
-    // if (!this.geoCoverageList || this.geoCoverageList.length === 0) {
-    //   this.showRequiredAlert();
-    //   return;
-    // }
+    if (!this.geoCoverageList || this.geoCoverageList.length === 0) {
+      this.showRequiredAlert();
+      return;
+    }
    }
 
     if (this.currentStep === 4) {
-      // if (!this.experience || this.experience.length === 0) {
-      //   this.showRequiredAlert();
-      //   return;
-      // }
+      if (!this.experience || this.experience.length === 0) {
+        this.showRequiredAlert();
+        return;
+      }
     }
 
     if (this.currentStep === 5) {
-      // if (!this.contact_person_details_list || this.contact_person_details_list.length === 0) {
-      //   this.showRequiredAlert();
-      //   return;
-      // }
+      if (!this.contact_person_details_list || this.contact_person_details_list.length === 0) {
+        this.showRequiredAlert();
+        return;
+      }
     }
 
     if (this.currentStep < this.totalSteps) {
@@ -625,6 +626,7 @@ submitDocument() {
     formValues.action=actionType,
     formValues.lineNo=lineNo,
     formValues.documentNo=this.documentNo,
+    formValues.company=this.company,
       this.registrationService.createAreaOfFocusInfo(formValues).subscribe({next:(res) => {
         this.notificationService.success('', res['responseDescription']);
         this.getAreasOfFocusByDocumentNo()
@@ -642,6 +644,7 @@ submitDocument() {
     formValues.action=actionType,
     formValues.lineNo=lineNo,
     formValues.documentNo=this.documentNo,
+    formValues.company=this.company,
       this.registrationService.createGeoLocationInfo(formValues).subscribe({next:(res) => {
         this.notificationService.success('', res['responseDescription']);
         this.getGeoCoverageByDocumentNo()
@@ -661,7 +664,6 @@ submitDocument() {
 
  getPartnersProfile() {
       this.registrationService.getPartnersProfile(this.email, this.company).subscribe(data => {
-      console.log(data)
       this.status=data;
         if (data.dateRegistered) {
           const parts = data.dateRegistered.split('/');
@@ -673,67 +675,67 @@ submitDocument() {
 
 
   getAreaOfFocus(){
-   this.registrationService.getAreaOfFocus().subscribe(data => {
+   this.registrationService.getAreaOfFocus(this.company).subscribe(data => {
       this.area_of_focus_items = data;
     });
   }
  getPartnerRegistrationMandatoryDocuments(){
-   this.registrationService.getPartnerRegistrationMandatoryDocuments().subscribe(data => {
+   this.registrationService.getPartnerRegistrationMandatoryDocuments(this.company).subscribe(data => {
       this.document_list = data;
+
     });
   }
-
   getGeoLocation(){
-   this.registrationService.getGeoLocation().subscribe(data => {
+   this.registrationService.getGeoLocation(this.company).subscribe(data => {
       this.geolocatio_Items = data;
     });
   }
 
    getContactType(){
-   this.registrationService.getContactType().subscribe(data => {
+   this.registrationService.getContactType(this.company).subscribe(data => {
       this.contact_type_list = data;
     });
     }
     getContactsPersonByDocumentNo(){
-        this.registrationService.getContactsPersonByDocumentNo(this.documentNo).subscribe(data=>{
+        this.registrationService.getContactsPersonByDocumentNo(this.company, this.documentNo).subscribe(data=>{
         this.contact_person_details_list=data
         })
       }
 
     getContactPersonLine(row: any){
-        this.registrationService.getContactPersonLine(this.documentNo, row.lineNo ).subscribe(data=>{
+        this.registrationService.getContactPersonLine(this.company,this.documentNo, row.lineNo ).subscribe(data=>{
         this.contact_person_details_list_line=data
         })
       }
    getAreasOfFocusByDocumentNo(){
-    this.registrationService.getAreasOfFocusByDocumentNo(this.documentNo).subscribe(data=>{
+    this.registrationService.getAreasOfFocusByDocumentNo(this.company,this.documentNo).subscribe(data=>{
       this.areaOfFocusList=data
     })
    }
 
    getAreasOfFocusLine(row:any){
-    this.registrationService.getAreasOfFocusLine(this.documentNo,row.lineNo).subscribe(data=>{
+    this.registrationService.getAreasOfFocusLine(this.company,this.documentNo,row.lineNo).subscribe(data=>{
       this.areaOfFocusListLine=data
     })
    }
    getGeoCoverageByDocumentNo(){
-    this.registrationService.getGeoCoverageByDocumentNo(this.documentNo).subscribe(data=>{
+    this.registrationService.getGeoCoverageByDocumentNo(this.company,this.documentNo).subscribe(data=>{
      this.geoCoverageList=data
     })
    }
    getGeoCoverageLine(row:any){
-    this.registrationService.getGeoCoverageLine(this.documentNo, row.lineNo).subscribe(data=>{
+    this.registrationService.getGeoCoverageLine(this.company,this.documentNo, row.lineNo).subscribe(data=>{
      this.geoCoverageListLine=data
     })
    }
 
   getPatnerExperience(){
-    this.registrationService.getPatnerExperience(this.documentNo).subscribe(data=>{
+    this.registrationService.getPatnerExperience(this.company,this.documentNo).subscribe(data=>{
       this.experience=data
     })
    }
  getUploadedPortalAttachments(){
-    this.registrationService.getUploadedPortalAttachments(this.documentNo).subscribe(data=>{
+    this.registrationService.getUploadedPortalAttachments(this.company,this.documentNo).subscribe(data=>{
       this.uploaded_document_list=data
     })
    }

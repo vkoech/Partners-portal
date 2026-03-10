@@ -99,7 +99,7 @@ export class NewPaymentSurrenderComponent implements OnInit, OnDestroy {
     this.paymentService.getcurrencyCodes(this.company).subscribe(data=>{
         this.currency_code_list=data;
       });
-    this.paymentService.getCategories().subscribe(data=>{
+    this.paymentService.getCategories(this.company).subscribe(data=>{
         this.category_list=data;
       });
     this.cashSurrenderService.getPostedCashRequests(this.email, this.company).subscribe(data=>{
@@ -110,9 +110,9 @@ export class NewPaymentSurrenderComponent implements OnInit, OnDestroy {
         };
       });
       });
-    this.registrationService.getAreaOfFocus().subscribe(data => {
-      this.area_of_focus_items = data;
-    });
+    // this.registrationService.getAreaOfFocus().subscribe(data => {
+    //   this.area_of_focus_items = data;
+    // });
 
     this.getUploadedPortalAttachments()
   }
@@ -325,7 +325,7 @@ uploadDocument() {
     });
   }
  getUploadedPortalAttachments(){
-    this.registrationService.getUploadedPortalAttachments(this.no).subscribe(data=>{
+    this.registrationService.getUploadedPortalAttachments(this.company,this.no).subscribe(data=>{
       this.doc_list=data
     })
    }

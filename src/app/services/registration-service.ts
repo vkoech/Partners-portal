@@ -33,8 +33,8 @@ export class RegistrationService {
     return this.httpClient.post<any>(this.baseUrl + 'Document/upload', applicationBody);
   }
 
-  getPartnerRegistrationMandatoryDocuments(): Observable<Profile>{
-    return this.httpClient.get<Profile>(this.baseUrl+'Document/GetPartnerRegistrationMandatoryDocuments');
+  getPartnerRegistrationMandatoryDocuments(company: string): Observable<any>{
+    return this.httpClient.get<any[]>(this.baseUrl+'Document/GetPartnerRegistrationMandatoryDocuments?company='+company);
   }
 
   createGeoLocationInfo(applicationBody: any): Observable<any> {
@@ -48,54 +48,53 @@ export class RegistrationService {
     return this.httpClient.get<Profile>(this.baseUrl+'PartnerProfile/profile?email='+email +'&company='+company);
   }
 
-  getAreaOfFocus(): Observable<Array<any>>{
-    return this.httpClient.get<Array<any>>(this.baseUrl+'OData/areas-of-focus');
-  }
-
- getGeoLocation(): Observable<Array<any>>{
-    return this.httpClient.get<Array<any>>(this.baseUrl+'OData/countries');
-  }
-  getContactType(): Observable<Array<any>>{
-    return this.httpClient.get<Array<any>>(this.baseUrl+'OData/partner-contact-types');
-  }
-
-  getContactsPersonByDocumentNo(documentNo: string): Observable<Array<any>>{
-    return this.httpClient.get<Array<any>>(this.baseUrl+'OData/partners/'+ documentNo +'/contacts');
-  }
-
-  getContactPersonLine(documentNo: string, lineNo: string): Observable<Array<any>>{
-    return this.httpClient.get<Array<any>>(this.baseUrl+'OData/partners/'+ documentNo +'/contacts/'+lineNo);
-  }
-
-  getAreasOfFocusByDocumentNo(documentNo: string): Observable<Array<any>>{
-    return this.httpClient.get<Array<any>>(this.baseUrl+'OData/partners/'+ documentNo +'/focus-areas');
-  }
-
-  getAreasOfFocusLine(documentNo: string, lineNo: string): Observable<Array<any>>{
-    return this.httpClient.get<Array<any>>(this.baseUrl+'OData/partners/'+ documentNo +'/focus-areas/'+lineNo);
-  }
-
-  getGeoCoverageByDocumentNo(documentNo: string): Observable<Array<any>>{
-    return this.httpClient.get<Array<any>>(this.baseUrl+'OData/partners/'+ documentNo +'/geo-coverage');
-  }
-
-  getGeoCoverageLine(documentNo: string, lineNo: string): Observable<Array<any>>{
-    return this.httpClient.get<Array<any>>(this.baseUrl+'OData/partners/'+ documentNo +'/coverage-areas/'+lineNo);
-  }
-
-  getPatnerExperience(documentNo: string): Observable<Array<any>>{
-    return this.httpClient.get<Array<any>>(this.baseUrl+'OData/partners/'+ documentNo +'/prog-exp');
-  }
-
-  getUploadedPortalAttachments(documentNo: string): Observable<Array<any>>{
-    return this.httpClient.get<Array<any>>(this.baseUrl+'Document/GetUploadedPortalAttachments/'+ documentNo);
-  }
-
-  getGoverningBodies(): Observable<any>{
-   return this.httpClient.get<any>(this.baseUrl+'OData/partner-governing-bodies');
+  getAreaOfFocus(company: string): Observable<any>{
+    return this.httpClient.get<any>(this.baseUrl+'OData/areas-of-focus?company='+company);
   }
 
 
+  getGeoLocation(company: string): Observable<any>{
+    return this.httpClient.get<any>(this.baseUrl+'OData/countries?company='+company);
+  }
 
+   getContactType(company: string): Observable<any>{
+    return this.httpClient.get<any>(this.baseUrl+'OData/partner-contact-types?company='+company);
+  }
+
+  getContactsPersonByDocumentNo( company: string, documentNo: string,): Observable<Array<any>>{
+    return this.httpClient.get<Array<any>>(this.baseUrl+'OData/partners/'+ company + '/'+ documentNo +'/contacts');
+  }
+
+  getContactPersonLine(company: string,documentNo: string, lineNo: string): Observable<Array<any>>{
+    return this.httpClient.get<Array<any>>(this.baseUrl+'OData/partners/'+ company + '/'+ documentNo +'/contacts/'+lineNo);
+  }
+
+  getAreasOfFocusByDocumentNo(company: string,documentNo: string): Observable<Array<any>>{
+    return this.httpClient.get<Array<any>>(this.baseUrl+'OData/partners/'+company + '/'+documentNo +'/focus-areas');
+  }
+
+  getAreasOfFocusLine(company: string, documentNo: string, lineNo: string): Observable<Array<any>>{
+    return this.httpClient.get<Array<any>>(this.baseUrl+'OData/partners/'+ company + '/'+ documentNo +'/focus-areas/'+lineNo);
+  }
+
+  getGeoCoverageByDocumentNo(company: string, documentNo: string): Observable<Array<any>>{
+    return this.httpClient.get<Array<any>>(this.baseUrl+'OData/partners/'+ company + '/'+ documentNo +'/geo-coverage');
+  }
+
+  getGeoCoverageLine(company: string, documentNo: string, lineNo: string): Observable<Array<any>>{
+    return this.httpClient.get<Array<any>>(this.baseUrl+'OData/partners/'+ company + '/'+ documentNo +'/coverage-areas/'+lineNo);
+  }
+
+  getPatnerExperience(company: string, documentNo: string): Observable<Array<any>>{
+    return this.httpClient.get<Array<any>>(this.baseUrl+'OData/partners/'+ company + '/'+ documentNo +'/prog-exp');
+  }
+
+  getUploadedPortalAttachments(company: string, documentNo: string): Observable<Profile>{
+    return this.httpClient.get<Profile>(this.baseUrl+'Document/GetUploadedPortalAttachments?company='+company +'&documentNo='+documentNo);
+  }
+
+  getGoverningBodies(company: string): Observable<any>{
+    return this.httpClient.get<any>(this.baseUrl+'OData/partner-governing-bodies?company='+company);
+  }
 
 }

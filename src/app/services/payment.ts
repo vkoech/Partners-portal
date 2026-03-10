@@ -83,12 +83,19 @@ export class Payment {
     );
   }
 
- getReportingCycles(): Observable<any>{
-   return this.httpClient.get<any>(this.baseUrl+'OData/getReportingCycles');
+
+getReportingCycles(company: string): Observable<any> {
+    const params = new HttpParams().set('company', company);
+    return this.httpClient.get<any>(`${this.baseUrl}OData/getReportingCycles`,{ params }
+    );
   }
- getCategories(): Observable<any>{
-   return this.httpClient.get<any>(this.baseUrl+'OData/getCategories');
+ getCategories(company: string): Observable<any> {
+    const params = new HttpParams().set('company', company);
+    return this.httpClient.get<any>(`${this.baseUrl}OData/getCategories`,{ params }
+    );
   }
+
+
  getActivityCodes(approvedFundingNo : string): Observable<any>{
    return this.httpClient.get<any>(this.baseUrl+'OData/getActivityCodes/'+ approvedFundingNo );
   }
@@ -105,7 +112,7 @@ export class Payment {
     return this.httpClient.post<any>(this.baseUrl + 'Document/upload', applicationBody);
   }
 getCustomerStatement(
-  customerNo: string, startDate: string, endDate: string) {
+  customerNo: string, startDate: string, endDate: string, company: string) {
     return this.httpClient.get(`${this.baseUrl}Customer/GetCustomerStatement`,
         {
           params: { customerNo, startDate, endDate },

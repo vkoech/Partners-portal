@@ -91,7 +91,7 @@ export class NewCashRequest {
     this.paymentService.getcurrencyCodes(this.company).subscribe(data=>{
         this.currency_code_list=data;
       });
-    this.paymentService.getCategories().subscribe(data=>{
+    this.paymentService.getCategories(this.company).subscribe(data=>{
         this.category_list=data;
       });
     this.cashRequestService.getApprovedFundingRequests(this.email, this.company).subscribe(data=>{
@@ -100,9 +100,9 @@ export class NewCashRequest {
     this.cashRequestService.getCashRequestDocuments().subscribe(data=>{
         this.doc_list=data;
       });
-    this.registrationService.getAreaOfFocus().subscribe(data => {
-      this.area_of_focus_items = data;
-    });
+    // this.registrationService.getAreaOfFocus().subscribe(data => {
+    //   this.area_of_focus_items = data;
+    // });
     this.getAllCashRequestLines();
     if (
         this.approvedApplicationNo &&
@@ -190,7 +190,7 @@ export class NewCashRequest {
       formValues.documentNo = this.no;
       formValues.company = this.company;
       this.cashRequestService.createUpdateCashRequestLine(formValues).subscribe({next:(res) => {
-       this.paymentRequestLineForm.reset(); 
+       this.paymentRequestLineForm.reset();
       this.notificationService.success('', res['responseDescription']);
       this.loadingLine=false;
       this.getAllCashRequestLines();
@@ -319,7 +319,7 @@ uploadDocument() {
     });
   }
   getUploadedPortalAttachments(){
-      this.registrationService.getUploadedPortalAttachments(this.no).subscribe(data=>{
+      this.registrationService.getUploadedPortalAttachments(this.company,this.no).subscribe(data=>{
         this.doc_list=data
       })
     }

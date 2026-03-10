@@ -43,7 +43,7 @@ export class NewPaymentRequestComponent implements OnInit, OnDestroy {
   reporting_cycle_list:any;
   category_list:any
   isConfirmed = false;
-  document_list: any;
+  document_list: any[]=[];
   funding_doc_list:any
   selectedFile: File | null = null;
   uploading = false;
@@ -90,21 +90,21 @@ export class NewPaymentRequestComponent implements OnInit, OnDestroy {
     this.paymentService.getcurrencyCodes(this.company).subscribe(data=>{
         this.currency_code_list=data;
       });
-      this.paymentService.getCategories().subscribe(data=>{
+      this.paymentService.getCategories(this.company).subscribe(data=>{
         this.category_list=data;
       });
-      this.paymentService.getReportingCycles().subscribe(data=>{
+      this.paymentService.getReportingCycles(this.company).subscribe(data=>{
         this.reporting_cycle_list=data;
       });
      this.paymentService.getFundingApplicationDocuments().subscribe(data=>{
         this.funding_doc_list=data;
       });
-    this.registrationService.getAreaOfFocus().subscribe(data => {
-      this.area_of_focus_items = data;
-    });
-    this.registrationService.getAreaOfFocus().subscribe(data => {
-      this.area_of_focus_items = data;
-    });
+    // this.registrationService.getAreaOfFocus().subscribe(data => {
+    //   this.area_of_focus_items = data;
+    // });
+    // this.registrationService.getAreaOfFocus().subscribe(data => {
+    //   this.area_of_focus_items = data;
+    // });
     this.getFundsApplicationLines()
     this.initializeForms()
     this.getUploadedPortalAttachments();
@@ -307,9 +307,8 @@ uploadDocument() {
     });
   }
  getUploadedPortalAttachments(){
-    this.registrationService.getUploadedPortalAttachments(this.no).subscribe(data=>{
+    this.registrationService.getUploadedPortalAttachments(this.company,this.no).subscribe(data=>{
       this.uploaded_document_list=data
-      console.log(data)
     })
    }
  patchDocumentCode(event: Event) {

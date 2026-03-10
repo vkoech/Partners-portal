@@ -17,6 +17,7 @@ export class Report {
    email: any
    user: AuthUser | null = null;
    customerNo: any;
+   company:any;
    startDate: string;
    endDate: string
    reportForm!: FormGroup;
@@ -36,6 +37,7 @@ export class Report {
   this.user = this.authService.getLoggedInUser();
   this.customerNo = this.user?.customerNo?? '';
   this.email = this.user?.emailAddress ?? '';
+  this.company=this.user?.companyKey;
 
   this.reportForm = this.fb.group({
     startDate: [''],
@@ -60,7 +62,7 @@ downloadStatement(): void {
   if (this.loading) return;
 
   this.loading = true;
-  this.paymentService.getCustomerStatement(this.customerNo, startDate, endDate)
+  this.paymentService.getCustomerStatement(this.customerNo, startDate, endDate, this.company)
       .subscribe({
         next:(res)=>{
              const blob = res.body!;

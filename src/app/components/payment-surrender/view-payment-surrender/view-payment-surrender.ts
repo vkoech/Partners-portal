@@ -69,7 +69,7 @@ export class ViewPaymentSurrender {
       this.cashSurrenderService.getAllCashSurrenderLines(this.no, this.company).subscribe(data=>{
       this.paymentApplicationLines=data
     });
-     this.registrationService.getUploadedPortalAttachments(this.no).subscribe(data=>{
+     this.registrationService.getUploadedPortalAttachments(this.company,this.no).subscribe(data=>{
       this.uploaded_document_list=data
     })
     }
