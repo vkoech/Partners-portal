@@ -84,7 +84,7 @@ export class NewPaymentRequestComponent implements OnInit, OnDestroy {
         }
         this.paymentRequestForm.patchValue(data);
       });
-    this.paymentService.getProjectCodes(this.subgranteeNo).subscribe(data=>{
+    this.paymentService.getProjectCodes(this.company,this.subgranteeNo).subscribe(data=>{
         this.project_code_list=data;
       });
     this.paymentService.getcurrencyCodes(this.company).subscribe(data=>{

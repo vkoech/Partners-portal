@@ -19,7 +19,7 @@ export class CashSurrenderService {
         { params }
       );
     }
- 
+
     getSingleCashSurrender(documentNo: string, company: string): Observable<any> {
       const params = new HttpParams().set('company', company);
       return this.httpClient.get<any>(
@@ -66,12 +66,16 @@ export class CashSurrenderService {
     );
   }
 
-  deleteCashSurrenderLine(lineNo: string, documentNo: string): Observable<any>{
-   return this.httpClient.get<any>(this.baseUrl+'CashSurrender/DeleteCashSurrenderLine/'+ lineNo+'/'+documentNo);
+  deleteCashSurrenderLine(lineNo: string, documentNo: string, company: string): Observable<any> {
+    const params = new HttpParams().set('company', company);
+    return this.httpClient.get<any>(
+      `${this.baseUrl}CashSurrender/DeleteCashSurrenderLine/${encodeURIComponent(lineNo)}/${encodeURIComponent(documentNo)}`,
+      { params }
+    );
   }
 
-   getCashSurrenderDocuments(): Observable<any>{
-      return this.httpClient.get<any>(this.baseUrl+'Document/getCashSurrenderDocuments');
-    }
+  getCashSurrenderDocuments(company: string): Observable<any>{
+    return this.httpClient.get<any[]>(this.baseUrl+'Document/getCashSurrenderDocuments?company='+company);
+  }
 
 }

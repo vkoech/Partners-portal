@@ -71,8 +71,9 @@ export class Payment {
   createUpdateFundingApplicationLine(applicationBody: any): Observable<any> {
     return this.httpClient.post<any>(this.baseUrl + 'FundingApplication/CreateUpdateFundingApplicationLine', applicationBody);
   }
-  getProjectCodes(partnerNo: string): Observable<any>{
-   return this.httpClient.get<any>(this.baseUrl+'OData/getProjectCodes/'+ partnerNo);
+
+  getProjectCodes(company: string, partnerNo: string): Observable<any>{
+    return this.httpClient.get<any>(this.baseUrl+'OData/getProjectCodes?company='+company +'&partnerNo='+partnerNo);
   }
 
   getcurrencyCodes(company: string): Observable<any> {

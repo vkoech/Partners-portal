@@ -93,7 +93,7 @@ export class NewPaymentSurrenderComponent implements OnInit, OnDestroy {
     this.cashSurrenderService.getSingleCashSurrender(this.no, this.company).subscribe(data=>{
         // this.surrenderForm.patchValue(data);
       });
-    this.paymentService.getProjectCodes(this.subgranteeNo).subscribe(data=>{
+    this.paymentService.getProjectCodes(this.company, this.subgranteeNo).subscribe(data=>{
         this.project_code_list=data;
       });
     this.paymentService.getcurrencyCodes(this.company).subscribe(data=>{
@@ -196,7 +196,7 @@ export class NewPaymentSurrenderComponent implements OnInit, OnDestroy {
       delete patchedData.no;
       this.surrenderForm.patchValue(patchedData);
     });
-    this.cashSurrenderService.getCashSurrenderDocuments().subscribe(data=>{
+    this.cashSurrenderService.getCashSurrenderDocuments(this.company).subscribe(data=>{
      this.doc_list=data;
     });
   }
@@ -263,7 +263,7 @@ export class NewPaymentSurrenderComponent implements OnInit, OnDestroy {
     }
 
   deleteRequest(lineNo: string) {
-     this.cashSurrenderService.deleteCashSurrenderLine(lineNo, this.no,).subscribe(res=>{
+     this.cashSurrenderService.deleteCashSurrenderLine(lineNo, this.no,this.company).subscribe(res=>{
       this.notificationService.success('', res['responseDescription']);
       this.getAllCashSurrenderLines()
     });

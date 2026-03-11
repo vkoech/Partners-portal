@@ -476,10 +476,10 @@ nextStep() {
    }
 
     if (this.currentStep === 4) {
-      if (!this.experience || this.experience.length === 0) {
-        this.showRequiredAlert();
-        return;
-      }
+      // if (!this.experience || this.experience.length === 0) {
+      //   this.showRequiredAlert();
+      //   return;
+      // }
     }
 
     if (this.currentStep === 5) {
