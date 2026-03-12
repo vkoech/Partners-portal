@@ -55,7 +55,8 @@ export class CashRequestService {
       { params }
     );
   }
- getCashRequestDocuments(): Observable<any>{
-      return this.httpClient.get<any>(this.baseUrl+'Document/getCashRequestDocuments');
-    }
+
+  getCashRequestDocuments(company: string): Observable<any>{
+    return this.httpClient.get<any[]>(this.baseUrl+'Document/getCashRequestDocuments?company='+company);
+  }
 }

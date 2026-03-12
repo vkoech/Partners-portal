@@ -103,6 +103,13 @@ export class RegistrationComponent implements OnInit {
     this.getPartnersProfile()
     this.getPartnerRegistrationMandatoryDocuments()
     this.getUploadedPortalAttachments();
+    this.paymentService.getcurrencyCodes(this.company).subscribe(data=>{
+        this.currency_code_list=data;
+      });
+
+   this.registrationService.getGoverningBodies(this.company).subscribe(data=>{
+        this.governing_body_list=data;
+      });
   }
 
   private initializeForms() {
@@ -182,12 +189,6 @@ export class RegistrationComponent implements OnInit {
     emailAddress:[''],
     company:[''],
   });
-   this.paymentService.getcurrencyCodes(this.company).subscribe(data=>{
-        this.currency_code_list=data;
-      });
-   this.registrationService.getGoverningBodies(this.company).subscribe(data=>{
-        this.governing_body_list=data;
-      });
 
   }
 
@@ -476,10 +477,10 @@ nextStep() {
    }
 
     if (this.currentStep === 4) {
-      // if (!this.experience || this.experience.length === 0) {
-      //   this.showRequiredAlert();
-      //   return;
-      // }
+      if (!this.experience || this.experience.length === 0) {
+        this.showRequiredAlert();
+        return;
+      }
     }
 
     if (this.currentStep === 5) {
@@ -755,7 +756,7 @@ submitDocument() {
         this.notificationService.success('', res['responseDescription']);
         this.confirmForm.reset();
         this.getPartnersProfile();
-        // this.router.navigate(['payment-request']);
+        this.router.navigate(['login']);
         this
         this.loading= false
         },
@@ -768,4 +769,8 @@ submitDocument() {
         });
       }
     }
+  exitForm() {
+   console.log('User logged out');
+    this.router.navigate(['/login']);
+}
 }

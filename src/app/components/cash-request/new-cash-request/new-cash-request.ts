@@ -97,7 +97,7 @@ export class NewCashRequest {
     this.cashRequestService.getApprovedFundingRequests(this.email, this.company).subscribe(data=>{
         this.activity_code_list=data;
       });
-    this.cashRequestService.getCashRequestDocuments().subscribe(data=>{
+    this.cashRequestService.getCashRequestDocuments(this.company).subscribe(data=>{
         this.doc_list=data;
       });
     // this.registrationService.getAreaOfFocus().subscribe(data => {

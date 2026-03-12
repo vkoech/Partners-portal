@@ -26,7 +26,7 @@
 
 .registration-header {
   background: #1C3557;
-  color: #fff;
+  color:  #fff;
   padding: 20px 1px;
   text-align: center;
   position: relative;
@@ -46,6 +46,29 @@
   z-index: 1;
 }
 
+/* ADD THIS */
+.registration-header h6,
+.registration-header span {
+  position: relative;
+  z-index: 2;
+}
+.exit-btn {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  background: #e63946;
+  border: none;
+  color: white;
+  padding: 6px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  z-index: 3; /* ensures button is fully visible */
+}
+
+.exit-btn:hover {
+  background: #c1121f;
+}
 .registration-header h6{
   font-size: 1.5rem;
   font-weight: 600;

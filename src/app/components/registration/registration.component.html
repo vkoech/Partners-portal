@@ -1,10 +1,12 @@
 <div class="registration-container">
   <div class="registration-content">
-    <div class="registration-header">
-      <h6>SUB-GRANTEE REGISTISTRATION FORM</h6>
-         Status:<span>{{ personalInfoForm.get('status')?.value }}</span>
+   <div class="registration-header">
+      <h6>SUB-GRANTEE REGISTRATION FORM</h6>
+      <div class="status-section">
+        Status: <span>{{ personalInfoForm.get('status')?.value }}</span>
+      </div>
+      <button class="exit-btn" (click)="exitForm()">Exit</button>
     </div>
-
     <!-- Step Navigation -->
     <div class="step-navigation">
       <div class="step" [class.active]="currentStep === 1"
@@ -145,9 +147,10 @@
               <input type="text" formControlName="registrationCertificateNo">
             </div>
           </div>
-           <button type="submit" class="submit">
-            {{ loading ? 'Saving ...' : 'Save'}}
-           </button>
+           <button type="submit" class="submit"
+              [disabled]="personalInfoForm.get('status')?.value !== 'Open'">
+              {{ loading ? 'Saving ...' : 'Save' }}
+            </button>
         </div>
       </form>
 
@@ -182,7 +185,7 @@
             </div>
           </div>
         </div>
-       <button type="submit" class="submit">
+       <button type="submit" [disabled]="personalInfoForm.get('status')?.value !== 'Open'" class="submit">
         {{ loading ? 'Saving ...' : 'Save'}}
        </button>
        </form>
@@ -205,7 +208,7 @@
                   <td>{{focus.code}}</td>
                   <!-- <td>{{ focus.description }}</td> -->
                   <td>
-                    <button type="button" class="delete-btn" (click)="deleteAreaOfFocus(focus.lineNo,'delete')">
+                    <button type="button" class="delete-btn" [disabled]="personalInfoForm.get('status')?.value !== 'Open'" (click)="deleteAreaOfFocus(focus.lineNo,'delete')">
                       <img src="assets/delete.svg" alt="Delete" width="16" height="16" />
                       Delete
                     </button>
@@ -250,7 +253,7 @@
             </div>
           </div>
         </div>
-         <button type="submit" class="submit">
+         <button type="submit" [disabled]="personalInfoForm.get('status')?.value !== 'Open'" class="submit">
           {{ loading ? 'Saving ...' : 'Save'}}
          </button>
         </form>
@@ -271,7 +274,7 @@
                 <tr>
                   <td>{{ geo.country }}</td>
                   <td>
-                    <button type="button" class="delete-btn" (click)="deleteGeoCoverarge(geo.lineNo,'delete')">
+                    <button type="button" class="delete-btn" [disabled]="personalInfoForm.get('status')?.value !== 'Open'" (click)="deleteGeoCoverarge(geo.lineNo,'delete')">
                       <img src="assets/delete.svg" alt="Delete" width="16" height="16" />
                       Delete
                     </button>
@@ -350,7 +353,7 @@
             </div>
           </div>
         </div>
-         <button type="submit" class="submit" [disabled]="experienceForm.invalid">
+         <button type="submit" class="submit" [disabled]="personalInfoForm.get('status')?.value !== 'Open'" [disabled]="experienceForm.invalid">
           {{ loading ? 'Saving...' : (isEditMode ? 'Update' : 'Save') }}
           </button>
       </form>
@@ -381,11 +384,11 @@
                   <td>{{ experience.endDate}}</td>
                   <td>{{ experience.description}}</td>
                   <td>
-                    <button type="button" class="edit-btn"(click)="editExperience(experience) ">
+                    <button type="button" class="edit-btn" [disabled]="personalInfoForm.get('status')?.value !== 'Open'" (click)="editExperience(experience) ">
                       <img src="assets/edit.svg" alt="Delete" width="16" height="16" />
                       Edit
                     </button>
-                    <button type="button" class="delete-btn" (click)="deleteExperience(experience,'delete')">
+                    <button type="button" class="delete-btn" [disabled]="personalInfoForm.get('status')?.value !== 'Open'" (click)="deleteExperience(experience,'delete')">
                       <img src="assets/delete.svg" alt="Delete" width="16" height="16" />
                       Delete
                     </button>
@@ -450,9 +453,11 @@
               <input type="text" formControlName="names">
             </div>
           </div>
-          <button type="submit" class="submit" [disabled]="loading">
-            {{ loading ? 'Saving...' : (isEditMode ? 'Update' : 'Save') }}
-          </button>
+         <button
+          type="submit" class="submit"
+          [disabled]="personalInfoForm.get('status')?.value !== 'Open' || loading">
+          {{ loading ? 'Saving...' : (isEditMode ? 'Update' : 'Save') }}
+        </button>
         </div>
        </form>
         <!-- Contact Person Table -->
@@ -478,11 +483,11 @@
                   <td>{{ contact.phoneNo }}</td>
                   <td>{{ contact.contactType }}</td>
                   <td>
-                       <button type="button" class="edit-btn"(click)="editConatct(contact) ">
+                       <button type="button" class="edit-btn" [disabled]="personalInfoForm.get('status')?.value !== 'Open'" (click)="editConatct(contact) ">
                       <img src="assets/edit.svg" alt="Delete" width="16" height="16" />
                       Edit
                     </button>
-                    <button type="button" class="delete-btn" (click)="deleteConatacPerson(contact,'delete')">
+                    <button type="button" class="delete-btn" [disabled]="personalInfoForm.get('status')?.value !== 'Open'" (click)="deleteConatacPerson(contact,'delete')">
                       <img src="assets/delete.svg" alt="Delete" width="16" height="16" />
                       Delete
                     </button>
@@ -533,7 +538,7 @@
           </div>
         </div>
         </div>
-        <button type="submit" class="upload-btn" [disabled]="!documentForm.get('File')!.value">
+        <button type="submit" class="upload-btn" [disabled]="personalInfoForm.get('status')?.value !== 'Open'" [disabled]="!documentForm.get('File')!.value">
          {{ loading ? 'Uploading...' : 'Upload' }}
         </button>
       </div>
@@ -750,11 +755,11 @@
             <div class="confirmation-text">
                <input type="checkbox" (change)="onCheckboxChange($event)" />
                   <span>I confirm that the provided information is accurate.</span>
-                  <button class="submit"
-                  (click)="onSubmitProfile()"
-                  [disabled]="!isConfirmed">
-                  {{ loading ? 'Submitting...' : 'Submit'}}
-                </button>
+                  <button
+                    class="submit" (click)="onSubmitProfile()"
+                    [disabled]="personalInfoForm.get('status')?.value !== 'Open' || !isConfirmed || loading">
+                    {{ loading ? 'Submitting...' : 'Submit' }}
+                  </button>
             </div>
 
       <div class="action-buttons">
