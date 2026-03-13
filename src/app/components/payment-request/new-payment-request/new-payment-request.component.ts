@@ -37,6 +37,7 @@ export class NewPaymentRequestComponent implements OnInit, OnDestroy {
   company: any
   user: AuthUser | null = null;
   paymentApplicationLines: any;
+  totalAppliedAmount = 0;
   project_code_list: any;
   currency_code_list: any;
   area_of_focus_items: any;
@@ -173,7 +174,7 @@ export class NewPaymentRequestComponent implements OnInit, OnDestroy {
       formValues.company = this.company;
       this.paymentService.createUpdateFundingApplicationLine(formValues).subscribe({next:(res) => {
       this.notificationService.success('', res['responseDescription']);
-      this.paymentRequestForm.reset();
+      this.paymentRequestLineForm.reset();
         this.getFundsApplicationLines();
         this.closeCustomModal();
           this.loadingLines=false;
@@ -212,11 +213,22 @@ export class NewPaymentRequestComponent implements OnInit, OnDestroy {
     });
     }
 
-  getFundsApplicationLines(){
-     this.paymentService.getAllFundingApplicationLines(this.no, this.company).subscribe(data=>{
-      this.paymentApplicationLines=data
-    });
-  }
+  getFundsApplicationLines() {
+      this.paymentService.getAllFundingApplicationLines(this.no, this.company).subscribe(
+        data => {
+          this.paymentApplicationLines = data.map((row: { appliedAmount: any; }) => ({
+            ...row,
+            appliedAmount: Number(String(row.appliedAmount).replace(/,/g, '')) || 0
+          }));
+          this.totalAppliedAmount = this.paymentApplicationLines
+            .reduce((sum: any, row: { appliedAmount: any; }) => sum + (row.appliedAmount || 0), 0);
+        },
+        error => {
+          console.error('Error loading funding application lines', error);
+        }
+      );
+    }
+
 
   onCheckboxChange(event: Event) {
       const input = event.target as HTMLInputElement;
@@ -224,31 +236,37 @@ export class NewPaymentRequestComponent implements OnInit, OnDestroy {
     }
 
   onSubmitPaymentHeader() {
-      this.loading=true
-      if( this.paymentRequestForm.valid){
-      let formValues = this.paymentRequestForm.value;
-      formValues.subgranteeNo = this.subgranteeNo;
-      formValues.no = this.no;
-      formValues.company = this.company;
-      this.paymentService.createUpdateFundingApplication(formValues).subscribe({next:(res) => {
-      this.notificationService.success('', res['responseDescription']);
-      this.router.navigate(['/funding-request']);
+    this.loading = true;
+    if (!this.paymentRequestForm.valid) {
+      this.notificationService.warning('', 'Please fill all required fields correctly.');
+      this.loading = false;
+      this.paymentRequestForm.markAllAsTouched();
+      return;
+    }
+    if (this.totalAppliedAmount === 0) {
+      this.notificationService.warning('', 'Total Applied Amount cannot be 0.');
+      this.loading = false;
+      return;
+    }
+    let formValues = this.paymentRequestForm.value;
+    formValues.subgranteeNo = this.subgranteeNo;
+    formValues.no = this.no;
+    formValues.company = this.company;
+    this.paymentService.createUpdateFundingApplication(formValues).subscribe({
+      next: (res) => {
+        this.notificationService.success('', res['responseDescription']);
+        this.router.navigate(['/funding-request']);
         this.isEditMode = true;
         this.loading = false;
-        },
-          error: (err) => {
-              this.loading = false;
-              const message = err.error?.responseDescription || 'Failed to update request.';
-              this.notificationService.error('', message);
-            }
-        });
-      }
-      else {
-        this.notificationService.warning('', 'Please fill all required fields correctly.');
+      },
+      error: (err) => {
         this.loading = false;
-        this.paymentRequestForm.markAllAsTouched();
+        const message = err.error?.responseDescription || 'Failed to update request.';
+        this.notificationService.error('', message);
       }
+    });
   }
+
 onCancel() {
     this.router.navigate(['/funding-request']);
   }
