@@ -182,6 +182,12 @@ export class NewCashRequest {
 
   submitLine() {
     this.loadingLine=true
+      const appliedAmount = Number(this.paymentRequestLineForm.get('amount')?.value);
+      if (appliedAmount <= 0) {
+        this.notificationService.warning('', 'Applied Amount must be greater than 0.');
+        this.loadingLine = false;
+        return;
+      }
       if( this.paymentRequestLineForm.valid){
       const projectCodeControl = this.paymentRequestForm.get('projectCode');
       projectCodeControl?.enable({ emitEvent: false });

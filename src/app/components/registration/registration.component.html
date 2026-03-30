@@ -487,10 +487,9 @@
                       <img src="assets/edit.svg" alt="Delete" width="16" height="16" />
                       Edit
                     </button>
-                    <button type="button" class="delete-btn" [disabled]="personalInfoForm.get('status')?.value !== 'Open'" (click)="deleteConatacPerson(contact,'delete')">
-                      <img src="assets/delete.svg" alt="Delete" width="16" height="16" />
-                      Delete
-                    </button>
+                   <button type="button" class="delete-btn" [disabled]="personalInfoForm.get('status')?.value !== 'Open'"
+                    (click)="deleteConatacPerson(contact,'delete')">
+                   <img src="assets/delete.svg" width="16" height="16">Delete</button>
                   </td>
                 </tr>
                }

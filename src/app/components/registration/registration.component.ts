@@ -317,31 +317,37 @@ export class RegistrationComponent implements OnInit {
       }
   }
 
- deleteConatacPerson(row: any, actionType:string){
-  let formValues = this.areaOfFocusForm.value;
-    formValues.action=actionType,
-    formValues.lineNo=row.lineNo,
-    formValues.contactType=row.contactType,
-    formValues.emailAddress=row.emailAddress,
-    formValues.phoneNo=row.phoneNo,
-    formValues.names=row.names,
-    formValues.majorDonorOrPartner=row.majorDonorOrPartner,
-    formValues.documentNo=this.documentNo,
-    formValues.company=this.company,
-      this.registrationService.createContactPersonInfo(formValues).subscribe({next:(res) => {
-        this.notificationService.success('', res['responseDescription']);
-        this.getContactsPersonByDocumentNo();
-        this.loading = false;
+  deleteConatacPerson(row: any, actionType: string) {
+      this.loading = true;
+      const formValues = {
+        ...this.areaOfFocusForm.value,
+        action: actionType,
+        lineNo: row.lineNo,
+        contactType: row.contactType,
+        emailAddress: row.emailAddress,
+        phoneNo: row.phoneNo,
+        names: row.names,
+        majorDonorOrPartner: row.majorDonorOrPartner,
+        documentNo: this.documentNo,
+        company: this.company
+      };
+
+      this.registrationService.createContactPersonInfo(formValues).subscribe({
+        next: (res: any) => {
+          this.notificationService.success('', res.responseDescription);
+          this.getContactsPersonByDocumentNo();
+          this.loading = false;
         },
-          error: (err) => {
-              this.loading = false;
-              const message = err.error?.responseDescription || 'Failed to delete the request.';
-              this.notificationService.error('', message);
-            }
-        })
+        error: (err) => {
+          this.loading = false;
 
- }
+          const message =
+            err?.error?.responseDescription || 'Failed to delete the request.';
 
+          this.notificationService.error('', message);
+        }
+      });
+  }
   onSubmitExperienceInfo(){
     const actionType = this.isEditMode ? 'update' : 'create';
      this.loading=true

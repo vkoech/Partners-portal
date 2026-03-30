@@ -22,6 +22,7 @@ paymentRequestLineForm: FormGroup<any>;
 paymentApplicationLines:any;
 no: string;
 email: any;
+totalAppliedAmount = 0;
 company: any;
 user: AuthUser | null = null;
 subgranteeNo: any;
@@ -76,9 +77,20 @@ uploaded_document_list:any
     this.paymentService.getSingleFundingApplication(this.no, this.company).subscribe(data=>{
         this.paymentRequestForm.patchValue(data);
       });
-     this.paymentService.getAllFundingApplicationLines(this.no, this.company).subscribe(data=>{
-      this.paymentApplicationLines=data
-    });
+
+       this.paymentService.getAllFundingApplicationLines(this.no, this.company).subscribe(
+        data => {
+          this.paymentApplicationLines = data.map((row: { appliedAmount: any; }) => ({
+            ...row,
+            appliedAmount: Number(String(row.appliedAmount).replace(/,/g, '')) || 0
+          }));
+          this.totalAppliedAmount = this.paymentApplicationLines
+            .reduce((sum: any, row: { appliedAmount: any; }) => sum + (row.appliedAmount || 0), 0);
+        },
+        error => {
+          console.error('Error loading funding application lines', error);
+        }
+      );
 
     this.registrationService.getUploadedPortalAttachments(this.company,this.no).subscribe(data=>{
       this.uploaded_document_list=data

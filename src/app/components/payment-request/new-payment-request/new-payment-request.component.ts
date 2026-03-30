@@ -149,7 +149,7 @@ export class NewPaymentRequestComponent implements OnInit, OnDestroy {
         lineNo: [''],
         documentNo: [''],
         category: [''],
-        appliedAmount: [''],
+        appliedAmount: ['', [Validators.required, Validators.min(0.01)]],
         appliedAmountLCY: [''],
         description: [''],
         company:[''],
@@ -165,34 +165,40 @@ export class NewPaymentRequestComponent implements OnInit, OnDestroy {
 
     return endDate < startDate ? { dateRangeInvalid: true } : null;
   }
-  submitLine() {
-    this.loadingLines=true
-      if( this.paymentRequestLineForm.valid){
-      this.paymentRequestForm.enable();
-      let formValues = this.paymentRequestLineForm.value;
-      formValues.documentNo = this.no;
-      formValues.company = this.company;
-      this.paymentService.createUpdateFundingApplicationLine(formValues).subscribe({next:(res) => {
-      this.notificationService.success('', res['responseDescription']);
-      this.paymentRequestLineForm.reset();
-        this.getFundsApplicationLines();
-        this.closeCustomModal();
-          this.loadingLines=false;
-        this.isEditMode = true;
-        },
-          error: (err) => {
-              this.loadingLines = false;
-              const message = err.error?.responseDescription || 'Failed to update request.';
-              this.notificationService.error('', message);
-            }
-        });
-      }
-      else {
-        this.notificationService.warning('', 'Please fill all required fields correctly.');
+submitLine() {
+      this.loadingLines = true;
+      const appliedAmount = Number(this.paymentRequestLineForm.get('appliedAmount')?.value);
+      if (appliedAmount <= 0) {
+        this.notificationService.warning('', 'Applied Amount must be greater than 0.');
         this.loadingLines = false;
-        this.paymentRequestForm.markAllAsTouched();
+        return;
       }
-  }
+      if (this.paymentRequestLineForm.valid) {
+        this.paymentRequestForm.enable();
+        let formValues = this.paymentRequestLineForm.value;
+        formValues.documentNo = this.no;
+        formValues.company = this.company;
+        this.paymentService.createUpdateFundingApplicationLine(formValues).subscribe({
+          next: (res) => {
+            this.notificationService.success('', res['responseDescription']);
+            this.paymentRequestLineForm.reset();
+            this.getFundsApplicationLines();
+            this.closeCustomModal();
+            this.isEditMode = true;
+            this.loadingLines = false;
+          },
+          error: (err) => {
+            const message = err.error?.responseDescription || 'Failed to update request.';
+            this.notificationService.error('', message);
+            this.loadingLines = false;
+          }
+        });
+      } else {
+        this.notificationService.warning('', 'Please fill all required fields correctly.');
+        this.paymentRequestLineForm.markAllAsTouched();
+        this.loadingLines = false;
+      }
+    }
 
   deleteRequest(lineNo: string) {
      this.paymentService.deleteFundingApplicationLine(lineNo, this.no, this.company).subscribe(res=>{
