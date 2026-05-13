@@ -69,8 +69,8 @@ constructor(private router: Router,private http: HttpClient) {}
     return this.http.post<any>(this.baseUrl+'PartnerAccount/VerifyOTP', body);
   }
 
-  resetPasswordLink(emailAddress: string, passwordResetToken: any) {
-    return this.http.post<any>(`${this.baseUrl}PartnerAccount/SendPasswordActivationLink`, { emailAddress , passwordResetToken});
+  resetPasswordLink(emailAddress: string, passwordResetToken: any, company: string) {
+    return this.http.post<any>(`${this.baseUrl}PartnerAccount/SendPasswordActivationLink`, { emailAddress , passwordResetToken, company});
   }
 
 

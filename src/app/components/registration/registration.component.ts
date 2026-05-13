@@ -202,34 +202,49 @@ export class RegistrationComponent implements OnInit {
   return endDate < startDate ? { dateRangeInvalid: true } : null;
 }
 
-
-
-  onSubmitPersonalInfo(){
-     this.loading=true
-        if( this.personalInfoForm.valid){
-        let formValues = this.personalInfoForm.value;
-        formValues.documentNo = this.documentNo;
-        formValues.company = this.company;
-        this.registrationService.createPartnerInfo(formValues).subscribe({next:(res) => {
-        this.notificationService.success('', res['responseDescription']);
+onSubmitPersonalInfo() {
+  const governingBody =
+    this.personalInfoForm.get('governingBody')?.value;
+  const otherGoverningBody =
+    this.personalInfoForm.get('otherGoverningBody');
+  console.log(governingBody);
+  if (governingBody?.toString().trim() === 'OTHER' ) {
+    otherGoverningBody?.setValidators([
+      Validators.required
+    ]);
+  } else {
+    otherGoverningBody?.clearValidators();
+  }
+  otherGoverningBody?.updateValueAndValidity();
+  if (this.personalInfoForm.invalid) {
+    this.loading = false;
+    this.personalInfoForm.markAllAsTouched();
+    this.notificationService.warning(
+      '','Please fill all required fields correctly.'
+    );
+    return;
+  }
+  this.loading = true;
+  let formValues = this.personalInfoForm.value;
+  formValues.documentNo = this.documentNo;
+  formValues.company = this.company;
+  this.registrationService.createPartnerInfo(formValues)
+    .subscribe({
+      next: (res) => {
+        this.notificationService.success('', res['responseDescription']
+        );
         this.getPartnersProfile();
         this.isEditMode = true;
         this.loading = false;
-        },
-          error: (err) => {
-              this.loading = false;
-              const message = err.error?.responseDescription || 'Failed to update request.';
-              this.notificationService.error('', message);
-            }
-        });
-      }
-      else {
-        this.notificationService.warning('', 'Please fill all required fields correctly.');
+      },
+      error: (err) => {
         this.loading = false;
-        this.personalInfoForm.markAllAsTouched();
+        const message =
+          err.error?.responseDescription || 'Failed to update request.';
+        this.notificationService.error('', message);
       }
-
-  }
+    });
+}
 
   onSubmitAreaOfFocusInfo(){
       this.loading=true

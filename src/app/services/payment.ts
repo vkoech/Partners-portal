@@ -116,7 +116,7 @@ getCustomerStatement(
   customerNo: string, startDate: string, endDate: string, company: string) {
     return this.httpClient.get(`${this.baseUrl}Customer/GetCustomerStatement`,
         {
-          params: { customerNo, startDate, endDate },
+          params: { customerNo, startDate, endDate, company },
           responseType: 'blob',
           observe: 'response'
         }

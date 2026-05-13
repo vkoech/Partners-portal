@@ -31,7 +31,8 @@ export class ForgotPassword implements AfterViewInit {
     this.ResetForm = this.fb.group({
       emailAddress: ['', Validators.required],
       captchaAnswer: ['', Validators.required],
-      passwordResetToken:['']
+      passwordResetToken:[''],
+      company:[''],
     });
 
     this.generateCaptcha();
@@ -145,7 +146,7 @@ export class ForgotPassword implements AfterViewInit {
         return;
       }
       else{
-      this.authService.resetPasswordLink(this.ResetForm.value.emailAddress, this.ResetForm.value.passwordResetToken) .subscribe({
+      this.authService.resetPasswordLink(this.ResetForm.value.emailAddress,this.ResetForm.value.passwordResetToken,this.ResetForm.value.company) .subscribe({
           next: (res) => {
             this.loading = false;
             this.notificationService.success('', res.responseDescription);

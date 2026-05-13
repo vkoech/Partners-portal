@@ -41,7 +41,8 @@ export class Report {
 
   this.reportForm = this.fb.group({
     startDate: [''],
-    endDate: ['']
+    endDate: [''],
+    company:['']
   });
   // this.reportForm.get('endDate')?.valueChanges.subscribe(() => {
   // });
