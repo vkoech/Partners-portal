@@ -207,7 +207,6 @@ onSubmitPersonalInfo() {
     this.personalInfoForm.get('governingBody')?.value;
   const otherGoverningBody =
     this.personalInfoForm.get('otherGoverningBody');
-  console.log(governingBody);
   if (governingBody?.toString().trim() === 'OTHER' ) {
     otherGoverningBody?.setValidators([
       Validators.required
