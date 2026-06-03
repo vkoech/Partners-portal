@@ -1,42 +1,56 @@
-<div class="sidebar-overlay" *ngIf="open" (click)="closeSidebar()"></div>
+@if (open) {
+  <div class="sidebar-overlay" (click)="closeSidebar()"></div>
+}
 <div class="sidebar" [ngClass]="{ 'sidebar-open': open }">
   <div class="logo-container">
     <div class="logo">
       <img class="logo-icon" src="assets/logo.svg" alt="inSupplyHealth Logo" />
-      <span class="logo-text">inSupplyHealth</span>
+      <!-- <span class="logo-text">inSupplyHealth</span> -->
     </div>
   </div>
-  
+
   <!-- Partners Portal Sidebar -->
   <div class="sidebar-content">
     <nav class="nav-menu">
+      <a routerLink="/funding-request" routerLinkActive="active" class="nav-item">
+        <i class="icon-payment">
+          <img src="assets/payment-request.svg" alt="Payment Request" width="20" height="20">
+        </i>
+        Funding Application
+      </a>
       <a routerLink="/approved-funding" routerLinkActive="active" class="nav-item">
         <i class="icon-approved">
-          <img src="assets/SP My approved Leaves.svg" alt="Approved Funding" width="20" height="20">
+          <img src="assets/approve.svg" alt="Approved Funding" width="20" height="20">
         </i>
         Approved Funding
       </a>
-      
-      <a routerLink="/payment-request" routerLinkActive="active" class="nav-item">
+
+      <a routerLink="/cash-request" routerLinkActive="active" class="nav-item">
         <i class="icon-payment">
-          <img src="assets/SP Finance management.svg" alt="Payment Request" width="20" height="20">
+          <img src="assets/payment-request.svg" alt="Payment Request" width="20" height="20">
         </i>
-        Payment Request
+      Cash Request
       </a>
-      
       <a routerLink="/payment-surrender" routerLinkActive="active" class="nav-item">
         <i class="icon-surrender">
-          <img src="assets/SP Imprest Surrender.svg" alt="Payment Surrender" width="20" height="20">
+          <img src="assets/payment-surrender.svg" alt="Payment Surrender" width="20" height="20">
         </i>
-        Payment Surrender
+        Cash Surrender
       </a>
-      
-      <a routerLink="/reimbursements" routerLinkActive="active" class="nav-item">
+
+      <a routerLink="/report" routerLinkActive="active" class="nav-item">
         <i class="icon-reimbursements">
-          <img src="assets/SP My PendingLeaves.svg" alt="Reimbursements" width="20" height="20">
+          <img src="assets/reimbursement.svg" alt="Reimbursements" width="20" height="20">
         </i>
-        Reimbursements
+        Customer Statement
       </a>
+       <a routerLink="/profile" routerLinkActive="active" class="nav-item">
+        <i class="icon-reimbursements">
+          <img src="assets/user.svg" alt="Reimbursements" width="20" height="20">
+        </i>
+        Profile
+        </a>
+
     </nav>
   </div>
 </div>

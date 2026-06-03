@@ -1,39 +1,78 @@
 <div class="registration-container">
   <div class="registration-content">
-    <div class="registration-header">
-      <h1>REGISTER</h1>
+   <div class="registration-header">
+      <h6>SUB-GRANTEE REGISTRATION FORM</h6>
+      <div class="status-section">
+        Status: <span>{{ personalInfoForm.get('status')?.value }}</span>
+      </div>
+      <button class="exit-btn" (click)="exitForm()">Exit</button>
     </div>
-
     <!-- Step Navigation -->
     <div class="step-navigation">
-      <div class="step" [class.active]="currentStep === 1" [class.completed]="currentStep > 1" (click)="goToStep(1)">
+      <div class="step" [class.active]="currentStep === 1"
+       [class.completed]="stepCompleted[1]"
+       (click)="goToStep(1)">
         <div class="step-number">01</div>
-        <div class="step-label">PERSONAL INFORMATION</div>
+        <div class="step-label">PARTNER PROFILE</div>
       </div>
-      <div class="step" [class.active]="currentStep === 2" [class.completed]="currentStep > 2" (click)="goToStep(2)">
+      <div class="step" [class.active]="currentStep === 2"
+       [class.completed]="stepCompleted[2]"
+       (click)="goToStep(2)"
+       [class.disabled]="!stepCompleted[1]">
         <div class="step-number">02</div>
-        <div class="step-label">BANK DETAILS</div>
+        <div class="step-label"> AREA OF FOCUS</div>
       </div>
-      <div class="step" [class.active]="currentStep === 3" [class.completed]="currentStep > 3" (click)="goToStep(3)">
+      <div class="step" [class.active]="currentStep === 3"
+       [class.completed]="stepCompleted[3]"
+       (click)="goToStep(3)"
+       [class.disabled]="!stepCompleted[2]">
         <div class="step-number">03</div>
-        <div class="step-label">SUMMARY</div>
+        <div class="step-label">GEOGRAPHICAL COVERAGE</div>
+      </div>
+      <div class="step" [class.active]="currentStep === 4"
+       [class.completed]="stepCompleted[4]"
+       (click)="goToStep(4)"
+       [class.disabled]="!stepCompleted[3]">
+        <div class="step-number">04</div>
+        <div class="step-label">PROGRAM EXPERIENCE</div>
+      </div>
+      <div class="step" [class.active]="currentStep === 5"
+        [class.completed]="stepCompleted[5]"
+        (click)="goToStep(5)"
+        [class.disabled]="!stepCompleted[4]">
+        <div class="step-number">05</div>
+        <div class="step-label">CONTACT PERSON</div>
+      </div>
+       <div class="step" [class.active]="currentStep === 6"
+         [class.completed]="stepCompleted[6]"
+         (click)="goToStep(6)"
+         [class.disabled]="!stepCompleted[5]">
+        <div class="step-number">06</div>
+        <div class="step-label">DOCUMENTS</div>
+      </div>
+      <div class="step" [class.active]="currentStep === 7"
+        [class.completed]="stepCompleted[7]"
+        (click)="goToStep(7)"
+         [class.disabled]="!stepCompleted[6]">
+        <div class="step-number">07</div>
+        <div class="step-label">PROFILE</div>
       </div>
     </div>
 
-    <!-- Step 1: Personal Information -->
+    <!-- Step 1: Partner Information -->
     <div class="step-content" *ngIf="currentStep === 1">
-      <form [formGroup]="personalInfoForm">
+      <form [formGroup]="personalInfoForm" (ngSubmit)="onSubmitPersonalInfo()">
         <div class="form-section">
-          <h2>Personal Information</h2>
+          <h4>Organization Information</h4>
 
           <div class="form-row">
             <div class="form-group">
-              <label>Registration No: <span class="required">*</span></label>
-              <input type="text" formControlName="registrationNo">
-            </div>
-            <div class="form-group">
               <label>Organization Name:</label>
-              <input type="text" formControlName="organizationName">
+              <input type="text" formControlName="legalNameOfOrganization">
+            </div>
+              <div class="form-group">
+              <label>Tax Registration No: <span class="required">*</span></label>
+              <input type="text" formControlName="taxRegistrationNumber">
             </div>
           </div>
 
@@ -44,104 +83,74 @@
             </div>
             <div class="form-group">
               <label>Phone Number: <span class="required">*</span></label>
-              <input type="text" formControlName="phoneNumber">
+              <input type="text" formControlName="phoneNo">
             </div>
           </div>
 
           <div class="form-row">
             <div class="form-group">
-              <label>Pin No: <span class="required">*</span></label>
-              <input type="text" formControlName="pinNo">
+              <label>Trading/Operaing Name: <span class="required">*</span></label>
+              <input type="text" formControlName="tradingName">
             </div>
             <div class="form-group">
-              <label>Unique Entity Identifier No: <span class="required">*</span></label>
-              <input type="text" formControlName="uniqueEntityId">
+              <label>Date of Registration:<span class="required">*</span></label>
+              <input type="date" formControlName="dateRegistered">
             </div>
           </div>
-
           <div class="form-row">
             <div class="form-group">
-              <label>NGO Type: <span class="required">*</span></label>
-              <select formControlName="ngoType">
-                <option value="">NGO Type</option>
-                <option value="local">Local NGO</option>
-                <option value="international">International NGO</option>
-                <option value="cbo">Community Based Organization</option>
-              </select>
+              <label>Governing Body: <span class="required">*</span></label>
+                <select formControlName="governingBody">
+                  <option value="" [selected]=true disabled>Select</option>
+                  @for (g_body of governing_body_list; track g_body.code) {
+                  <option [value]="g_body.code">
+                    {{ g_body.description}}
+                  </option>}
+                </select>
             </div>
+            @if (personalInfoForm.get('governingBody')?.value === 'OTHER')
+             {
+            <div class="form-group">
+              <label>Other Governing Body:<span class="required">*</span></label>
+                <input type="text" formControlName="otherGoverningBody">
+            </div>
+            }
             <div class="form-group">
               <label>Email Address: <span class="required">*</span></label>
               <input type="email" formControlName="emailAddress">
             </div>
           </div>
+           <div class="form-row">
+            <div class="form-group">
+              <label>Acronym(If Any):</label>
+              <input type="text" formControlName="acronym">
+            </div>
+            <div class="form-group">
+              <label>Postal Address: <span class="required">*</span></label>
+              <input type="text" formControlName="postalAddress">
+            </div>
+          </div>
 
           <div class="form-row">
             <div class="form-group">
-              <label>Password: <span class="required">*</span></label>
-              <input type="password" formControlName="password">
+              <label>Website: <span class="required">*</span></label>
+              <input type="text" formControlName="website">
             </div>
             <div class="form-group">
-              <label>Password (Confirm): <span class="required">*</span></label>
-              <input type="password" formControlName="confirmPassword">
+               <label>Country Of Registration: <span class="required">*</span></label>
+                  <input type="text" formControlName="country">
             </div>
           </div>
-        </div>
-
-        <!-- Attachments Section -->
-        <div class="form-section">
-          <h3>Attachments</h3>
-          <div class="upload-section">
-            <div class="form-row">
-              <div class="form-group">
-                <label>Document Name:</label>
-                <select>
-                  <option value="">Tax Certificate</option>
-                  <option value="bank-details">Certified bank account details</option>
-                  <option value="registration">Registration Certificate</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label>Upload File</label>
-                <div class="file-upload-row">
-                  <input type="text" placeholder="Choose a File..." readonly>
-                  <button type="button" class="choose-file-btn" (click)="triggerFileUpload()">Choose File</button>
-                </div>
-              </div>
-            </div>
-            <button type="button" class="upload-btn">UPLOAD</button>
-          </div>
-
-          <!-- Uploaded Documents -->
-          <div class="uploaded-documents" *ngIf="uploadedDocuments.length > 0">
-            <h4>Uploaded Documents</h4>
-            <div class="documents-table-container">
-              <table class="documents-table">
-                <thead>
-                  <tr>
-                    <th>Document Name</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let document of uploadedDocuments; let i = index" [class.striped]="i % 2 === 1">
-                    <td>{{ document.name }}</td>
-                    <td>
-                      <div class="document-actions">
-                        <button type="button" class="action-btn view-btn" (click)="viewDocument(document)">
-                          <img src="assets/view.svg" alt="View" width="16" height="16" />
-                          VIEW
-                        </button>
-                        <button type="button" class="action-btn delete-btn" (click)="deleteDocument(document.id)">
-                          <img src="assets/delete.svg" alt="Delete" width="16" height="16" />
-                          DELETE
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Registration Certificate No: <span class="required">*</span></label>
+              <input type="text" formControlName="registrationCertificateNo">
             </div>
           </div>
+           <button type="submit" class="submit"
+              [disabled]="personalInfoForm.get('status')?.value !== 'Open'">
+              {{ loading ? 'Saving ...' : 'Save' }}
+            </button>
         </div>
       </form>
 
@@ -150,71 +159,345 @@
           <img src="assets/arrow-up.svg" alt="Back to top" width="16" height="16" />
           Back to top
         </button>
-        <button type="button" class="btn btn-primary" (click)="nextStep()">Next</button>
+        <button type="button" class="next" (click)="nextStep()">Next</button>
       </div>
     </div>
 
-    <!-- Step 2: Bank Details -->
+    <!-- Step 2: Area of Focus Details -->
     <div class="step-content" *ngIf="currentStep === 2">
-      <form [formGroup]="bankDetailsForm">
+      <form [formGroup]="areaOfFocusForm" (ngSubmit)="onSubmitAreaOfFocusInfo()">
         <div class="form-section">
-          <h2>Add Bank Details</h2>
-
+          <h4>Add Area Of Focus Details</h4>
           <div class="form-row">
             <div class="form-group">
-              <label>Bank Code: <span class="required">*</span></label>
-              <input type="text" formControlName="bankCode">
-            </div>
-            <div class="form-group">
-              <label>Bank Branch:</label>
-              <input type="text" formControlName="bankBranch">
-            </div>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label>Account No: <span class="required">*</span></label>
-              <input type="text" formControlName="accountNo">
-            </div>
-            <div class="form-group">
-              <label>Account Name: <span class="required">*</span></label>
-              <input type="text" formControlName="accountName">
+              <label>Area Of Focus: <span class="required">*</span></label>
+                 <ng-multiselect-dropdown
+                    [placeholder]="'Select area of focus'"
+                    [settings]="dropdownSettings"
+                    [data]="area_of_focus_items"
+                    formControlName="code"
+                    (onSelect)="onAreaSelect($event)"
+                    (onDeSelect)="onAreaDeSelect($event)"
+                    (onSelectAll)="onAreaSelectAll($event)"
+                    (onDeSelectAll)="onAreaDeSelectAll($event)"
+                    >
+                </ng-multiselect-dropdown>
             </div>
           </div>
         </div>
-
-        <!-- Bank Accounts Table -->
-        <div class="form-section" *ngIf="bankAccounts.length > 0">
-          <h3>Bank Accounts</h3>
-          <div class="bank-accounts-table-container">
-            <table class="bank-accounts-table">
+       <button type="submit" [disabled]="personalInfoForm.get('status')?.value !== 'Open'" class="submit">
+        {{ loading ? 'Saving ...' : 'Save'}}
+       </button>
+       </form>
+        <!-- Area of focus Table -->
+        @if(areaOfFocusList.length>0){
+          <div class="form-section">
+          <h3>Area Of Focus</h3>
+          <div class="table-container">
+            <table class="table">
               <thead>
                 <tr>
-                  <th>Bank Name</th>
-                  <th>Bank Branch Name</th>
-                  <th>Bank Account No</th>
-                  <th>Amount</th>
+                  <th>Area Of Focus</th>
+                  <!-- <th>Description</th> -->
                   <th>Action</th>
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let account of bankAccounts; let i = index" [class.striped]="i % 2 === 1">
-                  <td>{{ account.bankName }}</td>
-                  <td>{{ account.branchName }}</td>
-                  <td>{{ account.accountNo }}</td>
-                  <td>{{ account.amount }}</td>
+                @for(focus of areaOfFocusList; track focus.lineNo){
+                  <tr>
+                  <td>{{focus.code}}</td>
+                  <!-- <td>{{ focus.description }}</td> -->
                   <td>
-                    <button type="button" class="action-btn delete-btn" (click)="deleteBankAccount(account.id)">
+                    <button type="button" class="delete-btn" [disabled]="personalInfoForm.get('status')?.value !== 'Open'" (click)="deleteAreaOfFocus(focus.lineNo,'delete')">
                       <img src="assets/delete.svg" alt="Delete" width="16" height="16" />
-                      DELETE
+                      Delete
                     </button>
                   </td>
                 </tr>
+                 }
+              </tbody>
+            </table>
+          </div>
+        </div>}
+      <div class="step-actions">
+        <button type="button" class="back-to-top-btn" (click)="backToTop()">
+          <img src="assets/arrow-up.svg" alt="Back to top" width="16" height="16" />
+          Back to top
+        </button>
+        <div class="action-buttons">
+          <button type="button" class="back" (click)="previousStep()">Previous</button>
+          <button type="button" class="next" (click)="nextStep()">Next</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Geo Coverage-->
+      <div class="step-content" *ngIf="currentStep === 3">
+      <form [formGroup]="geographicCoverageForm" (ngSubmit)="onSubmitGeographicCoverageInfo()">
+        <div class="form-section">
+          <h4>Geographical Coverage Details</h4>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Geo Coverage Area: <span class="required">*</span></label>
+                <ng-multiselect-dropdown
+                    [placeholder]="'Select Geo-Location'"
+                    [settings]="dropdownSettings"
+                    [data]="geolocatio_Items"
+                    formControlName="country"
+                    (onSelect)="onGeoSelect($event)"
+                    (onDeSelect)="onGeoDeSelect($event)"
+                    (onSelectAll)="onGeoSelectAll($event)"
+                    (onDeSelectAll)="onGeoDeSelectAll($event)"
+                    >
+                </ng-multiselect-dropdown>
+            </div>
+          </div>
+        </div>
+         <button type="submit" [disabled]="personalInfoForm.get('status')?.value !== 'Open'" class="submit">
+          {{ loading ? 'Saving ...' : 'Save'}}
+         </button>
+        </form>
+        <!-- Geo Coverage Table -->
+        @if(geoCoverageList.length>0){
+          <div class="form-section">
+          <h3>Geo Coverage</h3>
+          <div class="table-container">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Country</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for(geo of geoCoverageList; track geo.lineNo){
+                <tr>
+                  <td>{{ geo.country }}</td>
+                  <td>
+                    <button type="button" class="delete-btn" [disabled]="personalInfoForm.get('status')?.value !== 'Open'" (click)="deleteGeoCoverarge(geo.lineNo,'delete')">
+                      <img src="assets/delete.svg" alt="Delete" width="16" height="16" />
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+                }
               </tbody>
             </table>
           </div>
         </div>
+      }
+      <div class="step-actions">
+        <button type="button" class="back-to-top-btn" (click)="backToTop()">
+          <img src="assets/arrow-up.svg" alt="Back to top" width="16" height="16" />
+          Back to top
+        </button>
+        <div class="action-buttons">
+          <button type="button" class="back" (click)="previousStep()">Previous</button>
+          <button type="button" class="next" (click)="nextStep()">Next</button>
+        </div>
+      </div>
+    </div>
+      <!-- Step 3: Experience -->
+    <div class="step-content" *ngIf="currentStep === 4">
+      <form [formGroup]="experienceForm" (ngSubmit)="onSubmitExperienceInfo()">
+        <div class="form-section">
+          <h4>Add Program Experience Details</h4>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Major Donor/Partner: <span class="required">*</span></label>
+              <input type="text" formControlName="majorDonorOrPartner">
+            </div>
+            <div class="form-group">
+              <label>Project Type: <span class="required">*</span></label>
+                <select formControlName="projectType" class="form-input">
+                  <option value="">Select</option>
+                  <option value="Prime">Prime</option>
+                  <option value="Sub-Prime">Sub-Prime</option>
+                </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Start Date: <span class="required">*</span></label>
+              <input type="date" formControlName="startDate">
+            </div>
+            <div class="form-group">
+              <label>End Date:</label>
+              <input type="date" formControlName="endDate">
+            </div>
+            <div *ngIf="experienceForm.hasError('dateRangeInvalid')" style="color:red;">
+              End date cannot be earlier than start date.
+            </div>
+          </div>
+          <div class="form-row">
+             <div class="form-group">
+              <label>Currency: <span class="required">*</span></label>
+                <select formControlName="currencyCode">
+                  <option value="">Select</option>
+                  @for (currency_type of currency_code_list; track currency_type.code) {
+                  <option [value]="currency_type.code">
+                    {{ currency_type.description}}
+                  </option>}
+                </select>
+            </div>
+            <div class="form-group">
+              <label>Project Value: <span class="required">*</span></label>
+              <input type="text" formControlName="projectValue">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Project Implementation Experience: <span class="required">*</span></label>
+                <textarea formControlName="description" rows="4" cols="40"
+                placeholder="Enter your description here..."></textarea>
+            </div>
+          </div>
+        </div>
+         <button type="submit" class="submit" [disabled]="personalInfoForm.get('status')?.value !== 'Open'" [disabled]="experienceForm.invalid">
+          {{ loading ? 'Saving...' : (isEditMode ? 'Update' : 'Save') }}
+          </button>
       </form>
+
+        <!-- Program Experience Table -->
+        @if(experience.length>0)
+        {
+          <div class="form-section">
+          <h3>Program Experience</h3>
+          <div class="table-container">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Major Donor</th>
+                  <th>Project Value</th>
+                  <th>Start Date</th>
+                  <th>End Date</th>
+                  <th>Description</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for(experience of experience; track experience.lineNo){
+                  <tr>
+                  <td>{{ experience.majorDonorOrPartner }}</td>
+                  <td>{{ experience.projectValue}}</td>
+                  <td>{{ experience.startDate}}</td>
+                  <td>{{ experience.endDate}}</td>
+                  <td>{{ experience.description}}</td>
+                  <td>
+                    <button type="button" class="edit-btn" [disabled]="personalInfoForm.get('status')?.value !== 'Open'" (click)="editExperience(experience) ">
+                      <img src="assets/edit.svg" alt="Delete" width="16" height="16" />
+                      Edit
+                    </button>
+                    <button type="button" class="delete-btn" [disabled]="personalInfoForm.get('status')?.value !== 'Open'" (click)="deleteExperience(experience,'delete')">
+                      <img src="assets/delete.svg" alt="Delete" width="16" height="16" />
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      }
+      <div class="step-actions">
+        <button type="button" class="back-to-top-btn" (click)="backToTop()">
+          <img src="assets/arrow-up.svg" alt="Back to top" width="16" height="16" />
+          Back to top
+        </button>
+        <div class="action-buttons">
+          <button type="button" class="back" (click)="previousStep()">Previous</button>
+          <button type="button" class="next" (click)="nextStep()">Next</button>
+        </div>
+      </div>
+    </div>
+          <!-- Step 4: Contact Person -->
+    <div class="step-content" *ngIf="currentStep === 5">
+      <form [formGroup]="contactPersonForm" (ngSubmit)="contactPersonInfo()">
+        <div class="form-section">
+          <h4>Add Contact Person Details</h4>
+           <div class="form-row">
+            <div class="form-group">
+              <label>Contact Type(): <span class="required">*</span></label>
+                <select formControlName="contactType" class="form-input">
+                  <option value="">Select</option>
+                  <option value="Primary">Primary Contact</option>
+                  <option value="Secondary">Secondary Contact</option>
+                  <option value="Other">Other Contact</option>
+                </select>
+            </div>
+           </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Role: <span class="required">*</span></label>
+                <select formControlName="type">
+                  <option value="" [selected]=true disabled>Select</option>
+                  @for (contact_type of contact_type_list; track contact_type.code) {
+                  <option [value]="contact_type.code">
+                    {{ contact_type.description}}
+                  </option>}
+                </select>
+            </div>
+            <div class="form-group">
+              <label>Email: <span class="required">*</span></label>
+              <input type="email" formControlName="emailAddress">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Phone Number: <span class="required">*</span></label>
+              <input type="text" formControlName="phoneNo">
+            </div>
+             <div class="form-group">
+              <label>Full Name: <span class="required">*</span></label>
+              <input type="text" formControlName="names">
+            </div>
+          </div>
+         <button
+          type="submit" class="submit"
+          [disabled]="personalInfoForm.get('status')?.value !== 'Open' || loading">
+          {{ loading ? 'Saving...' : (isEditMode ? 'Update' : 'Save') }}
+        </button>
+        </div>
+       </form>
+        <!-- Contact Person Table -->
+        @if(contact_person_details_list.length>0){
+          <div class="form-section">
+          <h3>Contact Person</h3>
+          <div class="table-container">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Full Name</th>
+                  <th>Email Address</th>
+                  <th>Mobile No.</th>
+                  <th>Contact Type</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+              @for (contact of contact_person_details_list; track contact.lineNo){
+                  <tr>
+                  <td>{{ contact.names }}</td>
+                  <td>{{ contact.emailAddress }}</td>
+                  <td>{{ contact.phoneNo }}</td>
+                  <td>{{ contact.contactType }}</td>
+                  <td>
+                       <button type="button" class="edit-btn" [disabled]="personalInfoForm.get('status')?.value !== 'Open'" (click)="editConatct(contact) ">
+                      <img src="assets/edit.svg" alt="Delete" width="16" height="16" />
+                      Edit
+                    </button>
+                   <button type="button" class="delete-btn" [disabled]="personalInfoForm.get('status')?.value !== 'Open'"
+                    (click)="deleteConatacPerson(contact,'delete')">
+                   <img src="assets/delete.svg" width="16" height="16">Delete</button>
+                  </td>
+                </tr>
+               }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      }
 
       <div class="step-actions">
         <button type="button" class="back-to-top-btn" (click)="backToTop()">
@@ -222,25 +505,98 @@
           Back to top
         </button>
         <div class="action-buttons">
-          <button type="button" class="btn btn-secondary" (click)="previousStep()">Previous</button>
-          <button type="button" class="btn btn-primary" (click)="nextStep()">Next</button>
+          <button type="button" class="back" (click)="previousStep()">Previous</button>
+          <button type="button" class="next" (click)="nextStep()">Next</button>
         </div>
       </div>
     </div>
-
-    <!-- Step 3: Summary -->
-    <div class="step-content" *ngIf="currentStep === 3">
+      <!-- Step 5: Documents -->
+    <div class="step-content" *ngIf="currentStep === 6">
+      <form [formGroup]="documentForm" (ngSubmit)="submitDocument()">
       <div class="form-section">
-        <h2>Personal Information</h2>
+       <div class="upload-section">
+         <div class="form-row">
+        <div class="form-group">
+          <label>Document Code</label>
+           <select formControlName="documentCode">
+              <option value="" [selected]=true disabled>Select</option>
+               @for (document of document_list; track document.code) {
+                <option [value]="document.code">
+                 {{ document.description}}
+              </option>}
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Upload File</label>
+          <div class="file-upload-row">
+            <input type="text" [value]="selectedFile?.name || ''" placeholder="Choose a File..." readonly>
+            <input type="file" #fileInput accept=".pdf" hidden (change)="onFileSelected($event)">
+            <button type="button" class="choose-file-btn" (click)="fileInput.click()">
+              Choose File
+            </button>
+          </div>
+        </div>
+        </div>
+        <button type="submit" class="upload-btn" [disabled]="personalInfoForm.get('status')?.value !== 'Open'" [disabled]="!documentForm.get('File')!.value">
+         {{ loading ? 'Uploading...' : 'Upload' }}
+        </button>
+      </div>
+      </div>
+      </form>
+          <!-- Document Table -->
+        @if(uploaded_document_list.length>0){
+          <div class="form-section">
+          <h3>Uploaded Document(s)</h3>
+          <div class="table-container">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Document Type</th>
+                  <th>Description</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+              @for (contact of uploaded_document_list; track contact.lineNo){
+                  <tr>
+                  <td>{{ contact.documentCode }}</td>
+                  <td>{{ contact.documentDescription }}</td>
+                  <td>
+                  <ng-container *ngIf="contact.localFileURL;">
+                    <a [href]="contact.localFileURL" target="_blank" rel="noopener noreferrer">View Document</a>
+                  </ng-container>
+                  </td>
+                </tr>
+               }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      }
+      <div class="step-actions">
+        <button type="button" class="back-to-top-btn" (click)="backToTop()">
+          <img src="assets/arrow-up.svg" alt="Back to top" width="16" height="16" />
+          Back to top
+        </button>
+        <div class="action-buttons">
+          <button type="button" class="back" (click)="previousStep()">Previous</button>
+          <button type="button" class="next" (click)="nextStep()">Next</button>
+        </div>
+      </div>
+    </div>
+    <!-- Step 6: Summary -->
+    <div class="step-content" *ngIf="currentStep === 7">
+      <div class="form-section">
+        <h4>Personal Information</h4>
 
         <div class="summary-grid">
           <div class="summary-item">
-            <label>Registration No</label>
-            <span>{{ personalInfoForm.get('registrationNo')?.value }}</span>
+            <label>Organization Name</label>
+            <span>{{ personalInfoForm.get('legalNameOfOrganization')?.value }}</span>
           </div>
           <div class="summary-item">
-            <label>Organization Name</label>
-            <span>{{ personalInfoForm.get('organizationName')?.value }}</span>
+            <label>Tax Registration No</label>
+            <span>{{ personalInfoForm.get('taxRegistrationNumber')?.value }}</span>
           </div>
           <div class="summary-item">
             <label>Physical Address</label>
@@ -248,98 +604,165 @@
           </div>
           <div class="summary-item">
             <label>Phone Number</label>
-            <span>{{ personalInfoForm.get('phoneNumber')?.value }}</span>
+            <span>{{ personalInfoForm.get('phoneNo')?.value }}</span>
           </div>
           <div class="summary-item">
-            <label>Pin No</label>
-            <span>{{ personalInfoForm.get('pinNo')?.value }}</span>
+            <label>Trading/Operaing Name</label>
+            <span>{{ personalInfoForm.get('tradingName')?.value }}</span>
           </div>
           <div class="summary-item">
-            <label>Unique Entity Identifier No</label>
-            <span>{{ personalInfoForm.get('uniqueEntityId')?.value }}</span>
+            <label>Date of Registration</label>
+            <span>{{ personalInfoForm.get('dateRegistered')?.value }}</span>
           </div>
           <div class="summary-item">
-            <label>NGO Type</label>
-            <span>{{ personalInfoForm.get('ngoType')?.value }}</span>
+            <label>Type Of Governing Body</label>
+            <span>{{ personalInfoForm.get('governingBody')?.value }}</span>
           </div>
           <div class="summary-item">
             <label>Email Address</label>
             <span>{{ personalInfoForm.get('emailAddress')?.value }}</span>
           </div>
+          <div class="summary-item">
+            <label>Acronym(If Any)</label>
+            <span>{{ personalInfoForm.get('acronym')?.value }}</span>
+          </div>
+          <div class="summary-item">
+            <label>Postal Address</label>
+            <span>{{ personalInfoForm.get('postalAddress')?.value }}</span>
+          </div>
+          <div class="summary-item">
+            <label>Website</label>
+            <span>{{ personalInfoForm.get('website')?.value }}</span>
+          </div>
+          <div class="summary-item">
+            <label>Country Of Registration</label>
+            <span>{{ personalInfoForm.get('country')?.value }}</span>
+          </div>
+          <div class="summary-item">
+            <label>Registration Certificate No</label>
+            <span>{{ personalInfoForm.get('registrationCertificateNo')?.value }}</span>
+          </div>
+            <div class="summary-item">
+            <label>Status</label>
+            <span>{{ personalInfoForm.get('status')?.value }}</span>
+          </div>
         </div>
       </div>
-
-      <!-- Uploaded Documents -->
-      <div class="form-section" *ngIf="uploadedDocuments.length > 0">
-        <h3>Uploaded Documents</h3>
-        <div class="documents-table-container">
-          <table class="documents-table">
-            <thead>
-              <tr>
-                <th>Document Name</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let document of uploadedDocuments; let i = index" [class.striped]="i % 2 === 1">
-                <td>{{ document.name }}</td>
-                <td>
-                  <div class="document-actions">
-                    <button type="button" class="action-btn view-btn" (click)="viewDocument(document)">
-                      <img src="assets/view.svg" alt="View" width="16" height="16" />
-                      VIEW
-                    </button>
-                    <button type="button" class="action-btn delete-btn" (click)="deleteDocument(document.id)">
-                      <img src="assets/delete.svg" alt="Delete" width="16" height="16" />
-                      DELETE
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+         <!-- Area Of Focus -->
+      @if(areaOfFocusList.length>0){
+          <div class="form-section">
+          <h3>Area Of Focus</h3>
+          <div class="table-container">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Area Of Focus</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for(focus of areaOfFocusList; track focus.lineNo){
+                  <tr>
+                  <td>{{focus.code}}</td>
+                  <td>{{ focus.description }}</td>
+                </tr>
+                 }
+              </tbody>
+            </table>
+          </div>
+        </div>}
+        <!-- Geo Coverage Table -->
+        @if(geoCoverageList.length>0){
+          <div class="form-section">
+          <h3>Geo Coverage</h3>
+          <div class="table-container">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Country</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for(geo of geoCoverageList; track geo.lineNo){
+                <tr>
+                  <td>{{ geo.country }}</td>
+                </tr>
+                }
+              </tbody>
+            </table>
+          </div>
         </div>
-      </div>
+      }
 
-      <!-- Bank Accounts -->
-      <div class="form-section" *ngIf="bankAccounts.length > 0">
-        <h3>Bank Accounts</h3>
-        <div class="bank-accounts-table-container">
-          <table class="bank-accounts-table">
-            <thead>
-              <tr>
-                <th>Bank Name</th>
-                <th>Bank Branch Name</th>
-                <th>Bank Account No</th>
-                <th>Amount</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let account of bankAccounts; let i = index" [class.striped]="i % 2 === 1">
-                <td>{{ account.bankName }}</td>
-                <td>{{ account.branchName }}</td>
-                <td>{{ account.accountNo }}</td>
-                <td>{{ account.amount }}</td>
-                <td>
-                  <button type="button" class="action-btn delete-btn" (click)="deleteBankAccount(account.id)">
-                    <img src="assets/delete.svg" alt="Delete" width="16" height="16" />
-                    DELETE
+        @if(experience.length>0)
+        {
+          <div class="form-section">
+          <h3>Program Experience</h3>
+          <div class="table-container">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Major Donor</th>
+                  <th>Project Value</th>
+                  <th>Start Date</th>
+                  <th>End Date</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for(experience of experience; track experience.lineNo){
+                  <tr>
+                  <td>{{ experience.majorDonorOrPartner }}</td>
+                  <td>{{ experience.projectValue }}</td>
+                  <td>{{ experience.startDate }}</td>
+                  <td>{{ experience.endDate }}</td>
+                  <td>{{ experience.description}}</td>
+                </tr>
+              }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      }
+           @if(contact_person_details_list.length>0){
+          <div class="form-section">
+          <h3>Contact Person</h3>
+          <div class="table-container">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Full Name</th>
+                  <th>Email Address</th>
+                  <th>Mobile No.</th>
+                  <th>Contact Type</th>
+                </tr>
+              </thead>
+              <tbody>
+              @for (contact of contact_person_details_list; track contact.lineNo){
+                  <tr>
+                  <td>{{ contact.names }}</td>
+                  <td>{{ contact.emailAddress }}</td>
+                  <td>{{ contact.phoneNo }}</td>
+                  <td>{{ contact.contactType }}</td>
+                </tr>
+               }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      }
+            <div class="confirmation-text">
+               <input type="checkbox" (change)="onCheckboxChange($event)" />
+                  <span>I confirm that the provided information is accurate.</span>
+                  <button
+                    class="submit" (click)="onSubmitProfile()"
+                    [disabled]="personalInfoForm.get('status')?.value !== 'Open' || !isConfirmed || loading">
+                    {{ loading ? 'Submitting...' : 'Submit' }}
                   </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+            </div>
 
-      <div class="confirmation-text">
-        <p>Confirm the provided details and click submit button</p>
-      </div>
-
-      <div class="final-actions">
-        <button type="button" class="btn btn-secondary" (click)="previousStep()">Previous</button>
-        <button type="button" class="btn btn-primary" (click)="onSubmit()">SUBMIT</button>
+      <div class="action-buttons">
+       <button type="button" class="back" (click)="previousStep()">Previous</button>
       </div>
     </div>
 

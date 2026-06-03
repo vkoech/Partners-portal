@@ -1,261 +1,208 @@
-<div class="new-payment-surrender-container">
+<div class="new-payment-request-container">
   <app-sidebar [sidebarType]="'finance'" [(open)]="sidebarOpen"></app-sidebar>
-  
+
   <div class="main-content">
-    <app-header 
-      title="PAYMENT SURRENDER" 
-      subtitle="Finance Services/Payment Surrender"
+    <app-header
+      title="Cash Surrender"
+      subtitle="Finance Services/Payment Request"
       headerClass="finance"
       [showBackButton]="true"
       [(sidebarOpen)]="sidebarOpen">
     </app-header>
-    
-    <div class="new-payment-surrender-content">
-      <form [formGroup]="paymentSurrenderForm" (ngSubmit)="onSubmit()" class="form">
-        <div class="new-payment-surrender-section card-effect">
-          <div class="section-header">
-            <h2>PAYMENT SURRENDER</h2>
+    <div class="new-payment-request-content">
+     <div class="new-payment-request-section card-effect">
+       <div class="section-header">
+        <h2>Cash Surrender</h2>
+       </div>
+    <div class="new-payment-request-content">
+    <form [formGroup]="surrenderForm">
+      <div class="form-section">
+         <div class="form-group">
+           <label>No.</label>
+            <input type="text" formControlName="no" readonly>
           </div>
-          
-          <div class="section-body">
-            <!-- Project Details -->
-            <div class="form-section">
-              <h3>Project Details</h3>
-              <div class="form-layout">
-                <div class="form-row">
-                  <div class="form-group full-width">
-                    <label>Select Payment Request: *</label>
-                    <select formControlName="paymentRequest">
-                      <option value="">Select Payment Request</option>
-                      <option value="PR-001">PR-001 - Medical Supplies</option>
-                      <option value="PR-002">PR-002 - Equipment Purchase</option>
-                    </select>
-                  </div>
-                </div>
-                
-                <div class="form-row">
-                  <div class="form-group">
-                    <label>Currency Code:</label>
-                    <select formControlName="currencyCode">
-                      <option value="">KES</option>
-                      <option value="USD">USD</option>
-                      <option value="EUR">EUR</option>
-                    </select>
-                  </div>
-                  <div class="form-group">
-                    <label>Disbursed Amount:</label>
-                    <input type="number" formControlName="disbursedAmount" placeholder="120,000" readonly>
-                  </div>
-                </div>
-                
-                <div class="form-row">
-                  <div class="form-group">
-                    <label>Currency Code:</label>
-                    <select formControlName="surrenderCurrencyCode">
-                      <option value="">KES</option>
-                      <option value="USD">USD</option>
-                      <option value="EUR">EUR</option>
-                    </select>
-                  </div>
-                  <div class="form-group">
-                    <label>Surrendered Amount:</label>
-                    <input type="number" formControlName="surrenderedAmount" placeholder="40,000">
-                  </div>
-                </div>
-                
-                <div class="form-row">
-                  <div class="form-group">
-                    <label>Surrender Date:</label>
-                    <input type="date" formControlName="surrenderDate">
-                  </div>
-                  <div class="form-group">
-                    <!-- Empty for spacing -->
-                  </div>
-                </div>
-                
-                <div class="form-row">
-                  <div class="form-group full-width">
-                    <label>Description</label>
-                    <textarea formControlName="description" placeholder="Description" rows="3"></textarea>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <!-- Supporting Documents -->
-            <div class="form-section">
-              <h3>Supporting Documents</h3>
-              <div class="documents-layout">
-                <div class="upload-section">
-                  <div class="form-row">
-                    <div class="form-group">
-                      <label>Document Name:</label>
-                      <select>
-                        <option value="">Cash Request</option>
-                        <option value="financial-report">Financial Report</option>
-                        <option value="bank-reconciliation">Bank Reconciliation</option>
-                        <option value="vouchers">Vouchers</option>
-                      </select>
-                    </div>
-                    <div class="form-group">
-                      <label>Upload File</label>
-                      <div class="file-upload-row">
-                        <input type="text" placeholder="Choose a File..." readonly>
-                        <button type="button" class="choose-file-btn" (click)="triggerFileUpload()">Choose File</button>
-                      </div>
-                    </div>
-                  </div>
-                  <button type="button" class="upload-btn">UPLOAD</button>
-                </div>
-              </div>
-              
-              <!-- Uploaded Documents Table -->
-              <div class="uploaded-documents" *ngIf="uploadedDocuments.length > 0">
-                <h4>Uploaded Documents</h4>
-                <div class="documents-table-container">
-                  <table class="documents-table">
-                    <thead>
-                      <tr>
-                        <th>Document Name</th>
-                        <th>Action</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr *ngFor="let document of uploadedDocuments; let i = index" [class.striped]="i % 2 === 1">
-                        <td>{{ document.name }}</td>
-                        <td>
-                          <div class="document-actions">
-                            <button type="button" class="action-btn view-btn" (click)="viewDocument(document)">
-                              <img src="assets/view.svg" alt="View" width="16" height="16" />
-                              VIEW
-                            </button>
-                            <button type="button" class="action-btn delete-btn" (click)="deleteDocument(document.id)">
-                              <img src="assets/delete.svg" alt="Delete" width="16" height="16" />
-                              DELETE
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-            
-            <!-- Add New Request Line Button -->
-            <button type="button" class="add-new-btn" (click)="openAddLineModal()">
-              <img src="assets/Add.svg" alt="Add" width="24" height="24" />
-              ADD NEW REQUEST LINE
-            </button>
-            
-            <!-- Payment Surrender Lines Table -->
-            <div class="surrender-lines-table-container" *ngIf="paymentSurrenderLines.length > 0">
-              <table class="surrender-lines-table">
-                <thead>
-                  <tr>
-                    <th>No.</th>
-                    <th>Document Date</th>
-                    <th>Currency</th>
-                    <th>Amount</th>
-                    <th>Date To</th>
-                    <th>Description</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let line of paymentSurrenderLines; let i = index" [class.striped]="i % 2 === 1">
-                    <td>AR_{{ (i + 31).toString().padStart(4, '0') }}</td>
-                    <td>10/5/2025</td>
-                    <td>{{ line.currencyCode }}.</td>
-                    <td>{{ line.amount | currency:'KSH':'symbol':'1.0-0' }}</td>
-                    <td>20/5/2025</td>
-                    <td>{{ line.description }}</td>
-                    <td>Open</td>
-                    <td>
-                      <div class="line-actions">
-                        <button type="button" class="action-btn delete-btn" (click)="deleteLine(line.id)">
-                          <img src="assets/delete.svg" alt="Delete" width="16" height="16" />
-                          DELETE
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-          
-          <!-- Form Actions -->
-          <div class="section-footer">
-            <button type="submit" class="btn btn-primary">submit</button>
-            <button type="button" class="btn btn-secondary" (click)="onCancel()">Cancel</button>
-          </div>
-        </div>
-      </form>
-    </div>
-    
-    <app-footer></app-footer>
-  </div>
-</div>
+         <div class="form-row">
 
-<!-- Add/Edit Payment Surrender Line Modal -->
-<div class="modal-overlay" *ngIf="showAddLineModal" (click)="closeAddLineModal()">
-  <div class="modal-content add-line-modal" (click)="$event.stopPropagation()">
-    <div class="modal-header">
-      <h2>Payment Surrender Line</h2>
-    </div>
-    
-    <form [formGroup]="paymentSurrenderLineForm">
-      <div class="modal-body">
-        <div class="form-section">
-          <h3>Request Details</h3>
-          <div class="form-row">
-            <div class="form-group">
-              <label>Currency Code</label>
-              <select formControlName="currencyCode">
-                <option value="">Currency Code</option>
-                <option *ngFor="let currency of currencyOptions" [value]="currency.code">
-                  {{ currency.code }} - {{ currency.name }}
-                </option>
+         </div>
+        <div class="form-row">
+          <div class="form-group">
+           <label>Select Cash Request: *</label>
+            <select formControlName="paymentRequestNo" (change)="cashRequest()">
+                <option value="" [selected]="true" disabled>Select</option>
+                @for (cash of cash_list; track cash.paymentRequestNo) {
+                  <option [value]="cash.paymentRequestNo">
+                    {{ cash.description }}
+                  </option>
+                }
               </select>
-            </div>
-            <div class="form-group">
-              <label>Amount</label>
-              <input type="number" formControlName="amount" placeholder="0">
-            </div>
           </div>
-          
-          <div class="form-row">
-            <div class="form-group">
-              <label>Currency Code</label>
-              <select formControlName="secondCurrencyCode">
-                <option value="">Currency Code</option>
-                <option *ngFor="let currency of currencyOptions" [value]="currency.code">
-                  {{ currency.code }} - {{ currency.name }}
-                </option>
-              </select>
-            </div>
-            <div class="form-group">
-              <!-- Empty for spacing -->
-            </div>
-          </div>
-          
-          <div class="form-row">
-            <div class="form-group full-width">
-              <label>Description</label>
-              <textarea formControlName="description" placeholder="Description" rows="4"></textarea>
-            </div>
+          <div class="form-group">
+              <label>Currency</label>
+              <input type="text" formControlName="currencyCode" readonly>
           </div>
         </div>
-      </div>
-      
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" (click)="submitLine()">
-          {{ isEditMode ? 'Update' : 'Add line' }}
+        <div class="form-row">
+          <div class="form-group">
+            <label>Approved Amount:</label>
+              <input type="text" formControlName="j" readonly>
+            </div>
+            <div class="form-group">
+            <label>Amount Spent:</label>
+             <input type="text" formControlName="actualSpent">
+            </div>
+          </div>
+         <div class="form-group">
+           <label>Description</label>
+            <textarea rows="2" formControlName="description"></textarea>
+          </div>
+       <div class="form-row">
+        <div class="form-group">
+          <label>Document Code</label>
+          <select [formControl]="documentCodeControl" (change)="patchDocumentCode($event)">
+            <option value="" disabled selected>Select</option>
+            @for (doc of doc_list; track doc.code) {
+              <option [value]="doc.code">{{ doc.description }}</option>
+            }
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Upload PDF (Max 5MB)</label>
+          <div class="file-upload-row">
+            <input type="text" readonly [value]="selectedFile?.name || ''" placeholder="Choose a PDF file">
+            <input type="file" hidden #fileInput accept=".pdf" (change)="onFileSelected($event)">
+            <button type="button" class="choose-file-btn" (click)="fileInput.click()">
+              Choose File
+            </button>
+          </div>
+        </div>
+        </div>
+        <button type="button" class="upload-btn" (click)="uploadDocument()"
+          [hidden]="!documentCodeControl.value || !fileControl.value"
+          [disabled]="!documentCodeControl.value || !fileControl.value || uploading">
+          {{ uploading ? 'Uploading...' : 'Upload Document' }}
         </button>
-        <button type="button" class="btn btn-secondary" (click)="closeAddLineModal()">Cancel</button>
+        @if(doc_list.length>0){
+          <h3>Uploaded Document(s)</h3>
+          <div class="table-container">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Document Type</th>
+                  <th>Description</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+              @for (contact of doc_list; track contact.lineNo){
+              @if(contact.localFileURL && contact.localFileURL.trim().length > 0){
+                <tr>
+                  <td>{{ contact.documentCode }}</td>
+                  <td>{{ contact.documentDescription }}</td>
+                  <td>
+                  @if(contact.localFileURL){
+                      <ng-container>
+                      <a [href]="contact.localFileURL" target="_blank" rel="noopener noreferrer">View Document</a>
+                    </ng-container>
+                   }
+                  </td>
+                </tr>
+                }
+               }
+              </tbody>
+            </table>
+          </div>
+          }
+        </div>
+     </form>
+    </div>
+  @if(showModal)
+  {
+    <div class="custom-modal-backdrop">
+    <div class="custom-modal">
+      <h3>Cash Surender</h3>
+        <form [formGroup]="surrenderLineForm">
+          <div class="modal-row">
+            <div class="form-field">
+             <label>Category</label>
+               <input formControlName="category">
+            </div>
+            </div>
+           <div class="modal-row">
+             <div class="form-field">
+                <label>Amount Received</label>
+               <input formControlName="amountAdvanced">
+              </div>
+             <div class="form-field">
+               <label>Currency</label>
+               <input formControlName="currencyCode">
+            </div>
+          </div>
+           <div class="modal-row">
+             <div class="form-field">
+               <label>Amount Spent</label>
+               <input formControlName="actualSpent">
+            </div>
+            </div>
+          <div class="modal-row">
+            <div class="form-field full-width">
+              <label>Description</label>
+              <textarea formControlName="description"></textarea>
+            </div>
+          </div>
+          <div class="modal-actions">
+            <button type="button"  class="submit" (click)="submitLine()">
+             {{ loadingLines ? 'Updating ...' : 'Update'}}
+            </button>
+            <button type="button" class="submit" (click)="closeCustomModal()">Cancel</button>
+          </div>
+        </form>
       </div>
-    </form>
-  </div>
-</div>
+    </div>
+  }
+
+      <table class="request-line-table">
+              <thead>
+                <tr>
+                  <th>Category</th>
+                  <th>Approved Amount</th>
+                  <th>Amount Spent</th>
+                  <th>Difference</th>
+                  <th>Description</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+ 
+              <tbody>
+               @for(row of paymentApplicationLines; track row)
+                 {
+                <tr>
+                  <td>{{row.category}}</td>
+                  <td>{{row.amountAdvanced}}</td>
+                  <td>{{row.actualSpent}}</td>
+                  <td>{{ row.amountAdvanced - row.actualSpent }}</td>
+                  <td>{{row.description}}</td>
+                  <td>
+                   <button type="button" class="edit-btn" (click)="editRequest(row)">
+                      <img src="assets/edit.svg" alt="Edit" width="16" height="16" />
+                      Edit
+                   </button>
+                  </td>
+                </tr>
+              }
+              </tbody>
+            </table>
+              <div class="section-footer">
+            <input type="checkbox" (change)="onCheckboxChange($event)" />
+            <span>I confirm that the provided information is accurate.</span>
+            <button class="submit"
+             (click)="onSubmitPaymentHeader()"
+             [disabled]="!isConfirmed">
+             {{ loading ? 'Submitting...' : 'Submit'}}
+            </button>
+            <button class="submit" (click)="onCancel()">Close</button>
+          </div>
+              <app-footer></app-footer>
+            </div>
+    </div>
+    </div>
+

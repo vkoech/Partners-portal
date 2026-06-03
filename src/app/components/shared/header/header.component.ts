@@ -1,8 +1,9 @@
-import { Component, Input, OnInit, OnDestroy, Output, EventEmitter } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, Output, EventEmitter, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { DataService, User } from '../../../services/data.service';
+import { AuthService, AuthUser } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-header',
@@ -22,14 +23,17 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   currentUser: User | null = null;
   dashboardMetrics: any;
+  user: AuthUser | null = null;
 
-  constructor(
-    private router: Router,
-    private dataService: DataService
-  ) {}
+
+  private authService = inject(AuthService);
+  private router = inject(Router);
+  private dataService = inject(DataService);
 
   ngOnInit() {
     // Subscribe to current user
+    this.user= this.authService.getLoggedInUser();
+
     this.dataService.currentUser$
       .pipe(takeUntil(this.destroy$))
       .subscribe(user => {

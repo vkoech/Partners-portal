@@ -1,11 +1,16 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { SidebarComponent } from '../../shared/sidebar/sidebar.component';
 import { HeaderComponent } from '../../shared/header/header.component';
 import { FooterComponent } from '../../shared/footer/footer.component';
+import { NotificationService } from '../../../services/notification.service';
+import { Payment } from '../../../services/payment';
+import { RegistrationService } from '../../../services/registration-service';
+import { AuthService, AuthUser } from '../../../services/auth.service';
+import { CashSurrenderService } from '../../../services/cash-surrender-service';
 
 export interface PaymentSurrenderLine {
   id: string;
@@ -32,63 +37,84 @@ export interface UploadedDocument {
 })
 export class NewPaymentSurrenderComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
-  
+
   sidebarOpen = false;
-  paymentSurrenderForm!: FormGroup;
-  paymentSurrenderLineForm!: FormGroup;
+  surrenderForm!: FormGroup;
+  surrenderLineForm!: FormGroup;
   showAddLineModal = false;
   isEditMode = false;
-  currentEditingLine: PaymentSurrenderLine | null = null;
-  
-  paymentSurrenderLines: PaymentSurrenderLine[] = [
-    {
-      id: '1',
-      currencyCode: 'KSH',
-      amount: 16000,
-      description: 'Cooperate Meeting'
-    }
-  ];
-  
-  uploadedDocuments: UploadedDocument[] = [
-    {
-      id: '1',
-      name: 'Financial Report',
-      type: 'PDF',
-      size: 1024000,
-      uploadDate: '2025-01-15'
-    },
-    {
-      id: '2',
-      name: 'Bank Reconciliation',
-      type: 'PDF',
-      size: 2048000,
-      uploadDate: '2025-01-15'
-    },
-    {
-      id: '3',
-      name: 'Vouchers',
-      type: 'PDF',
-      size: 1536000,
-      uploadDate: '2025-01-15'
-    }
-  ];
-  
-  currencyOptions = [
-    { code: 'KSH', name: 'Kenyan Shilling' },
-    { code: 'USD', name: 'US Dollar' },
-    { code: 'EUR', name: 'Euro' }
-  ];
+  showModal = false;
+  loading=false;
+  loadingLines=false;
+  subgranteeNo: any;
+  no: string;
+  paymentApplicationLines: any;
+  project_code_list: any;
+  currency_code_list: any;
+  area_of_focus_items: any;
+  isConfirmed = false;
+  category_list: any;
+  cash_list:any
+  email: any;
+  company: any;
+  user: AuthUser | null = null;
+  document_list: any;
+  doc_list:any
+  selectedFile: File | null = null;
+  uploading = false;
+  documentCodeControl = new FormControl('', Validators.required);
+  fileControl = new FormControl<File | null>(null, Validators.required);
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private paymentService: Payment,
+    private notificationService: NotificationService,
+    private registrationService: RegistrationService,
+    private authService:AuthService,
+    private cashSurrenderService: CashSurrenderService,
   ) {
     this.initializeForms();
+    const encodedNo = this.route.snapshot.paramMap.get('id');
+      if (encodedNo) {
+        this.no = atob(encodedNo);
+      }
+    this.surrenderForm.patchValue({
+      no: this.no
+    });
+    this.user = this.authService.getLoggedInUser();
+    this.subgranteeNo = this.user?.partnerAccountNo;
+    this.email=this.user?.emailAddress;
+    this.company=this.user?.companyKey;
   }
 
   ngOnInit(): void {
-    // Initialize component
+    this.cashSurrenderService.getSingleCashSurrender(this.no, this.company).subscribe(data=>{
+        // this.surrenderForm.patchValue(data);
+      });
+    this.paymentService.getProjectCodes(this.company, this.subgranteeNo).subscribe(data=>{
+        this.project_code_list=data;
+      });
+    this.paymentService.getcurrencyCodes(this.company).subscribe(data=>{
+        this.currency_code_list=data;
+      });
+    this.paymentService.getCategories(this.company).subscribe(data=>{
+        this.category_list=data;
+      });
+    this.cashSurrenderService.getPostedCashRequests(this.email, this.company).subscribe(data=>{
+       this.cash_list = data.map((item: { no: string; description: any; }) => {
+        return {
+          ...item,
+          description: item.no + ' - ' + (item.description ?? '')
+        };
+      });
+      });
+    // this.registrationService.getAreaOfFocus().subscribe(data => {
+    //   this.area_of_focus_items = data;
+    // });
+
+    this.getUploadedPortalAttachments()
   }
 
   ngOnDestroy() {
@@ -97,120 +123,225 @@ export class NewPaymentSurrenderComponent implements OnInit, OnDestroy {
   }
 
   private initializeForms() {
-    this.paymentSurrenderForm = this.fb.group({
-      paymentRequest: ['', Validators.required],
-      currencyCode: ['KES'],
-      disbursedAmount: [120000],
-      surrenderCurrencyCode: ['KES'],
-      surrenderedAmount: ['', [Validators.required, Validators.min(1)]],
-      surrenderDate: ['', Validators.required],
-      description: ['', Validators.required]
+    this.surrenderForm = this.fb.group({
+      no: [{ value: '', disabled: true }],
+      emailAddress: [''],
+      subgranteeNo: [''],
+      documentDate: [''],
+      paymentRequest: [''],
+      currencyCode: [''],
+      amountAdvanced: [{ value: '', disabled: true }],
+      disbursedAmountLCY:[{value: '', disabled: true}],
+      actualSpent: [{ value: '', disabled: true }],
+      surrenderedAmountLCY:[{ value: '', disabled: true }],
+      startDate: [''],
+      endDate: [''],
+      surrenderDate: [''],
+      paymentRequestNo:[''],
+      description:[''],
+      company:[''],
     });
 
-    this.paymentSurrenderLineForm = this.fb.group({
-      currencyCode: ['', Validators.required],
-      amount: ['', [Validators.required, Validators.min(1)]],
-      secondCurrencyCode: [''],
-      description: ['', Validators.required]
+    this.surrenderLineForm = this.fb.group({
+        lineNo: [''],
+        documentNo: [''],
+        amountAdvanced: [{ value: '', disabled: true }],
+        actualSpent: [''],
+        currencyCode: [{ value: '', disabled: true }],
+        category: [{ value: '', disabled: true }],
+        description:[''],
+        company:[''],
     });
   }
 
   openAddLineModal() {
     this.showAddLineModal = true;
     this.isEditMode = false;
-    this.paymentSurrenderLineForm.reset();
-  }
-
-  openEditLineModal(line: PaymentSurrenderLine) {
-    this.showAddLineModal = true;
-    this.isEditMode = true;
-    this.currentEditingLine = line;
-    this.paymentSurrenderLineForm.patchValue(line);
-  }
-
-  closeAddLineModal() {
-    this.showAddLineModal = false;
-    this.isEditMode = false;
-    this.currentEditingLine = null;
-    this.paymentSurrenderLineForm.reset();
+    this.surrenderLineForm.reset();
   }
 
   submitLine() {
-    if (this.paymentSurrenderLineForm.valid) {
-      const formValue = this.paymentSurrenderLineForm.value;
-      
-      if (this.isEditMode && this.currentEditingLine) {
-        // Update existing line
-        const index = this.paymentSurrenderLines.findIndex(line => line.id === this.currentEditingLine!.id);
-        if (index !== -1) {
-          this.paymentSurrenderLines[index] = {
-            ...this.currentEditingLine,
-            ...formValue
-          };
-        }
-      } else {
-        // Add new line
-        const newLine: PaymentSurrenderLine = {
-          id: Date.now().toString(),
-          ...formValue
-        };
-        this.paymentSurrenderLines.push(newLine);
+    this.loadingLines =true
+      if( this.surrenderLineForm.valid){
+      let formValues = this.surrenderLineForm.value;
+      formValues.no = this.no;
+      formValues.company = this.company;
+      this.cashSurrenderService.createUpdateCashSurrenderLine(formValues).subscribe({next:(res) => {
+      this.notificationService.success('', res['responseDescription']);
+      this.closeCustomModal();
+        this.getAllCashSurrenderLines();
+        this.isEditMode = true;
+          this.loadingLines=false;
+        },
+          error: (err) => {
+              this.loadingLines = false;
+              const message = err.error?.responseDescription || 'Failed to update request.';
+              this.notificationService.error('', message);
+            }
+        });
       }
-      
-      this.closeAddLineModal();
+      else {
+        this.notificationService.warning('', 'Please fill all required fields correctly.');
+        this.loadingLines = false;
+        this.surrenderForm.markAllAsTouched();
+      }
+  }
+
+  cashRequest(){
+    this.validateCashSurrenderLines()
+    const selected = this.surrenderForm.get('paymentRequestNo')?.value;
+    if (!selected) return;
+    this.cashSurrenderService.getCashRequestDetailsByNo(selected, this.company).subscribe(data => {
+      const patchedData = { ...data };
+      delete patchedData.no;
+      this.surrenderForm.patchValue(patchedData);
+    });
+    this.cashSurrenderService.getCashSurrenderDocuments(this.company).subscribe(data=>{
+     this.doc_list=data;
+    });
+  }
+
+  getAllCashSurrenderLines(){
+     this.cashSurrenderService.getAllCashSurrenderLines(this.no, this.company).subscribe(data=>{
+      this.paymentApplicationLines=data
+       this.calculateTotals()
+    });
+  }
+
+  validateCashSurrenderLines(){
+     const disbursementNo = this.surrenderForm.get('paymentRequestNo')?.value;
+     this.cashSurrenderService.validateCashSurrenderLines(this.no, disbursementNo,this.company).subscribe(data=>{
+      this.getAllCashSurrenderLines()
+      this.calculateTotals()
+    });
+  }
+
+  onCheckboxChange(event: Event) {
+      const input = event.target as HTMLInputElement;
+      this.isConfirmed = input.checked;
     }
-  }
 
-  deleteLine(lineId: string) {
-    this.paymentSurrenderLines = this.paymentSurrenderLines.filter(line => line.id !== lineId);
-  }
-
-  triggerFileUpload() {
-    const fileInput = document.createElement('input');
-    fileInput.type = 'file';
-    fileInput.accept = '.pdf,.jpg,.jpeg,.png';
-    fileInput.onchange = (event: any) => {
-      const file = event.target.files[0];
-      if (file) {
-        this.handleFileUpload(file);
-      }
-    };
-    fileInput.click();
-  }
-
-  private handleFileUpload(file: File) {
-    // Simulate file upload
-    const newDocument: UploadedDocument = {
-      id: Date.now().toString(),
-      name: file.name,
-      type: file.type.includes('pdf') ? 'PDF' : 'Image',
-      size: file.size,
-      uploadDate: new Date().toISOString().split('T')[0]
-    };
-    
-    this.uploadedDocuments.push(newDocument);
-  }
-
-  viewDocument(document: UploadedDocument) {
-    console.log('Viewing document:', document.name);
-  }
-
-  deleteDocument(documentId: string) {
-    this.uploadedDocuments = this.uploadedDocuments.filter(doc => doc.id !== documentId);
-  }
-
-  onSubmit() {
-    if (this.paymentSurrenderForm.valid) {
-      console.log('Payment Surrender Form:', this.paymentSurrenderForm.value);
-      console.log('Payment Surrender Lines:', this.paymentSurrenderLines);
-      console.log('Uploaded Documents:', this.uploadedDocuments);
-      
-      // Navigate back to payment surrender list
+  onSubmitPaymentHeader() {
+      this.loading=true
+      if( this.surrenderForm.valid){
+      this.surrenderForm.enable();
+      let formValues = this.surrenderForm.value;
+      formValues.subgranteeNo = this.subgranteeNo;
+      formValues.no = this.no;
+       formValues.company = this.company;
+      this.cashSurrenderService.createUpdateCashSurrender(formValues).subscribe({next:(res) => {
       this.router.navigate(['/payment-surrender']);
-    }
+      this.notificationService.success('', res['responseDescription']);
+      this.loading = false;
+        this.isEditMode = true;
+        },
+          error: (err) => {
+              this.loading = false;
+              const message = err.error?.responseDescription || 'Failed to update request.';
+              this.notificationService.error('', message);
+            }
+        });
+      }
+      else {
+        this.notificationService.warning('', 'Please fill all required fields correctly.');
+        this.loading = false;
+        this.surrenderForm.markAllAsTouched();
+      }
   }
 
   onCancel() {
     this.router.navigate(['/payment-surrender']);
   }
+
+ editRequest(row: any) {
+      this.showModal = true;
+      this.isEditMode = true;
+        this.surrenderLineForm.patchValue({
+    ...row,
+    action: 'update'
+    });
+    }
+
+  deleteRequest(lineNo: string) {
+     this.cashSurrenderService.deleteCashSurrenderLine(lineNo, this.no,this.company).subscribe(res=>{
+      this.notificationService.success('', res['responseDescription']);
+      this.getAllCashSurrenderLines()
+    });
+   }
+
+   openCustomModal() {
+      this.showModal = true;
+    }
+
+    closeCustomModal() {
+      this.showModal = false;
+    }
+
+    saveModal() {
+      console.log(this.surrenderForm.value);
+      this.closeCustomModal();
+    }
+
+onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (!input.files || input.files.length === 0) return;
+    const file = input.files[0];
+    if (file.type !== 'application/pdf') {
+      alert('Only PDF files are allowed');
+      input.value = '';
+      return;
+    }
+    if (file.size > 20 * 1024 * 1024) {
+      alert('File size must not exceed 5MB');
+      input.value = '';
+      return;
+    }
+    this.selectedFile = file;
+    this.fileControl.setValue(file);
+    this.fileControl.updateValueAndValidity();
+  }
+
+uploadDocument() {
+    if (this.documentCodeControl.invalid || this.fileControl.invalid) {
+      alert('Please select a document code and PDF file');
+      return;
+    }
+    const formData = new FormData();
+    formData.append('documentCode', this.documentCodeControl.value!);
+    formData.append('file', this.fileControl.value!);
+    formData.append('documentNo', this.no);
+    this.uploading = true;
+      this.paymentService.uploadDocument(formData).subscribe({
+      next:(res) => {
+        this.notificationService.success('', res['responseDescription']);
+        this.getUploadedPortalAttachments();
+        this.selectedFile = null;
+        this.uploading = false;
+      },
+      error: err => {
+        console.error(err);
+        alert('Upload failed');
+      }
+    });
+  }
+ getUploadedPortalAttachments(){
+    this.registrationService.getUploadedPortalAttachments(this.company,this.no).subscribe(data=>{
+      this.doc_list=data
+    })
+   }
+ patchDocumentCode(event: Event) {
+      const select = event.target as HTMLSelectElement | null;
+      if (!select) return;
+      const value = select.value;
+      this.documentCodeControl.setValue(value);
+    }
+  calculateTotals(): void {
+    let totalAmount = 0;
+    for (const row of this.paymentApplicationLines ?? []) {
+      totalAmount += Number(row.actualSpent) || 0;
+    }
+    this.surrenderForm.patchValue({
+      surrenderedAmount: totalAmount,
+    });
+}
 }

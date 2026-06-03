@@ -1,0 +1,85 @@
+<div class="payment-request-container">
+  <app-sidebar [sidebarType]="'finance'" [(open)]="sidebarOpen"></app-sidebar>
+
+  <div class="main-content">
+    <app-header
+      title="CASH REQUEST"
+      subtitle="Finance Services/Cash Request"
+      headerClass="finance"
+      [showBackButton]="false"
+      [(sidebarOpen)]="sidebarOpen">
+    </app-header>
+
+    <div class="payment-request-content">
+      <div class="card-header">
+        <h2>CASH REQUEST</h2>
+        <button class="add-new-btn" (click)="createNewPaymentRequest()">
+          <img src="assets/add.svg" alt="Add" width="24" height="24" />
+          ADD NEW CASH REQUEST
+        </button>
+      </div>
+
+      <div class="card-body">
+        <button class="filter-btn">
+          <img src="assets/filter.svg" alt="Add filter" width="10" height="10" style="margin-right: 6px;" /> Add filter
+        </button>
+        <div class="search-box">
+          <img src="assets/search.svg" alt="Search here" width="10" height="10" class="search-icon" />
+          <input type="text" placeholder="Search here" [(ngModel)]="searchTerm">
+        </div>
+      </div>
+      <div class="table-container">
+        <table class="payment-table">
+          <thead>
+            <tr>
+              <th>No.</th>
+              <th>Requested Date</th>
+              <th>Project Code</th>
+              <th>Requested Amount</th>
+              <th>Requested Amount (LCY)</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+           @for (request of pagedList ; track request.no ) {
+             <tr>
+                <td>{{request.no}}</td>
+                <td>{{request.requestedDate}}</td>
+                <td>{{request.projectCode}}</td>
+                <td>{{request.requestedAmount}}</td>
+                <td>{{request.requestedAmountLCY}}</td>
+                <td>{{request.status}}</td>
+                <td class="action-cell">
+                  @if(request.status ==='Open'){
+                  <button class="action-btn edit-btn" (click)="editRequest(request.no, request.approvedApplicationNo)">
+                    <img src="assets/edit.svg" alt="Edit" width="16" height="16" />
+                    EDIT
+                  </button>
+                  }
+                   @if(request.status !=='Open'){
+                    <button class="action-btn edit-btn" (click)="ViewRequest(request.no)">
+                      <img src="assets/view.svg" alt="Edit" width="16" height="16" />
+                      View
+                    </button>
+                 }
+                </td>
+            </tr>}
+          </tbody>
+        </table>
+      </div>
+         @if(totalPages > 1){
+         <div class="pagination">
+            <button (click)="setPage(currentPage - 1)" [disabled]="currentPage === 1">Prev</button>
+              <button *ngFor="let page of [].constructor(totalPages); let i = index"
+                (click)="setPage(i + 1)"
+                [class.active]="currentPage === i + 1">
+                      {{ i + 1 }}
+              </button>
+              <button (click)="setPage(currentPage + 1)" [disabled]="currentPage === totalPages">Next</button>
+          </div>
+        }
+    </div>
+    <app-footer></app-footer>
+  </div>
+</div>

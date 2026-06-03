@@ -1,0 +1,45 @@
+<div class="login-container">
+  <!-- Left Side - Logo -->
+  <div class="logo-section">
+    <div class="logo-container">
+      <img src="assets/logo.svg" alt="InSupplyHealth Logo" class="logo" />
+    </div>
+  </div>
+
+  <!-- Right Side - Login Form -->
+  <div class="form-section">
+    <div class="form-container">
+      <h1 class="welcome-title">Get Insupply Account</h1>
+      <form [formGroup]="SignUpForm" (submit)="onSignup()" class="login-form">
+        <div class="form-group">
+          <label  class="form-label">Organization Name</label>
+           <input type="text" class="form-input" formControlName="legalNameOfOrganization" placeholder="Organization Name">
+        </div>
+        <div class="form-group">
+          <label for="email" class="form-label">Email Address</label>
+          <input type="email" formControlName="emailAddress"  placeholder="Organization Email Address" class="form-input" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Tax Registration Number</label>
+           <input type="text" class="form-input" formControlName="taxRegistrationNumber" placeholder="Tax Rgistration Number">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Country of Registration: <span class="required">*</span></label>
+            <select formControlName="country" class="form-input">
+              <option value="">...</option>
+              <option value="TZ">inSupply Health-Tanzania</option>
+              <option value="KE">inSupply Health-Kenya</option>
+            </select>
+        </div>
+        <button type="submit" class="login-button"  [disabled]="loading">
+         {{ loading ? 'Creating account...' : 'CREATE ACCOUNT' }}</button>
+        <div class="forgot-password">
+          Already have an account?
+          <span class="separator">|</span>
+          <a (click)="goToLogin()" class="register-link">Login</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

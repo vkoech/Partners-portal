@@ -1,0 +1,240 @@
+<div class="new-payment-request-container">
+  <app-sidebar [sidebarType]="'finance'" [(open)]="sidebarOpen"></app-sidebar>
+
+  <div class="main-content">
+    <app-header
+      title="Cash Application"
+      subtitle="Finance Services/Cash Request"
+      headerClass="finance"
+      [showBackButton]="true"
+      [(sidebarOpen)]="sidebarOpen">
+    </app-header>
+    <div class="new-payment-request-content">
+     <div class="new-payment-request-section card-effect">
+       <div class="section-header">
+        <h2>Cash Application</h2>
+       </div>
+    <div class="new-payment-request-content">
+    <form [formGroup]="paymentRequestForm">
+      <div class="form-section">
+         <div class="form-row">
+           <div class="form-group">
+            <label>No.</label>
+             <input type="text" formControlName="no">
+          </div>
+           <div class="form-group">
+            <label>Approved Funds Application Number</label>
+             <select formControlName="approvedApplicationNo"  (change)="getApplicationNo()">
+              <option value="" [selected]=true disabled>Select</option>
+               @for (approved of activity_code_list; track approved.approvedApplicationNo) {
+                <option [value]="approved.approvedApplicationNo">
+                  {{ approved.approvedApplicationNo}}
+                </option>}
+              </select>
+          </div>
+        </div>
+          <div class="form-group">
+            <label>Project Code</label>
+             <input type="text" formControlName="projectCode" readonly>
+          </div>
+         <div class="form-row"></div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Project Start Date</label>
+            <input type="text" formControlName="subAwardStartDate">
+          </div>
+           <div class="form-group">
+            <label>Project End Date</label>
+            <input type="text" formControlName="subAwardEndDate">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Currency</label>
+            <input type="text" formControlName="currencyCode">
+          </div>
+          <div class="form-group">
+            <label>Reporting Cycle</label>
+            <input type="text" formControlName="reportingCycle">
+          </div>
+        </div>
+        <div class="form-row">
+           <div class="form-group">
+            <label>Requested Amount</label>
+            <input type="text" formControlName="requestedAmount">
+          </div>
+            <div class="form-group">
+            <label>Requested Amount(LCY)</label>
+            <input type="text" formControlName="requestedAmountLCY">
+          </div>
+        </div>
+        <div class="form-row">
+           <div class="form-group">
+              <label>Indirect Cost(%)</label>
+              <input type="text" formControlName="indirectCostPercentage">
+            </div>
+           <div class="form-group">
+            <label>Indirect Cost Amount</label>
+            <input type="text" formControlName="indirectCost">
+           </div>
+         </div>
+        <div class="form-group">
+           <label>Cash Request Description<span class="required">*</span></label>
+            <textarea rows="2" formControlName="description"></textarea>
+        </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Document Code</label>
+          <select [formControl]="documentCodeControl" (change)="patchDocumentCode($event)">
+            <option value="" disabled selected>Select</option>
+            @for (doc of doc_list; track doc.code) {
+              <option [value]="doc.code">{{ doc.description }}</option>
+            }
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Upload PDF (Max 5MB)</label>
+          <div class="file-upload-row">
+            <input type="text" readonly [value]="selectedFile?.name || ''" placeholder="Choose a PDF file">
+            <input type="file" hidden #fileInput accept=".pdf" (change)="onFileSelected($event)">
+            <button type="button" class="choose-file-btn" (click)="fileInput.click()">
+              Choose File
+            </button>
+          </div>
+        </div>
+        </div>
+        <button type="button" class="upload-btn" (click)="uploadDocument()"
+          [hidden]="!documentCodeControl.value || !fileControl.value"
+          [disabled]="!documentCodeControl.value || !fileControl.value || uploading">
+          {{ uploading ? 'Uploading...' : 'Upload Document' }}
+        </button>
+        @if(doc_list.length>0){
+          <h3>Uploaded Document(s)</h3>
+          <div class="table-container">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Document Type</th>
+                  <th>Description</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+              @for (contact of doc_list; track contact.lineNo){
+                  @if(contact.localFileURL && contact.localFileURL.trim().length > 0){
+                  <tr>
+                  <td>{{ contact.documentCode }}</td>
+                  <td>{{ contact.documentDescription }}</td>
+                  <td>
+                  @if(contact.localFileURL){
+                    <ng-container>
+                    <a [href]="contact.localFileURL" target="_blank" rel="noopener noreferrer">View Document</a>
+                    </ng-container>
+                   }
+                  </td>
+                </tr>
+                }
+               }
+              </tbody>
+            </table>
+          </div>
+          }
+        </div>
+     </form>
+    </div>
+   <div class="modal-btn-container">
+      <button class="open-modal-btn" (click)="openCustomModal()">Add Cash Request Lines</button>
+    </div>
+   <!-- Custom Modal -->
+  @if(showModal)
+  {
+    <div class="custom-modal-backdrop">
+    <div class="custom-modal">
+      <h3>Cash Request</h3>
+        <form [formGroup]="paymentRequestLineForm">
+          <div class="modal-row">
+            <div class="form-field">
+              <label>Category</label>
+                <select formControlName="category">
+                  <option value="" [selected]="true" disabled>Select Category</option>
+                  @for (category of category_list; track category.code) {
+                    <option [value]="category.code">
+                      {{ category.description }}
+                    </option>
+                  }
+                </select>
+               </div>
+          </div>
+          <div class="modal-row">
+            <div class="form-field">
+              <label>Amount</label>
+               <input formControlName="amount">
+            </div>
+          </div>
+          <div class="modal-row">
+            <div class="form-field full-width">
+              <label>Description</label>
+              <textarea formControlName="description"></textarea>
+            </div>
+          </div>
+          <div class="modal-actions">
+            <button type="button"  class="submit" (click)="submitLine()">
+              {{ isEditMode ? 'Update' : 'Save' }}
+            </button>
+            <button type="button" class="submit" (click)="closeCustomModal()">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+
+      <table class="request-line-table">
+              <thead>
+                <tr>
+                  <th>Category</th>
+                  <th>Amount</th>
+                  <th>Amount (LCY)</th>
+                  <th>Description</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                @for(row of paymentApplicationLines; track row){
+                  <tr>
+                  <td>{{ row.category }}</td>
+                  <td>{{ row.amount }}</td>
+                  <td>{{ row.amountLCY }}</td>
+                  <td>{{ row.description }}</td>
+                    <td>
+                   <button type="button" class="edit-btn" (click)="editRequest(row)">
+                      <img src="assets/edit.svg" alt="Edit" width="16" height="16" />
+                      Edit
+                   </button>
+                    <button type="button" class="delete-btn" (click)="deleteRequest(row.lineNo)">
+                      <img src="assets/delete.svg" alt="Delete" width="16" height="16" />
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              }
+              </tbody>
+            </table>
+            <div class="section-footer">
+                  <input type="checkbox" (change)="onCheckboxChange($event)" />
+                  <span>I confirm that the provided information is accurate.</span>
+                  <button class="submit"
+                          (click)="onSubmitPaymentHeader()"
+                          [disabled]="!isConfirmed">
+                    @if(loading)
+                    {
+                      <span class="spinner"></span>}
+                    Submit
+                  </button>
+                  <button class="submit" (click)="onCancel()">Close</button>
+                </div>
+              <app-footer></app-footer>
+            </div>
+    </div>
+    </div>
+

@@ -16,15 +16,14 @@
   z-index: 1100;
   transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
+  height: 85vh;
 }
 
 .sidebar-content {
-  flex: 1;
+ flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
   padding-bottom: 20px;
-  display: flex;
-  flex-direction: column;
 }
 
 .logo-container {
@@ -44,9 +43,8 @@
 }
 
 .logo-icon {
-  width: 65px;
-  height: 65px;
-  border-radius: 50%;
+  max-width: 90%;
+  max-height: 90%;
   object-fit: contain;
   background: $white;
   box-shadow: none;

@@ -1,44 +1,98 @@
+import { NotificationService } from './../../services/notification.service';
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [ReactiveFormsModule, CommonModule, FormsModule],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent {
+  [x: string]: any;
   email = '';
   password = '';
   rememberMe = false;
+  LoginForm: FormGroup;
+  loading = false;
+  hide = true;
 
-  constructor(private router: Router) {}
 
+  constructor(private router: Router, private fb: FormBuilder,
+     private notificationService: NotificationService, private authService: AuthService) {
+
+      this.LoginForm = this.fb.group({
+        emailAddress: ['', Validators.required],
+        password: ['', Validators.required],
+        company:['', Validators.required],
+        rememberMe: Boolean
+      })
+     }
+
+  togglePassword(): void {
+    this.hide = !this.hide;
+  }
   onLogin() {
-    if (this.email && this.password) {
-      this.router.navigate(['/approved-funding']);
-    } else {
-      // Navigate to approved-funding even without credentials for now (placeholder login)
-      this.router.navigate(['/approved-funding']);
+    this.loading=true;
+    this.authService.login(this.LoginForm.value).subscribe({
+    next: (res) => {
+    this.loading = false;
+    if(!this.email){
+    this.generateOTP();
     }
+    localStorage.setItem('auth_token', res.jwt);
+    localStorage.setItem('refreshToken', res.refreshToken || '');
+    localStorage.setItem('emailAddress', this.LoginForm.value.emailAddress);
+    localStorage.setItem('company',this.LoginForm.get('company')?.value);
+    this.notificationService.success('', res.responseDescription);
+    this.router.navigate(['/otp-verification'])
+      const decoded = this.decodeToken(res.jwt);
+  },
+  error: (err) => {
+    this.loading = false;
+    const message = err.error?.responseDescription;
+    this.notificationService.warning('', message);
+  }
+  });
+}
+
+  generateOTP(){
+     this.loading=true;
+      this.authService.generateOTP(this.LoginForm.value.emailAddress, this.LoginForm.value.company).subscribe({
+        next: (res) => {
+        // this.loading = false;
+        // this.notificationService.success('', res.responseDescription);
+        // this.router.navigate(['/otp-verification'])
+      },
+      error: (err) => {
+        this.loading = false;
+        const message = err.error?.responseDescription;
+        this.notificationService.warning('', message);
+      }
+      });
+
   }
 
-  goToReset(event?: Event) {
-    if (event) {
-      event.preventDefault();
-    }
-    // Navigate to reset password when implemented
-    console.log('Reset password functionality to be implemented');
+decodeToken(token: string): any {
+  try {
+    const payload = token.split('.')[1];
+    const decoded = atob(payload);
+    return JSON.parse(decoded);
+  } catch (e) {
+    console.error('Invalid token', e);
+    return null;
+  }
+}
+
+goToReset(event?: Event) {
+       this.router.navigate(['/forgot-password']);
   }
 
-  goToRegister(event?: Event) {
-    if (event) {
-      event.preventDefault();
-    }
-    console.log('Navigating to register...');
-    this.router.navigate(['/register']);
+ goToRegister(event?: Event) {
+    this.router.navigate(['/signup']);
   }
 }

@@ -1,115 +1,75 @@
-<div class="approved-funding-container">
+<div class="payment-request-container">
   <app-sidebar [sidebarType]="'finance'" [(open)]="sidebarOpen"></app-sidebar>
-  
+
   <div class="main-content">
-    <app-header 
-      title="APPROVED FUNDING" 
+    <app-header
+      title="APPROVED FUNDING"
       subtitle="Finance Services/Approved Funding"
       headerClass="finance"
       [showBackButton]="false"
       [(sidebarOpen)]="sidebarOpen">
     </app-header>
-    
-    <div class="approved-funding-content">
+
+    <div class="payment-request-content">
       <div class="card-header">
         <h2>APPROVED FUNDING LIST</h2>
       </div>
-      
+
       <div class="card-body">
         <button class="filter-btn">
           <img src="assets/filter.svg" alt="Add filter" width="10" height="10" style="margin-right: 6px;" /> Add filter
         </button>
         <div class="search-box">
           <img src="assets/search.svg" alt="Search here" width="10" height="10" class="search-icon" />
-          <input type="text" placeholder="Search here" [(ngModel)]="searchTerm">
+          <input type="text" placeholder="Search here" [(ngModel)]="searchTerm" (input)="search()">
         </div>
       </div>
-      
-      <!-- Desktop Table -->
-      <div class="table-container hide-mobile">
-        <table class="funding-table">
+      <div class="table-container">
+        <table class="payment-table">
           <thead>
             <tr>
-              <th>Funding</th>
-              <th>Programme</th>
-              <th>Purpose</th>
-              <th>Budget Amount</th>
+              <th>No.</th>
+              <th>Application Date</th>
+              <th>Project Code</th>
+              <th>Amount</th>
+              <th>Amount (LCY)</th>
               <th>Obligated Amount</th>
-              <th>Date</th>
-              <th>Description</th>
               <th>Status</th>
+               <th>Action</th>
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let funding of paginatedData; let i = index" [class.striped]="i % 2 === 1">
-              <td>{{ funding.funding }}</td>
-              <td>{{ funding.programme }}</td>
-              <td>{{ funding.purpose }}</td>
-              <td>{{ funding.budgetAmount | currency:'KSH':'symbol':'1.0-0' }}</td>
-              <td>{{ funding.obligatedAmount | currency:'KSH':'symbol':'1.0-0' }}</td>
-              <td>{{ funding.date }}</td>
-              <td>{{ funding.description }}</td>
-              <td>
-                <span class="status-badge" [class]="'status-' + funding.status.toLowerCase()">
-                  {{ funding.status }}
-                </span>
-              </td>
-            </tr>
+           @for (request of pagedList ; track request.no ) {
+             <tr>
+                <td>{{request.no}}</td>
+                <td>{{request.applicationDate}}</td>
+                <td>{{request.projectCode}}</td>
+                <td>{{request.amount}}</td>
+                <td>{{request.amountLCY}}</td>
+                <td>{{request.obligatedAmountLCY}}</td>
+                <td>{{request.status}}</td>
+                <td>
+                  @if(request.status !=='Open'){
+                 <button class="action-btn edit-btn" (click)="ViewRequest(request.no)">
+                    <img src="assets/view.svg" alt="Edit" width="16" height="16" />
+                    View
+                  </button>
+                 }
+                </td>
+            </tr>}
           </tbody>
         </table>
       </div>
-      
-      <!-- Mobile Cards -->
-      <div class="mobile-cards show-mobile">
-        <div class="funding-card" *ngFor="let funding of paginatedData">
-          <div class="card-header-mobile">
-            <h3>{{ funding.funding }}</h3>
-            <span class="status-badge" [class]="'status-' + funding.status.toLowerCase()">
-              {{ funding.status }}
-            </span>
-          </div>
-          <div class="card-body-mobile">
-            <div class="card-row">
-              <span class="card-label">Programme:</span>
-              <span class="card-value">{{ funding.programme }}</span>
-            </div>
-            <div class="card-row">
-              <span class="card-label">Purpose:</span>
-              <span class="card-value">{{ funding.purpose }}</span>
-            </div>
-            <div class="card-row">
-              <span class="card-label">Budget Amount:</span>
-              <span class="card-value">{{ funding.budgetAmount | currency:'KSH':'symbol':'1.0-0' }}</span>
-            </div>
-            <div class="card-row">
-              <span class="card-label">Obligated Amount:</span>
-              <span class="card-value">{{ funding.obligatedAmount | currency:'KSH':'symbol':'1.0-0' }}</span>
-            </div>
-            <div class="card-row">
-              <span class="card-label">Date:</span>
-              <span class="card-value">{{ funding.date }}</span>
-            </div>
-            <div class="card-row">
-              <span class="card-label">Description:</span>
-              <span class="card-value">{{ funding.description }}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Pagination -->
       <div class="pagination">
-        <button class="page-btn" [disabled]="currentPage === 1" (click)="previousPage()">Prev</button>
-        <button *ngFor="let page of getVisiblePages()" 
-                class="page-btn" 
-                [class.active]="page === currentPage"
-                (click)="goToPage(page)">
-          {{ page }}
-        </button>
-        <button class="page-btn" [disabled]="currentPage === totalPages" (click)="nextPage()">Next</button>
+         <button (click)="setPage(currentPage - 1)" [disabled]="currentPage === 1">Prev</button>
+            <button *ngFor="let page of [].constructor(totalPages); let i = index"
+             (click)="setPage(i + 1)"
+              [class.active]="currentPage === i + 1">
+              {{ i + 1 }}
+            </button>
+          <button (click)="setPage(currentPage + 1)" [disabled]="currentPage === totalPages">Next</button>
       </div>
     </div>
-    
     <app-footer></app-footer>
   </div>
 </div>

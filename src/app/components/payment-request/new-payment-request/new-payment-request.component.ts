@@ -1,26 +1,17 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { SidebarComponent } from '../../shared/sidebar/sidebar.component';
 import { HeaderComponent } from '../../shared/header/header.component';
 import { FooterComponent } from '../../shared/footer/footer.component';
+import { Payment } from '../../../services/payment';
+import { NotificationService } from '../../../services/notification.service';
+import { RegistrationService } from '../../../services/registration-service';
+import { AuthService, AuthUser } from '../../../services/auth.service';
 
-export interface PaymentRequestLine {
-  id: string;
-  currencyCode: string;
-  amount: number;
-  description: string;
-}
 
-export interface UploadedDocument {
-  id: string;
-  name: string;
-  type: string;
-  size: number;
-  uploadDate: string;
-}
 
 @Component({
   selector: 'app-new-payment-request',
@@ -31,70 +22,93 @@ export interface UploadedDocument {
 })
 export class NewPaymentRequestComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
-  
+
   sidebarOpen = false;
   paymentRequestForm!: FormGroup;
   paymentRequestLineForm!: FormGroup;
   showAddLineModal = false;
   isEditMode = false;
-  currentEditingLine: PaymentRequestLine | null = null;
-  
-  paymentRequestLines: PaymentRequestLine[] = [
-    {
-      id: '1',
-      currencyCode: 'KSH',
-      amount: 16000,
-      description: 'Cooperate Meeting'
-    }
-  ];
-  
-  uploadedDocuments: UploadedDocument[] = [
-    {
-      id: '1',
-      name: 'Cash Request',
-      type: 'PDF',
-      size: 1024000,
-      uploadDate: '2025-01-15'
-    },
-    {
-      id: '2',
-      name: 'Invoice',
-      type: 'PDF',
-      size: 2048000,
-      uploadDate: '2025-01-15'
-    },
-    {
-      id: '3',
-      name: 'Quotation',
-      type: 'PDF',
-      size: 1536000,
-      uploadDate: '2025-01-15'
-    }
-  ];
-  
-  currencyOptions = [
-    { code: 'KSH', name: 'Kenyan Shilling' },
-    { code: 'USD', name: 'US Dollar' },
-    { code: 'EUR', name: 'Euro' }
-  ];
-  
-  documentTypes = [
-    { value: 'cash-request', label: 'Cash Request' },
-    { value: 'invoice', label: 'Invoice' },
-    { value: 'quotation', label: 'Quotation' },
-    { value: 'receipt', label: 'Receipt' }
-  ];
+  showModal = false;
+  loading=false;
+  loadingLines=false;
+  subgranteeNo: any;
+  no: string;
+  email: any;
+  company: any
+  user: AuthUser | null = null;
+  paymentApplicationLines: any;
+  totalAppliedAmount = 0;
+  project_code_list: any;
+  currency_code_list: any;
+  area_of_focus_items: any;
+  reporting_cycle_list:any;
+  category_list:any
+  isConfirmed = false;
+  document_list: any[]=[];
+  funding_doc_list:any
+  selectedFile: File | null = null;
+  uploading = false;
+  uploaded_document_list:any = {}
+  documentCodeControl = new FormControl('', Validators.required);
+  fileControl = new FormControl<File | null>(null, Validators.required);
+  currencyCode: any
+
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private paymentService: Payment,
+    private notificationService: NotificationService,
+    private registrationService: RegistrationService,
+    private authService:AuthService
   ) {
-    this.initializeForms();
+    this.user = this.authService.getLoggedInUser();
+    this.subgranteeNo = this.user?.partnerAccountNo;
+    this.email=this.user?.emailAddress;
+    this.company=this.user?.companyKey;
+     const encodedNo = this.route.snapshot.paramMap.get('id');
+      if (encodedNo) {
+        this.no = atob(encodedNo);
+      }
   }
 
   ngOnInit(): void {
-    // Initialize component
+    this.paymentService.getSingleFundingApplication(this.no, this.company).subscribe(data=>{
+      if (data.subAwardEndDate ) {
+          const parts = data.subAwardEndDate.split('/');
+          data.subAwardEndDate = `${parts[2]}-${parts[1].padStart(2,'0')}-${parts[0].padStart(2,'0')}`;
+        }
+       if (data.subAwardStartDate ) {
+          const parts = data.subAwardStartDate.split('/');
+          data.subAwardStartDate = `${parts[2]}-${parts[1].padStart(2,'0')}-${parts[0].padStart(2,'0')}`;
+        }
+        this.paymentRequestForm.patchValue(data);
+      });
+    this.paymentService.getProjectCodes(this.company,this.subgranteeNo).subscribe(data=>{
+        this.project_code_list=data;
+      });
+    this.paymentService.getcurrencyCodes(this.company).subscribe(data=>{
+        this.currency_code_list=data;
+      });
+      this.paymentService.getCategories(this.company).subscribe(data=>{
+        this.category_list=data;
+      });
+      this.paymentService.getReportingCycles(this.company).subscribe(data=>{
+        this.reporting_cycle_list=data;
+      });
+     this.paymentService.getFundingApplicationDocuments().subscribe(data=>{
+        this.funding_doc_list=data;
+      });
+    // this.registrationService.getAreaOfFocus().subscribe(data => {
+    //   this.area_of_focus_items = data;
+    // });
+    // this.registrationService.getAreaOfFocus().subscribe(data => {
+    //   this.area_of_focus_items = data;
+    // });
+    this.getFundsApplicationLines()
+    this.initializeForms()
+    this.getUploadedPortalAttachments();
   }
 
   ngOnDestroy() {
@@ -104,125 +118,233 @@ export class NewPaymentRequestComponent implements OnInit, OnDestroy {
 
   private initializeForms() {
     this.paymentRequestForm = this.fb.group({
-      documentNo: ['SUBPR-25-0021'],
-      approvedFunding: ['', Validators.required],
-      requestedDate: ['', Validators.required],
-      requestedAmount: ['', [Validators.required, Validators.min(1)]],
-      projectCode: ['', Validators.required],
-      description: ['', Validators.required]
-    });
+      no: [''],
+      emailAddress: [''],
+      subgranteeNo: [''],
+      applicationDate: [''],
+      subAwardStartDate: [{ value: '', disabled: true }],
+      subAwardEndDate: [{ value: '', disabled: true }],
+      projectCode: [''],
+      projectStartDate: [{ value: '', disabled: true }],
+      projectEndDate: [{ value: '', disabled: true }],
+      currencyCode: [''],
+      reportingCycle: [''],
+      budgetAmount: [''],
+      budgetAmountLCY: [''],
+      subAwardTitle: [{ value: '', disabled: true }],
+      areaOfFocus:[''],
+      description: [{ value: '', disabled: true }],
+      declarationDone:[''],
+      declarationDate:[''],
+      status:[''],
+      company:[''],
+      responseDescription:[''],
+      responseCode:true
+    },
+    {
+    validators: this.dateRangeValidator
+  });
 
     this.paymentRequestLineForm = this.fb.group({
-      currencyCode: ['', Validators.required],
-      amount: ['', [Validators.required, Validators.min(1)]],
-      description: ['', Validators.required]
+        lineNo: [''],
+        documentNo: [''],
+        category: [''],
+        appliedAmount: ['', [Validators.required, Validators.min(0.01)]],
+        appliedAmountLCY: [''],
+        description: [''],
+        company:[''],
+    });
+
+  }
+ dateRangeValidator(form: FormGroup) {
+    const start = form.get('subAwardStartDate')?.value;
+    const end = form.get('subAwardEndDate')?.value;
+    if (!start || !end) return null;
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+
+    return endDate < startDate ? { dateRangeInvalid: true } : null;
+  }
+submitLine() {
+      this.loadingLines = true;
+      const appliedAmount = Number(this.paymentRequestLineForm.get('appliedAmount')?.value);
+      if (appliedAmount <= 0) {
+        this.notificationService.warning('', 'Applied Amount must be greater than 0.');
+        this.loadingLines = false;
+        return;
+      }
+      if (this.paymentRequestLineForm.valid) {
+        this.paymentRequestForm.enable();
+        let formValues = this.paymentRequestLineForm.value;
+        formValues.documentNo = this.no;
+        formValues.company = this.company;
+        this.paymentService.createUpdateFundingApplicationLine(formValues).subscribe({
+          next: (res) => {
+            this.notificationService.success('', res['responseDescription']);
+            this.paymentRequestLineForm.reset();
+            this.getFundsApplicationLines();
+            this.closeCustomModal();
+            this.isEditMode = true;
+            this.loadingLines = false;
+          },
+          error: (err) => {
+            const message = err.error?.responseDescription || 'Failed to update request.';
+            this.notificationService.error('', message);
+            this.loadingLines = false;
+          }
+        });
+      } else {
+        this.notificationService.warning('', 'Please fill all required fields correctly.');
+        this.paymentRequestLineForm.markAllAsTouched();
+        this.loadingLines = false;
+      }
+    }
+
+  deleteRequest(lineNo: string) {
+     this.paymentService.deleteFundingApplicationLine(lineNo, this.no, this.company).subscribe(res=>{
+      this.notificationService.success('', res['responseDescription']);
+      this.getFundsApplicationLines();
+    });
+   }
+  openCustomModal() {
+    this.showModal = true;
+    this.isEditMode = false;
+  }
+  editRequest(row: any) {
+      this.showModal = true;
+      this.isEditMode = true;
+        this.paymentRequestLineForm.patchValue({
+      ...row,
+      action: 'update'
+    });
+    }
+
+  getFundsApplicationLines() {
+      this.paymentService.getAllFundingApplicationLines(this.no, this.company).subscribe(
+        data => {
+          this.paymentApplicationLines = data.map((row: { appliedAmount: any; }) => ({
+            ...row,
+            appliedAmount: Number(String(row.appliedAmount).replace(/,/g, '')) || 0
+          }));
+          this.totalAppliedAmount = this.paymentApplicationLines
+            .reduce((sum: any, row: { appliedAmount: any; }) => sum + (row.appliedAmount || 0), 0);
+        },
+        error => {
+          console.error('Error loading funding application lines', error);
+        }
+      );
+    }
+
+
+  onCheckboxChange(event: Event) {
+      const input = event.target as HTMLInputElement;
+      this.isConfirmed = input.checked;
+    }
+
+  onSubmitPaymentHeader() {
+    this.loading = true;
+    if (!this.paymentRequestForm.valid) {
+      this.notificationService.warning('', 'Please fill all required fields correctly.');
+      this.loading = false;
+      this.paymentRequestForm.markAllAsTouched();
+      return;
+    }
+    if (this.totalAppliedAmount === 0) {
+      this.notificationService.warning('', 'Total Applied Amount cannot be 0.');
+      this.loading = false;
+      return;
+    }
+    let formValues = this.paymentRequestForm.value;
+    formValues.subgranteeNo = this.subgranteeNo;
+    formValues.no = this.no;
+    formValues.company = this.company;
+    this.paymentService.createUpdateFundingApplication(formValues).subscribe({
+      next: (res) => {
+        this.notificationService.success('', res['responseDescription']);
+        this.router.navigate(['/funding-request']);
+        this.isEditMode = true;
+        this.loading = false;
+      },
+      error: (err) => {
+        this.loading = false;
+        const message = err.error?.responseDescription || 'Failed to update request.';
+        this.notificationService.error('', message);
+      }
     });
   }
 
-  openAddLineModal() {
-    this.showAddLineModal = true;
-    this.isEditMode = false;
-    this.paymentRequestLineForm.reset();
+onCancel() {
+    this.router.navigate(['/funding-request']);
   }
 
-  openEditLineModal(line: PaymentRequestLine) {
-    this.showAddLineModal = true;
-    this.isEditMode = true;
-    this.currentEditingLine = line;
-    this.paymentRequestLineForm.patchValue(line);
-  }
+getProjectCode() {
+  const selected = this.paymentRequestForm.get('projectCode')?.value;
+  if (!selected) return;
+  this.paymentService.getProjectDetails(selected, this.subgranteeNo, this.company).subscribe(data => {
+    this.paymentRequestForm.patchValue(data);
+    this.currencyCode=data.currencyCode
+  });
 
-  closeAddLineModal() {
-    this.showAddLineModal = false;
-    this.isEditMode = false;
-    this.currentEditingLine = null;
-    this.paymentRequestLineForm.reset();
-  }
+}
 
-  submitLine() {
-    if (this.paymentRequestLineForm.valid) {
-      const formValue = this.paymentRequestLineForm.value;
-      
-      if (this.isEditMode && this.currentEditingLine) {
-        // Update existing line
-        const index = this.paymentRequestLines.findIndex(line => line.id === this.currentEditingLine!.id);
-        if (index !== -1) {
-          this.paymentRequestLines[index] = {
-            ...this.currentEditingLine,
-            ...formValue
-          };
-        }
-      } else {
-        // Add new line
-        const newLine: PaymentRequestLine = {
-          id: Date.now().toString(),
-          ...formValue
-        };
-        this.paymentRequestLines.push(newLine);
-      }
-      
-      this.closeAddLineModal();
+
+onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (!input.files || input.files.length === 0) return;
+    const file = input.files[0];
+    if (file.type !== 'application/pdf') {
+      alert('Only PDF files are allowed');
+      input.value = '';
+      return;
     }
-  }
-
-  deleteLine(lineId: string) {
-    this.paymentRequestLines = this.paymentRequestLines.filter(line => line.id !== lineId);
-  }
-
-  triggerFileUpload() {
-    const fileInput = document.createElement('input');
-    fileInput.type = 'file';
-    fileInput.accept = '.pdf,.jpg,.jpeg,.png';
-    fileInput.onchange = (event: any) => {
-      const file = event.target.files[0];
-      if (file) {
-        this.handleFileUpload(file);
-      }
-    };
-    fileInput.click();
-  }
-
-  private handleFileUpload(file: File) {
-    // Simulate file upload
-    const newDocument: UploadedDocument = {
-      id: Date.now().toString(),
-      name: file.name,
-      type: file.type.includes('pdf') ? 'PDF' : 'Image',
-      size: file.size,
-      uploadDate: new Date().toISOString().split('T')[0]
-    };
-    
-    this.uploadedDocuments.push(newDocument);
-  }
-
-  viewDocument(document: UploadedDocument) {
-    console.log('Viewing document:', document.name);
-  }
-
-  deleteDocument(documentId: string) {
-    this.uploadedDocuments = this.uploadedDocuments.filter(doc => doc.id !== documentId);
-  }
-
-  onSubmit() {
-    if (this.paymentRequestForm.valid) {
-      console.log('Payment Request Form:', this.paymentRequestForm.value);
-      console.log('Payment Request Lines:', this.paymentRequestLines);
-      console.log('Uploaded Documents:', this.uploadedDocuments);
-      
-      // Navigate back to payment request list
-      this.router.navigate(['/payment-request']);
+    if (file.size > 20 * 1024 * 1024) {
+      alert('File size must not exceed 5MB');
+      input.value = '';
+      return;
     }
+    this.selectedFile = file;
+    this.fileControl.setValue(file);
+    this.fileControl.updateValueAndValidity();
   }
 
-  onCancel() {
-    this.router.navigate(['/payment-request']);
+uploadDocument() {
+    if (this.documentCodeControl.invalid || this.fileControl.invalid) {
+      alert('Please select a document code and PDF file');
+      return;
+    }
+    const formData = new FormData();
+    formData.append('documentCode', this.documentCodeControl.value!);
+    formData.append('file', this.fileControl.value!);
+    formData.append('documentNo', this.no);
+    this.uploading = true;
+      this.paymentService.uploadDocument(formData).subscribe({
+      next:(res) => {
+        this.notificationService.success('', res['responseDescription']);
+        this.getUploadedPortalAttachments();
+        this.selectedFile = null;
+        this.uploading = false;
+      },
+      error: err => {
+        console.error(err);
+        alert('Upload failed');
+      }
+    });
   }
+ getUploadedPortalAttachments(){
+    this.registrationService.getUploadedPortalAttachments(this.company,this.no).subscribe(data=>{
+      this.uploaded_document_list=data
+    })
+   }
+ patchDocumentCode(event: Event) {
+      const select = event.target as HTMLSelectElement | null;
+      if (!select) return;
+      const value = select.value;
+      this.documentCodeControl.setValue(value);
+    }
 
-  formatFileSize(bytes: number): string {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-  }
+closeCustomModal() {
+  this.showModal = false;
+  this.paymentRequestLineForm.reset();
+}
+
 }

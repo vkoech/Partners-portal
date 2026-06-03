@@ -6,18 +6,9 @@ import { Subject, takeUntil } from 'rxjs';
 import { SidebarComponent } from '../shared/sidebar/sidebar.component';
 import { HeaderComponent } from '../shared/header/header.component';
 import { FooterComponent } from '../shared/footer/footer.component';
-
-export interface ApprovedFunding {
-  id: string;
-  funding: string;
-  programme: string;
-  purpose: string;
-  budgetAmount: number;
-  obligatedAmount: number;
-  date: string;
-  description: string;
-  status: string;
-}
+import { AuthService, AuthUser } from '../../services/auth.service';
+import { NotificationService } from '../../services/notification.service';
+import { Payment } from '../../services/payment';
 
 @Component({
   selector: 'app-approved-funding',
@@ -28,139 +19,42 @@ export interface ApprovedFunding {
 })
 export class ApprovedFundingComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
-  
+
   sidebarOpen = false;
   searchTerm = '';
   currentPage = 1;
-  itemsPerPage = 5;
-  
-  approvedFundingList: ApprovedFunding[] = [
-    {
-      id: '1',
-      funding: 'Grants',
-      programme: 'Med supply',
-      purpose: 'Pharmaceutical',
-      budgetAmount: 160000,
-      obligatedAmount: 100000,
-      date: '20/5/2025',
-      description: 'For wards',
-      status: 'Open'
-    },
-    {
-      id: '2',
-      funding: 'Grants',
-      programme: 'Med supply',
-      purpose: 'Pharmaceutical',
-      budgetAmount: 160000,
-      obligatedAmount: 100000,
-      date: '20/5/2025',
-      description: 'For wards',
-      status: 'Open'
-    },
-    {
-      id: '3',
-      funding: 'Grants',
-      programme: 'Med supply',
-      purpose: 'Pharmaceutical',
-      budgetAmount: 160000,
-      obligatedAmount: 100000,
-      date: '20/5/2025',
-      description: 'For wards',
-      status: 'Open'
-    },
-    {
-      id: '4',
-      funding: 'Grants',
-      programme: 'Med supply',
-      purpose: 'Pharmaceutical',
-      budgetAmount: 160000,
-      obligatedAmount: 100000,
-      date: '20/5/2025',
-      description: 'For wards',
-      status: 'Open'
-    },
-    {
-      id: '5',
-      funding: 'Grants',
-      programme: 'Med supply',
-      purpose: 'Pharmaceutical',
-      budgetAmount: 160000,
-      obligatedAmount: 100000,
-      date: '20/5/2025',
-      description: 'For wards',
-      status: 'Open'
-    },
-    {
-      id: '6',
-      funding: 'Grants',
-      programme: 'Med supply',
-      purpose: 'Pharmaceutical',
-      budgetAmount: 160000,
-      obligatedAmount: 100000,
-      date: '20/5/2025',
-      description: 'For wards',
-      status: 'Open'
-    },
-    {
-      id: '7',
-      funding: 'Grants',
-      programme: 'Med supply',
-      purpose: 'Pharmaceutical',
-      budgetAmount: 160000,
-      obligatedAmount: 100000,
-      date: '20/5/2025',
-      description: 'For wards',
-      status: 'Open'
-    },
-    {
-      id: '8',
-      funding: 'Grants',
-      programme: 'Med supply',
-      purpose: 'Pharmaceutical',
-      budgetAmount: 160000,
-      obligatedAmount: 100000,
-      date: '20/5/2025',
-      description: 'For wards',
-      status: 'Open'
-    },
-    {
-      id: '9',
-      funding: 'Grants',
-      programme: 'Med supply',
-      purpose: 'Pharmaceutical',
-      budgetAmount: 160000,
-      obligatedAmount: 100000,
-      date: '20/5/2025',
-      description: 'For wards',
-      status: 'Open'
-    },
-    {
-      id: '10',
-      funding: 'Grants',
-      programme: 'Med supply',
-      purpose: 'Pharmaceutical',
-      budgetAmount: 160000,
-      obligatedAmount: 100000,
-      date: '20/5/2025',
-      description: 'For wards',
-      status: 'Open'
-    }
-  ];
-  
-  get totalPages(): number {
-    return Math.ceil(this.approvedFundingList.length / this.itemsPerPage);
-  }
-  
-  get paginatedData(): ApprovedFunding[] {
-    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-    const endIndex = startIndex + this.itemsPerPage;
-    return this.approvedFundingList.slice(startIndex, endIndex);
-  }
+  pageSize = 8;
+  filteredList:any;
+  pagedList: any[] = [];
+  paymentRequestList: any[] = [];
+  email: any
+  company: any
+  user: AuthUser | null = null;
+  subgranteeNo: any;
+  totalPages = 0;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router,
+   private paymentService: Payment,
+   private authService: AuthService,
+   private notificationService: NotificationService
+  ) {}
 
   ngOnInit(): void {
-    // Initialize component
+    this.user = this.authService.getLoggedInUser();
+    this.subgranteeNo = this.user?.partnerAccountNo;
+    this.email=this.user?.emailAddress;
+    this.company=this.user?.companyKey;
+    this.paymentService.getApprovedFundApplications(this.email,this.company).subscribe(data=>{
+    this.paymentRequestList=data;
+    this.paymentRequestList.sort((a, b) => {
+    const numA = parseInt(a.no.split('-')[2], 10);
+    const numB = parseInt(b.no.split('-')[2], 10);
+    return numB - numA;
+    });
+      this.filteredList = [...this.paymentRequestList];
+      this.totalPages = Math.ceil(this.filteredList.length / this.pageSize);
+      this.setPage(1)
+     })
   }
 
   ngOnDestroy() {
@@ -168,45 +62,37 @@ export class ApprovedFundingComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  previousPage() {
-    if (this.currentPage > 1) {
-      this.currentPage--;
-    }
-  }
 
-  nextPage() {
-    if (this.currentPage < this.totalPages) {
-      this.currentPage++;
+  ViewRequest(no: string){
+      this.router.navigate(['/view-approved-funds-application',btoa(no)]);
     }
-  }
 
-  goToPage(page: number) {
-    if (page >= 1 && page <= this.totalPages) {
+  setPage(page: number) {
+      if (page < 1) page = 1;
+      if (page > this.totalPages) page = this.totalPages;
       this.currentPage = page;
+      const startIndex = (page - 1) * this.pageSize;
+      const endIndex = startIndex + this.pageSize;
+      this.pagedList = this.filteredList.slice(startIndex, endIndex);
     }
-  }
+    get pages(): number[] {
+      return Array(this.totalPages).fill(0).map((x, i) => i + 1);
+    }
+search(): void {
+  const q = this.searchTerm.toLowerCase().trim();
+    if (!q) {
+        this.paymentRequestList = [...this.filteredList];
+        return;
+      }
+      this.paymentRequestList = this.filteredList.filter((list: any) =>
+        list.no?.toLowerCase().includes(q) ||
+        list.applicationDate?.toString().toLowerCase().includes(q) ||
+        list.projectCode?.toLowerCase().includes(q) ||
+        String(list.amount).toLowerCase().includes(q) ||
+        list.amountLCY?.toLowerCase().includes(q) ||
+        list.obligatedAmountLCY?.toLowerCase().includes(q) ||
+        list.status?.toLowerCase().includes(q)
+      );
+}
 
-  lastPage() {
-    this.currentPage = this.totalPages;
-  }
-  
-  getVisiblePages(): number[] {
-    const pages: number[] = [];
-    const maxVisible = 5;
-    
-    if (this.totalPages <= maxVisible) {
-      for (let i = 1; i <= this.totalPages; i++) {
-        pages.push(i);
-      }
-    } else {
-      const start = Math.max(1, this.currentPage - 2);
-      const end = Math.min(this.totalPages, start + maxVisible - 1);
-      
-      for (let i = start; i <= end; i++) {
-        pages.push(i);
-      }
-    }
-    
-    return pages;
-  }
 }

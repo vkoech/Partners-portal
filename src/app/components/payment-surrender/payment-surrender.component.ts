@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -6,16 +6,10 @@ import { Subject, takeUntil } from 'rxjs';
 import { SidebarComponent } from '../shared/sidebar/sidebar.component';
 import { HeaderComponent } from '../shared/header/header.component';
 import { FooterComponent } from '../shared/footer/footer.component';
-
-export interface PaymentSurrender {
-  id: string;
-  no: string;
-  currencyCode: string;
-  amountAdvanced: number;
-  actualSpent: number;
-  description: string;
-  status: string;
-}
+import { AuthService, AuthUser } from '../../services/auth.service';
+import { CashRequestService } from '../../services/cash-request-service';
+import { NotificationService } from '../../services/notification.service';
+import { CashSurrenderService } from '../../services/cash-surrender-service';
 
 @Component({
   selector: 'app-payment-surrender',
@@ -26,101 +20,48 @@ export interface PaymentSurrender {
 })
 export class PaymentSurrenderComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
-  
-  sidebarOpen = false;
-  searchTerm = '';
-  currentPage = 1;
-  itemsPerPage = 10;
-  
-  paymentSurrenderList: PaymentSurrender[] = [
-    {
-      id: '1',
-      no: 'SUBPS_0020',
-      currencyCode: 'KES',
-      amountAdvanced: 160000,
-      actualSpent: 100000,
-      description: 'For wards',
-      status: 'Open'
-    },
-    {
-      id: '2',
-      no: 'SUBPS_0020',
-      currencyCode: 'KES',
-      amountAdvanced: 160000,
-      actualSpent: 100000,
-      description: 'For wards',
-      status: 'Open'
-    },
-    {
-      id: '3',
-      no: 'SUBPS_0020',
-      currencyCode: 'KES',
-      amountAdvanced: 160000,
-      actualSpent: 100000,
-      description: 'For wards',
-      status: 'Open'
-    },
-    {
-      id: '4',
-      no: 'SUBPS_0020',
-      currencyCode: 'KES',
-      amountAdvanced: 160000,
-      actualSpent: 100000,
-      description: 'For wards',
-      status: 'Open'
-    },
-    {
-      id: '5',
-      no: 'SUBPS_0020',
-      currencyCode: 'KES',
-      amountAdvanced: 160000,
-      actualSpent: 100000,
-      description: 'For wards',
-      status: 'Open'
-    },
-    {
-      id: '6',
-      no: 'SUBPS_0021',
-      currencyCode: 'KES',
-      amountAdvanced: 180000,
-      actualSpent: 120000,
-      description: 'Equipment purchase',
-      status: 'Open'
-    },
-    {
-      id: '7',
-      no: 'SUBPS_0022',
-      currencyCode: 'KES',
-      amountAdvanced: 200000,
-      actualSpent: 150000,
-      description: 'Training materials',
-      status: 'Open'
-    },
-    {
-      id: '8',
-      no: 'SUBPS_0023',
-      currencyCode: 'KES',
-      amountAdvanced: 120000,
-      actualSpent: 80000,
-      description: 'Office supplies',
-      status: 'Open'
-    }
-  ];
-  
-  get totalPages(): number {
-    return Math.ceil(this.paymentSurrenderList.length / this.itemsPerPage);
-  }
-  
-  get paginatedData(): PaymentSurrender[] {
-    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-    const endIndex = startIndex + this.itemsPerPage;
-    return this.paymentSurrenderList.slice(startIndex, endIndex);
-  }
 
-  constructor(private router: Router) {}
+  sidebarOpen = false;
+  pageSize = 8;
+  totalPages = 0;
+  pagedList: any[] = [];
+  filteredList:any;
+  currentPage = 1;
+  searchTerm: string = '';
+
+
+  email: any
+  company: any
+  user: AuthUser | null = null;
+  subgranteeNo: any;
+  loading=false;
+  payment_request:  any[] = [];
+  paymentSurrenderList: any[] = [];
+
+  private router = inject(Router);
+  private cashRequestService = inject(CashRequestService);
+  private authService = inject(AuthService);
+  private notificationService=inject(NotificationService);
+  private cashSurrenderService=inject(CashSurrenderService)
+
 
   ngOnInit(): void {
-    // Initialize component
+      this.user = this.authService.getLoggedInUser();
+      this.subgranteeNo = this.user?.partnerAccountNo;
+      this.email=this.user?.emailAddress;
+      this.company=this.user?.companyKey;
+
+      this.cashSurrenderService.getAllCashSurrenders(this.email, this.company).subscribe(data=>{
+       this.paymentSurrenderList=data;
+       this.paymentSurrenderList.sort((a, b) => {
+       const numA = parseInt(a.no.split('-')[2], 10);
+       const numB = parseInt(b.no.split('-')[2], 10);
+        return numB - numA; // descending
+        });
+      this.filteredList = [...this.paymentSurrenderList];
+      this.totalPages = Math.ceil(this.filteredList.length / this.pageSize);
+      this.setPage(1)
+      });
   }
 
   ngOnDestroy() {
@@ -128,53 +69,68 @@ export class PaymentSurrenderComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  navigateToNewPaymentSurrender() {
-    this.router.navigate(['/new-payment-surrender']);
+createNewSurrender(){
+    const formValues = {
+      subgranteeNo: this.subgranteeNo,
+      emailAddress: this.email,
+      company:this.company,
+      no: '',
+      status: '',
+      actualSpent: '',
+      areaOfFocus: '',
+      description: '',
+      projectCode: '',
+      currencyCode: '',
+      requestedDate: '',
+      surrenderDate: '',
+      actualSpentLCY: '',
+      disbursedAmount: '',
+      paymentRequestNo: '',
+      disbursedAmountLCY: ''
+    };
+    this.cashSurrenderService.createUpdateCashSurrender(formValues).subscribe({next:(res) => {
+     this.router.navigate(['/new-payment-surrender',btoa(res.responseDescription)]);
+        },
+          error: (err) => {
+              this.loading = false;
+              const message = err.error?.responseDescription || 'Failed to update request.';
+              this.notificationService.error('', message);
+            }
+        });
+      }
+  ViewRequest(no: string){
+    this.router.navigate(['/view-payment-surrender',btoa(no)]);
   }
 
-  viewSurrender(id: string) {
-    this.router.navigate(['/new-payment-surrender', id]);
-  }
-
-  previousPage() {
-    if (this.currentPage > 1) {
-      this.currentPage--;
+  editRequest(no: string) {
+      this.router.navigate([
+       '/new-payment-surrender',
+        btoa(no)
+      ]);
     }
-  }
-
-  nextPage() {
-    if (this.currentPage < this.totalPages) {
-      this.currentPage++;
-    }
-  }
-
-  goToPage(page: number) {
-    if (page >= 1 && page <= this.totalPages) {
+  setPage(page: number) {
+      if (page < 1) page = 1;
+      if (page > this.totalPages) page = this.totalPages;
       this.currentPage = page;
+      const startIndex = (page - 1) * this.pageSize;
+      const endIndex = startIndex + this.pageSize;
+      this.pagedList = this.filteredList.slice(startIndex, endIndex);
     }
-  }
-
-  lastPage() {
-    this.currentPage = this.totalPages;
-  }
-  
-  getVisiblePages(): number[] {
-    const pages: number[] = [];
-    const maxVisible = 5;
-    
-    if (this.totalPages <= maxVisible) {
-      for (let i = 1; i <= this.totalPages; i++) {
-        pages.push(i);
-      }
-    } else {
-      const start = Math.max(1, this.currentPage - 2);
-      const end = Math.min(this.totalPages, start + maxVisible - 1);
-      
-      for (let i = start; i <= end; i++) {
-        pages.push(i);
-      }
+    get pages(): number[] {
+      return Array(this.totalPages).fill(0).map((x, i) => i + 1);
     }
-    
-    return pages;
-  }
+search(): void {
+  const q = this.searchTerm.toLowerCase().trim();
+      if (!q) {
+        this.paymentSurrenderList = [...this.filteredList];
+        return;
+      }
+      this.paymentSurrenderList = this.filteredList.filter((list: any) =>
+        list.no?.toLowerCase().includes(q) ||
+        list.requestedDate?.toString().toLowerCase().includes(q) ||
+        list.projectCode?.toLowerCase().includes(q) ||
+        String(list.actualSpentLCY).toLowerCase().includes(q) ||
+        list.status?.toLowerCase().includes(q)
+  );
+}
 }
